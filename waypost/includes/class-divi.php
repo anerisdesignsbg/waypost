@@ -2,9 +2,8 @@
 /**
  * Divi Builder modules.
  *
- * Follows the loading pattern proven on the original FastNetMon build:
- * module classes are included on et_builder_ready and Divi discovers them
- * itself. Do not instantiate them manually.
+ * The module file is included on et_builder_ready, when ET_Builder_Module
+ * exists. It creates each module once, which is how Divi registers them.
  */
 
 defined( 'ABSPATH' ) || exit;

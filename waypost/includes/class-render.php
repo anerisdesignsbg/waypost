@@ -183,6 +183,9 @@ class Waypost_Render {
 		$args    = wp_parse_args( $args, array( 'post_id' => 0, 'title' => '', 'min' => 0, 'content' => null ) );
 		$post_id = self::current_post_id( $args['post_id'] );
 		$html    = null !== $args['content'] ? $args['content'] : ( $post_id ? get_post_field( 'post_content', $post_id ) : '' );
+		if ( false !== strpos( $html, '<!-- wp:divi/' ) ) {
+			$html = self::divi5_html( $html );
+		}
 		$levels  = array_map( 'intval', (array) Waypost_Settings::get( 'toc_levels' ) );
 		$items   = Waypost_Headings::extract( $html, $levels );
 		$min     = $args['min'] ? (int) $args['min'] : (int) Waypost_Settings::get( 'toc_min' );
@@ -301,6 +304,32 @@ class Waypost_Render {
 		echo '</ol></nav>';
 		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>';
 		return ob_get_clean();
+	}
+
+	/**
+	 * Divi 5 saves module text inside block attributes as JSON, so headings in
+	 * raw post content look like <h2>. Collect the HTML strings from
+	 * every block, in page order, so headings can be read from them.
+	 */
+	private static function divi5_html( $content ) {
+		$out  = array();
+		$walk = function ( $value ) use ( &$walk, &$out ) {
+			if ( is_array( $value ) ) {
+				foreach ( $value as $v ) {
+					$walk( $v );
+				}
+			} elseif ( is_string( $value ) && false !== strpos( $value, '<' ) ) {
+				$out[] = $value;
+			}
+		};
+		$blocks = function ( array $list ) use ( &$blocks, $walk ) {
+			foreach ( $list as $b ) {
+				$walk( $b['attrs'] );
+				$blocks( $b['innerBlocks'] );
+			}
+		};
+		$blocks( parse_blocks( $content ) );
+		return implode( "\n", $out );
 	}
 
 	/**

@@ -43,11 +43,12 @@ After changing PHP, JS or CSS: reload the page (wp-env mounts the folder live). 
 
 - The seed creates deliberate edge cases: four-level sections (Installation > Cloud > Marketplace images), an empty section and a drafts-only section (both must stay hidden), a private page, a page in two sections, a 78-heading Glossary, duplicate and HTML-containing headings (`edge-case-tricky-headings`), Vietnamese content, non-doc pages and blog posts sharing keywords (must not appear in docs search).
 - Tests run as a logged-out visitor for the front end and as admin for admin screens. Keep `workers: 1`; tests share one site.
-- Divi modules can only be tested with Divi installed (see README). They follow the loading pattern proven on FastNetMon: include on `et_builder_ready`, never instantiate manually.
+- Divi modules can only be tested with Divi installed (see README). `divi-modules.php` is included on `et_builder_ready` and creates each module once at the bottom: Divi only registers a module when it is constructed. Set inherited properties (`vb_support`, `type`, `module_credits`) in `init()`, never as trait properties, or PHP fails with a fatal error.
+- Divi 5 runs these as Divi 4 modules in Backwards Compatibility Mode. They render and can be moved, copied and saved to the Library, but are not in the Divi 5 module list, so the help tells Divi 5 users to put shortcodes in a Code module. Divi 5 stores text as JSON inside block comments; `Waypost_Render::toc()` unpacks it before reading headings.
 
 ## Known gaps / roadmap
 
-1. Divi modules untested outside FastNetMon; no native Divi 5 module yet.
+1. No native Divi 5 modules yet (Waypost modules are missing from the Divi 5 module list). Divi 4 itself not yet tested with the current modules.
 2. Free / Pro split and licensing (Freemius planned). Candidate Pro features: search insights, Ctrl+K, multiple docs sets, Divi 5 module.
 3. "Was this helpful?" feedback, multiple docs sets, import/export of menu order.
 4. FastNetMon's old `fnm_menu_order_v2` order is not migrated.

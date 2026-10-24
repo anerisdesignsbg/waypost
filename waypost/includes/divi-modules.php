@@ -7,18 +7,22 @@ defined( 'ABSPATH' ) || exit;
 
 trait Waypost_Divi_Common {
 
-	public $vb_support = 'on';
-	public $type       = 'child'; // Matches the original working build; avoids notices that break Divi saves.
-
-	protected $module_credits = array(
-		'module_uri' => 'https://anerisdesigns.com/waypost',
-		'author'     => 'Aneris Designs',
-		'author_uri' => 'https://anerisdesigns.com',
-	);
-
+	/*
+	 * ET_Builder_Element already declares $vb_support, $type and $module_credits.
+	 * A trait may not redeclare them with different defaults (PHP fatal error),
+	 * so they are set here instead. Divi calls init() from its constructor,
+	 * before it reads any of them.
+	 */
 	public function init() {
 		$this->name             = $this->waypost_name();
 		$this->main_css_element = '%%order_class%%';
+		$this->vb_support       = 'on';
+		$this->type             = 'child'; // Matches the original working build; avoids notices that break Divi saves.
+		$this->module_credits   = array(
+			'module_uri' => 'https://anerisdesigns.com/waypost',
+			'author'     => 'Aneris Designs',
+			'author_uri' => 'https://anerisdesigns.com',
+		);
 	}
 
 	public function get_fields() {
@@ -74,3 +78,11 @@ class Waypost_Divi_Crumbs extends ET_Builder_Module {
 	protected function waypost_name() { return __( 'Waypost Breadcrumbs', 'waypost' ); }
 	protected function waypost_output() { return Waypost_Render::breadcrumbs(); }
 }
+
+// Divi registers a module when it is constructed, so each one is created once here.
+// This file only loads on et_builder_ready, when ET_Builder_Module is available.
+new Waypost_Divi_Menu();
+new Waypost_Divi_Search();
+new Waypost_Divi_Toc();
+new Waypost_Divi_Pager();
+new Waypost_Divi_Crumbs();

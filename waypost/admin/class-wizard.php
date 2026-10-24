@@ -344,6 +344,7 @@ class Waypost_Wizard {
 					<li><?php esc_html_e( 'Build a body with a sidebar column and a Post Content module.', 'waypost' ); ?></li>
 					<li><?php esc_html_e( 'Add the Waypost Docs Search and Waypost Docs Menu modules to the sidebar.', 'waypost' ); ?></li>
 				</ol>
+				<p class="description"><?php echo wp_kses( __( 'On Divi 5, add a Code module with <code>[waypost_search]</code> and <code>[waypost_menu]</code> instead. The Waypost modules are not in the Divi 5 module list yet.', 'waypost' ), array( 'code' => array() ) ); ?></p>
 			</div>
 			<div role="tabpanel" id="wpst-p-blocks" aria-labelledby="wpst-t-blocks" hidden>
 				<ol class="wpst-tut">

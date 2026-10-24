@@ -28,8 +28,9 @@
 	line-height: 1.45;
 }
 .waypost-menu *, .waypost-search *, .waypost-toc *, .waypost-pager *, .waypost-results *, .waypost-modal * { box-sizing: border-box; }
+/* !important because themes style lists with ID selectors, e.g. Divi's #left-area ul. */
 .waypost-menu ul, .waypost-menu ol, .waypost-toc ol, .waypost-crumbs ol, .waypost-results ol, .waypost-results ul, .waypost-modal ul {
-	list-style: none; margin: 0; padding: 0;
+	list-style: none !important; margin: 0 !important; padding: 0 !important;
 }
 .waypost-menu li, .waypost-toc li, .waypost-crumbs li { margin: 0; padding: 0; border: 0; }
 
@@ -76,7 +77,7 @@ button.waypost-menu__label { background: none; border: 0; cursor: pointer; }
 .waypost-menu__toggle svg { transition: transform var(--waypost-speed) ease; }
 .waypost-menu__toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
 .waypost-menu__toggle:hover { color: var(--waypost-text); background: var(--waypost-border); }
-.waypost-menu__list .waypost-menu__list { margin-left: var(--waypost-indent); padding-left: 6px; border-left: 1px solid var(--waypost-border); }
+.waypost-menu__list .waypost-menu__list { margin-left: var(--waypost-indent) !important; padding-left: 6px !important; border-left: 1px solid var(--waypost-border); }
 .waypost-menu__list[hidden] { display: none; }
 .waypost-menu__list.is-animating { overflow: hidden; transition: height var(--waypost-speed) ease; }
 .waypost-menu :focus-visible, .waypost-search :focus-visible, .waypost-toc :focus-visible, .waypost-pager :focus-visible, .waypost-modal :focus-visible {
@@ -89,14 +90,15 @@ button.waypost-menu__label { background: none; border: 0; cursor: pointer; }
 		padding: 10px 12px; font: inherit; font-weight: 600; color: var(--waypost-text);
 		background: var(--waypost-soft); border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius); cursor: pointer;
 	}
-	.waypost-menu.is-collapsible .waypost-menu__list--root { display: none; margin-top: 8px; }
+	.waypost-menu.is-collapsible .waypost-menu__list--root { display: none; margin-top: 8px !important; }
 	.waypost-menu.is-collapsible.is-open .waypost-menu__list--root { display: block; }
 	.waypost-menu__title { display: none; }
 }
 
 /* ── Search box ────────────────────────────────────────── */
-.waypost-search { position: relative; display: flex; gap: 8px; max-width: 640px; }
-.waypost-search__field { position: relative; flex: 1; min-width: 0; }
+/* The button drops below the field in narrow columns, such as a Divi 1/4 column. */
+.waypost-search { position: relative; display: flex; flex-wrap: wrap; gap: 8px; max-width: 640px; }
+.waypost-search__field { position: relative; flex: 1 1 160px; min-width: 0; }
 .waypost-search__icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--waypost-muted); pointer-events: none; }
 /* Doubled class beats theme rules such as input[type=search]:focus. */
 .waypost-search .waypost-search__input {

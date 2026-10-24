@@ -161,6 +161,7 @@ Troubleshooting</pre>
 						<li><?php esc_html_e( 'Optionally add Waypost On This Page in a third column, and turn off the automatic contents in Settings so it is not shown twice.', 'waypost' ); ?></li>
 						<li><?php esc_html_e( 'Save the template. The modules show a placeholder in the builder and the real menu on the site.', 'waypost' ); ?></li>
 					</ol>
+					<p class="wpst-note"><?php echo wp_kses( __( '<strong>Divi 5:</strong> the Waypost modules are not in the Divi 5 module list yet. Add a Code module instead and type the shortcodes, for example <code>[waypost_search]</code> and <code>[waypost_menu]</code>. Layouts that already use the Waypost modules keep working.', 'waypost' ), array( 'strong' => array(), 'code' => array() ) ); ?></p>
 
 					<h3><?php esc_html_e( 'Block editor and block themes', 'waypost' ); ?></h3>
 					<p><?php esc_html_e( 'In the block inserter, search for “Docs”. You will find Docs Menu, Docs Search, Docs: On This Page, Docs: Previous / Next and Docs: Breadcrumbs. In a block theme, add them to the Page template in the Site Editor. They also work in sidebar widget areas.', 'waypost' ); ?></p>

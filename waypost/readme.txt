@@ -38,7 +38,7 @@ Most documentation plugins ask you to move your content into their own post type
 No. Waypost never moves or copies content.
 
 = Does it work with Divi? =
-Yes. Waypost adds Divi modules for the menu, search, contents, previous / next and breadcrumbs. Use them in a Theme Builder template.
+Yes. Waypost adds Divi modules for the menu, search, contents, previous / next and breadcrumbs. Use them in a Theme Builder template. On Divi 5, add a Code module with the Waypost shortcodes, such as [waypost_menu], because the modules are not in the Divi 5 module list yet.
 
 = Is any personal data stored? =
 Search insights store only the words searched, a count and the number of results. No IP addresses or user details.
