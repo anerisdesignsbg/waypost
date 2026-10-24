@@ -19,6 +19,18 @@ class Waypost_Frontend {
 
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
 		add_filter( 'the_content', array( __CLASS__, 'filter_content' ), 20 );
+		add_filter( 'body_class', array( __CLASS__, 'body_class' ) );
+	}
+
+	/** The chosen style is a body class, so it reaches every component and the Ctrl+K window. */
+	public static function body_class( $classes ) {
+		$classes[] = 'waypost-style-' . sanitize_html_class( Waypost_Settings::get( 'style' ) );
+		return $classes;
+	}
+
+	/** Accent colour and the text colour that sits on it. */
+	public static function inline_css() {
+		return ':root{--waypost-accent:' . Waypost_Settings::get( 'accent' ) . ';--waypost-on-accent:' . Waypost_Settings::on_accent() . ';}';
 	}
 
 	public static function sc_menu( $atts ) {
@@ -55,7 +67,7 @@ class Waypost_Frontend {
 
 	public static function register_assets() {
 		wp_register_style( 'waypost', WAYPOST_URL . 'assets/css/frontend.css', array(), WAYPOST_VERSION );
-		wp_add_inline_style( 'waypost', ':root{--waypost-accent:' . Waypost_Settings::get( 'accent' ) . ';}' );
+		wp_add_inline_style( 'waypost', self::inline_css() );
 
 		wp_register_script( 'waypost', WAYPOST_URL . 'assets/js/frontend.js', array(), WAYPOST_VERSION, true );
 		wp_localize_script(

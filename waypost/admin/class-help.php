@@ -221,9 +221,12 @@ Troubleshooting</pre>
 
 				<article class="wpst-card wpst-topic" id="styling">
 					<h2><?php esc_html_e( 'Styling', 'waypost' ); ?></h2>
-					<p><?php esc_html_e( 'Waypost uses your theme’s fonts and text colour. Set the accent colour in Settings. For anything else, override these CSS variables in your theme or in Divi, Theme Options, Custom CSS:', 'waypost' ); ?></p>
-					<pre class="wpst-pre">:root {
+					<p><?php esc_html_e( 'Pick a style in Settings, Appearance. Follow my theme uses your theme’s fonts and text colour. Modern, Minimalist and Classic each bring their own fonts and colours. Light and Dark put the menu and other parts on their own panels, so they stay readable on any background. Each style has a matching accent colour, which you can change.', 'waypost' ); ?></p>
+					<p><?php esc_html_e( 'To fine-tune a style, override these CSS variables on body in your theme or in Divi, Theme Options, Custom CSS:', 'waypost' ); ?></p>
+					<pre class="wpst-pre">body {
   --waypost-accent: #2563eb;     /* current page, links, buttons */
+  --waypost-text: #1d2333;       /* main text (inherit = theme) */
+  --waypost-font: Georgia, serif; /* font for all components */
   --waypost-muted: #64708a;      /* secondary text */
   --waypost-border: #e2e6ee;     /* lines and outlines */
   --waypost-surface: #ffffff;    /* search box and dropdown background */

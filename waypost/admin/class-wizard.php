@@ -310,6 +310,10 @@ class Waypost_Wizard {
 		</div>
 		<p class="description"><?php esc_html_e( 'Building a Divi Theme Builder template with these modules in a sidebar? Untick the matching boxes so nothing shows twice.', 'waypost' ); ?></p>
 
+		<h2><?php esc_html_e( 'Look', 'waypost' ); ?></h2>
+		<p><?php esc_html_e( 'Pick a ready-made style. You can change it any time in Settings.', 'waypost' ); ?></p>
+		<?php Waypost_Admin::style_picker( $o ); ?>
+
 		<h2><label for="wpst-home"><?php esc_html_e( 'Docs home page', 'waypost' ); ?></label> <span class="wpst-muted"><?php esc_html_e( '(optional)', 'waypost' ); ?></span></h2>
 		<select id="wpst-home" name="home_page"><option value="0"><?php esc_html_e( 'None', 'waypost' ); ?></option>
 			<?php foreach ( $pages as $p ) : ?><option value="<?php echo (int) $p->ID; ?>" <?php selected( $o['home_page'], $p->ID ); ?>><?php echo esc_html( $p->post_title ); ?></option><?php endforeach; ?>
@@ -425,6 +429,11 @@ class Waypost_Wizard {
 				$changes = array(
 					'home_page' => isset( $in['home_page'] ) ? absint( $in['home_page'] ) : 0,
 				);
+				foreach ( array( 'style', 'accent' ) as $k ) {
+					if ( isset( $in[ $k ] ) ) {
+						$changes[ $k ] = $in[ $k ];
+					}
+				}
 				foreach ( array( 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'shortcut' ) as $k ) {
 					$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 				}

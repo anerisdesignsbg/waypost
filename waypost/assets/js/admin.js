@@ -195,6 +195,24 @@
 		$('input[name=taxonomy_mode][value=existing]').prop('checked', true);
 	});
 
+	/* ── Style picker: live preview ───────────────────── */
+	function onAccent(hex) {
+		var n = parseInt(hex.slice(1), 16), lin = function (c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+		var l = 0.2126 * lin(n >> 16) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+		return (1.05 / (l + 0.05)) >= ((l + 0.05) / 0.056) ? '#ffffff' : '#111111'; // Same rule as Waypost_Settings::on_accent().
+	}
+	function setAccent(hex) {
+		document.documentElement.style.setProperty('--waypost-accent', hex);
+		document.documentElement.style.setProperty('--waypost-on-accent', onAccent(hex));
+	}
+	$('input[name=style]').on('change', function () {
+		var $preview = $('.wpst-look');
+		$preview.attr('class', $preview.attr('class').replace(/\bwaypost-style-\S+/g, '').trim() + ' waypost-style-' + this.value);
+		$('#wpst-accent').val($(this).data('accent'));
+		setAccent($(this).data('accent'));
+	});
+	$('#wpst-accent').on('input change', function () { setAccent(this.value); });
+
 	/* ── Help page: highlight topic in nav ────────────── */
 	var $helpLinks = $('.wpst-help__nav a[href^="#"]');
 	if ($helpLinks.length && 'IntersectionObserver' in window) {

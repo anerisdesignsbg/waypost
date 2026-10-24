@@ -302,4 +302,57 @@ class Waypost_Render {
 		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>';
 		return ob_get_clean();
 	}
+
+	/**
+	 * Sample menu, search, breadcrumbs, contents and pager with made-up
+	 * pages, for the style preview in the admin. Uses the same classes as
+	 * the real components so every style applies to it unchanged.
+	 */
+	public static function style_preview( $style ) {
+		$chev = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2.5 7.5 6 4 9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+		ob_start();
+		?>
+		<div class="wpst-look waypost-style-<?php echo esc_attr( $style ); ?>" inert>
+			<div class="wpst-look__side">
+				<div class="waypost-search">
+					<div class="waypost-search__field">
+						<svg class="waypost-search__icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m10.6 10.6 3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+						<input type="text" class="waypost-search__input" placeholder="<?php echo esc_attr( Waypost_Settings::placeholder() ); ?>" tabindex="-1">
+						<kbd class="waypost-search__kbd">⌘K</kbd>
+					</div>
+				</div>
+				<nav class="waypost-menu">
+					<p class="waypost-menu__title"><?php esc_html_e( 'Documentation', 'waypost' ); ?></p>
+					<ul class="waypost-menu__list waypost-menu__list--root">
+						<li class="waypost-menu__item waypost-menu__item--top"><div class="waypost-menu__row"><span class="waypost-menu__label"><?php esc_html_e( 'Getting started', 'waypost' ); ?></span><span class="waypost-menu__toggle"><?php echo $chev; // phpcs:ignore ?></span></div></li>
+						<li class="waypost-menu__item waypost-menu__item--top is-ancestor"><div class="waypost-menu__row"><span class="waypost-menu__label"><?php esc_html_e( 'Installation', 'waypost' ); ?></span><span class="waypost-menu__toggle" aria-expanded="true"><?php echo $chev; // phpcs:ignore ?></span></div>
+							<ul class="waypost-menu__list">
+								<li class="waypost-menu__item"><div class="waypost-menu__row"><a class="waypost-menu__link" href="#"><?php esc_html_e( 'Requirements', 'waypost' ); ?></a></div></li>
+								<li class="waypost-menu__item is-current"><div class="waypost-menu__row"><a class="waypost-menu__link" href="#"><?php esc_html_e( 'Quick install', 'waypost' ); ?></a></div></li>
+								<li class="waypost-menu__item"><div class="waypost-menu__row"><a class="waypost-menu__link" href="#"><?php esc_html_e( 'Upgrading', 'waypost' ); ?></a></div></li>
+							</ul>
+						</li>
+						<li class="waypost-menu__item waypost-menu__item--top"><div class="waypost-menu__row"><span class="waypost-menu__label"><?php esc_html_e( 'Troubleshooting', 'waypost' ); ?></span><span class="waypost-menu__toggle"><?php echo $chev; // phpcs:ignore ?></span></div></li>
+					</ul>
+				</nav>
+			</div>
+			<div class="wpst-look__main">
+				<nav class="waypost-crumbs"><ol><li><a href="#"><?php esc_html_e( 'Documentation', 'waypost' ); ?></a></li><li><a href="#"><?php esc_html_e( 'Installation', 'waypost' ); ?></a></li><li><span><?php esc_html_e( 'Quick install', 'waypost' ); ?></span></li></ol></nav>
+				<nav class="waypost-toc">
+					<p class="waypost-toc__title"><?php esc_html_e( 'On this page', 'waypost' ); ?></p>
+					<ol class="waypost-toc__list">
+						<li class="waypost-toc__item waypost-toc__item--l0"><a href="#" class="is-active"><?php esc_html_e( 'Before you start', 'waypost' ); ?></a></li>
+						<li class="waypost-toc__item waypost-toc__item--l0"><a href="#"><?php esc_html_e( 'Install the files', 'waypost' ); ?></a></li>
+						<li class="waypost-toc__item waypost-toc__item--l1"><a href="#"><?php esc_html_e( 'Check it works', 'waypost' ); ?></a></li>
+					</ol>
+				</nav>
+				<nav class="waypost-pager">
+					<a class="waypost-pager__link waypost-pager__link--prev" href="#"><span class="waypost-pager__dir"><?php esc_html_e( 'Previous', 'waypost' ); ?></span><span class="waypost-pager__title"><?php esc_html_e( 'Requirements', 'waypost' ); ?></span></a>
+					<a class="waypost-pager__link waypost-pager__link--next" href="#"><span class="waypost-pager__dir"><?php esc_html_e( 'Next', 'waypost' ); ?></span><span class="waypost-pager__title"><?php esc_html_e( 'Upgrading', 'waypost' ); ?></span></a>
+				</nav>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
 }

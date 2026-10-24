@@ -53,6 +53,30 @@ test( 'settings save and persist', async ( { page } ) => {
 	await page.click( 'button:has-text("Save settings")' );
 } );
 
+test( 'style picker previews, saves and styles the front end', async ( { page } ) => {
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	await expect( page.locator( '.wpst-style' ) ).toHaveCount( 6 );
+
+	await page.locator( 'label.wpst-style:has(input[value=dark])' ).click();
+	await expect( page.locator( '.wpst-look' ) ).toHaveClass( /waypost-style-dark/ );
+	await expect( page.locator( '#wpst-accent' ) ).toHaveValue( '#60a5fa' );
+	await page.click( 'button:has-text("Save settings")' );
+	await expect( page.locator( '.notice-success' ) ).toBeVisible();
+	await expect( page.locator( 'input[name=style][value=dark]' ) ).toBeChecked();
+
+	await page.goto( '/installing-on-ubuntu/' );
+	await expect( page.locator( 'body' ) ).toHaveClass( /waypost-style-dark/ );
+	await expect( page.locator( '.waypost-menu' ).first() ).toHaveCSS( 'background-color', 'rgb(20, 25, 34)' );
+	const onAccent = await page.evaluate( () => getComputedStyle( document.documentElement ).getPropertyValue( '--waypost-on-accent' ).trim() );
+	expect( onAccent ).toBe( '#111111' ); // Dark text on the light accent.
+
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	await page.locator( 'label.wpst-style:has(input[value=theme])' ).click();
+	await page.click( 'button:has-text("Save settings")' );
+	await expect( page.locator( 'input[name=style][value=theme]' ) ).toBeChecked();
+	await expect( page.locator( '#wpst-accent' ) ).toHaveValue( '#2563eb' );
+} );
+
 test( 'search insights lists searches with no results', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-insights' );
 	await expect( page.locator( '.wpst-log' ).first() ).toContainText( 'heic' );

@@ -311,6 +311,8 @@ Waypost_Settings::update(
 		'toc_auto'      => 1,
 		'prevnext_auto' => 1,
 		'crumbs_auto'   => 1,
+		'style'         => 'theme',
+		'accent'        => '#2563eb',
 	)
 );
 

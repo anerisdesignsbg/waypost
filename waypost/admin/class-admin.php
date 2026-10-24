@@ -85,7 +85,10 @@ class Waypost_Admin {
 		if ( ! $ours ) {
 			return;
 		}
-		wp_enqueue_style( 'waypost-admin', WAYPOST_URL . 'assets/css/admin.css', array(), WAYPOST_VERSION );
+		// The front-end styles power the style preview.
+		wp_enqueue_style( 'waypost-preview', WAYPOST_URL . 'assets/css/frontend.css', array(), WAYPOST_VERSION );
+		wp_add_inline_style( 'waypost-preview', Waypost_Frontend::inline_css() );
+		wp_enqueue_style( 'waypost-admin', WAYPOST_URL . 'assets/css/admin.css', array( 'waypost-preview' ), WAYPOST_VERSION );
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		wp_enqueue_script( 'waypost-admin', WAYPOST_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-sortable' ), WAYPOST_VERSION, true );
 		wp_localize_script(
@@ -130,6 +133,29 @@ class Waypost_Admin {
 		return '<a class="wpst-helplink" href="' . esc_url( admin_url( 'admin.php?page=waypost-help#' . $topic ) ) . '">'
 			. '<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>'
 			. esc_html( $label ? $label : __( 'How this works', 'waypost' ) ) . '</a>';
+	}
+
+	/** Style cards, accent colour and a live preview. Used by Settings and the setup wizard. */
+	public static function style_picker( array $o ) {
+		?>
+		<fieldset class="wpst-styles">
+			<legend class="wpst-styles__legend"><?php esc_html_e( 'Style', 'waypost' ); ?></legend>
+			<?php foreach ( Waypost_Settings::styles() as $key => $s ) : ?>
+				<label class="wpst-style">
+					<input type="radio" name="style" value="<?php echo esc_attr( $key ); ?>" data-accent="<?php echo esc_attr( $s['accent'] ); ?>" <?php checked( $o['style'], $key ); ?>>
+					<span class="wpst-style__sample waypost-style-<?php echo esc_attr( $key ); ?>" style="--wpst-dot: <?php echo esc_attr( $s['accent'] ); ?>" aria-hidden="true">Aa<i></i></span>
+					<span class="wpst-style__text"><strong><?php echo esc_html( $s['label'] ); ?></strong><small><?php echo esc_html( $s['desc'] ); ?></small></span>
+				</label>
+			<?php endforeach; ?>
+		</fieldset>
+		<p class="wpst-accent">
+			<label for="wpst-accent"><strong><?php esc_html_e( 'Accent colour', 'waypost' ); ?></strong></label>
+			<input type="color" id="wpst-accent" name="accent" value="<?php echo esc_attr( $o['accent'] ); ?>">
+			<span class="description"><?php esc_html_e( 'Used for the current page, links and buttons. Picking a style also picks a matching colour; you can change it afterwards.', 'waypost' ); ?></span>
+		</p>
+		<p class="wpst-look-label"><strong><?php esc_html_e( 'Preview', 'waypost' ); ?></strong> <span class="wpst-muted"><?php esc_html_e( 'Sample pages. With “Follow my theme”, your site uses your theme’s fonts and colours instead of these.', 'waypost' ); ?></span></p>
+		<?php
+		echo Waypost_Render::style_preview( $o['style'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
 	}
 
 	public static function copy_field( $text ) {
@@ -697,8 +723,7 @@ class Waypost_Admin {
 				<div class="wpst-card__head"><h2><?php esc_html_e( 'Appearance', 'waypost' ); ?></h2><?php echo self::help_link( 'styling' ); // phpcs:ignore ?></div>
 				<table class="form-table" role="presentation">
 					<tr>
-						<th scope="row"><label for="wpst-accent"><?php esc_html_e( 'Accent colour', 'waypost' ); ?></label></th>
-						<td><input type="color" id="wpst-accent" name="accent" value="<?php echo esc_attr( $o['accent'] ); ?>"> <span class="description"><?php esc_html_e( 'Used for the current page, links and buttons. Everything else follows your theme.', 'waypost' ); ?></span></td>
+						<td colspan="2" class="wpst-flush"><?php self::style_picker( $o ); ?></td>
 					</tr>
 				</table>
 			</section>
@@ -735,7 +760,7 @@ class Waypost_Admin {
 		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'delete_on_uninstall' ) as $k ) {
 			$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
-		foreach ( array( 'home_page', 'results_page', 'toc_min', 'per_page', 'placeholder', 'accent' ) as $k ) {
+		foreach ( array( 'home_page', 'results_page', 'toc_min', 'per_page', 'placeholder', 'style', 'accent' ) as $k ) {
 			if ( isset( $in[ $k ] ) ) {
 				$changes[ $k ] = $in[ $k ];
 			}
