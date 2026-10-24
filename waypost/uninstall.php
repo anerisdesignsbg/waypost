@@ -28,6 +28,10 @@ if ( ! is_wp_error( $waypost_terms ) ) {
 // Section links may also exist on a third-party taxonomy.
 delete_metadata( 'term', 0, 'waypost_linked_post', '', true );
 
+// "Was this helpful?" counts.
+delete_metadata( 'post', 0, '_waypost_helpful_yes', '', true );
+delete_metadata( 'post', 0, '_waypost_helpful_no', '', true );
+
 foreach ( array( 'waypost_settings', 'waypost_order', 'waypost_search_log' ) as $waypost_option ) {
 	delete_option( $waypost_option );
 }

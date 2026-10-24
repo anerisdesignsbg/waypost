@@ -45,6 +45,11 @@ class Waypost_Settings {
 			'width'           => 'contained',    // contained | full
 			'max_width'       => 1280,           // px, when contained
 			'toc_position'    => 'side',         // side: a column of its own | content: at the top of the page
+			'chrome'          => 'theme',        // header and footer on docs pages: theme | waypost (a standalone docs bar)
+			'show_updated'    => 1,              // "Last updated" date on doc pages
+			'show_reading'    => 0,              // reading time on doc pages
+			'heading_links'   => 1,              // link icons on headings
+			'feedback'        => 1,              // "Was this helpful?" on doc pages
 			'style'           => 'theme',        // a key from styles()
 			'accent'          => '#2563eb',
 			'delete_on_uninstall' => 0,
@@ -83,6 +88,11 @@ class Waypost_Settings {
 				'label'  => __( 'Dark', 'waypost' ),
 				'desc'   => __( 'Light text on dark panels. Made for sites with a dark background.', 'waypost' ),
 				'accent' => '#60a5fa',
+			),
+			'auto'    => array(
+				'label'  => __( 'Auto light and dark', 'waypost' ),
+				'desc'   => __( 'Light or dark to match each reader’s device, with a switch they can use. Best with the Waypost docs layout.', 'waypost' ),
+				'accent' => '#2563eb', // Lightened automatically in dark mode.
 			),
 		);
 	}
@@ -159,6 +169,7 @@ class Waypost_Settings {
 			'sidebar'      => array( 'left', 'right' ),
 			'width'        => array( 'contained', 'full' ),
 			'toc_position' => array( 'side', 'content' ),
+			'chrome'       => array( 'theme', 'waypost' ),
 		);
 		foreach ( $choices as $k => $allowed ) {
 			$out[ $k ] = ( isset( $in[ $k ] ) && in_array( $in[ $k ], $allowed, true ) ) ? $in[ $k ] : $d[ $k ];
@@ -167,7 +178,7 @@ class Waypost_Settings {
 		foreach ( array( 'home_page', 'results_page' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? absint( $in[ $k ] ) : 0;
 		}
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'delete_on_uninstall' ) as $k ) {
 			$out[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
 

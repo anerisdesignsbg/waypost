@@ -20,6 +20,7 @@ class Waypost_Admin {
 
 		add_action( 'admin_post_waypost_save_settings', array( __CLASS__, 'save_settings' ) );
 		add_action( 'admin_post_waypost_clear_log', array( __CLASS__, 'clear_log' ) );
+		add_action( 'admin_post_waypost_reset_feedback', array( __CLASS__, 'reset_feedback' ) );
 
 		foreach ( array( 'save_order', 'reset_order', 'flush', 'save_link', 'assign', 'add_section' ) as $a ) {
 			add_action( 'wp_ajax_waypost_' . $a, array( __CLASS__, 'ajax_' . $a ) );
@@ -156,6 +157,13 @@ class Waypost_Admin {
 			<div class="wpst-layout__body">
 				<table class="form-table wpst-layout__options" role="presentation">
 					<tr>
+						<th scope="row"><?php esc_html_e( 'Header and footer', 'waypost' ); ?></th>
+						<td>
+							<fieldset class="wpst-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Header and footer', 'waypost' ); ?></legend><?php echo $radio( 'chrome', 'theme', __( 'Your theme’s', 'waypost' ) ) . $radio( 'chrome', 'waypost', __( 'Waypost docs bar', 'waypost' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset>
+							<p class="description"><?php esc_html_e( 'The docs bar gives docs pages a header of their own, with your logo, search, a light / dark switch (with Auto light and dark) and a link back to your site, like a separate docs site.', 'waypost' ); ?></p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row"><?php esc_html_e( 'Sidebar', 'waypost' ); ?></th>
 						<td><fieldset class="wpst-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Sidebar', 'waypost' ); ?></legend><?php echo $radio( 'sidebar', 'left', __( 'Left', 'waypost' ) ) . $radio( 'sidebar', 'right', __( 'Right', 'waypost' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset></td>
 					</tr>
@@ -174,14 +182,14 @@ class Waypost_Admin {
 						</td>
 					</tr>
 				</table>
-				<div class="wpst-diagram" aria-hidden="true" data-sidebar="<?php echo esc_attr( $o['sidebar'] ); ?>" data-width="<?php echo esc_attr( $o['width'] ); ?>" data-toc="<?php echo esc_attr( $o['toc_position'] ); ?>">
-					<span class="wpst-diagram__bar"><?php esc_html_e( 'Your header', 'waypost' ); ?></span>
+				<div class="wpst-diagram" aria-hidden="true" data-sidebar="<?php echo esc_attr( $o['sidebar'] ); ?>" data-width="<?php echo esc_attr( $o['width'] ); ?>" data-toc="<?php echo esc_attr( $o['toc_position'] ); ?>" data-chrome="<?php echo esc_attr( $o['chrome'] ); ?>">
+					<span class="wpst-diagram__bar wpst-diagram__bar--top"><span class="wpst-diagram__theme"><?php esc_html_e( 'Your header', 'waypost' ); ?></span><span class="wpst-diagram__own"><?php esc_html_e( 'Logo · Docs · Search · Back to site', 'waypost' ); ?></span></span>
 					<span class="wpst-diagram__body">
 						<span class="wpst-diagram__side"><i></i><i></i><i></i><i></i><i></i></span>
 						<span class="wpst-diagram__main"><b></b><i></i><i></i><i></i><i></i><i></i><i></i></span>
 						<span class="wpst-diagram__toc"><i></i><i></i><i></i></span>
 					</span>
-					<span class="wpst-diagram__bar"><?php esc_html_e( 'Your footer', 'waypost' ); ?></span>
+					<span class="wpst-diagram__bar"><span class="wpst-diagram__theme"><?php esc_html_e( 'Your footer', 'waypost' ); ?></span><span class="wpst-diagram__own"><?php esc_html_e( 'Docs footer', 'waypost' ); ?></span></span>
 				</div>
 			</div>
 		</div>
@@ -717,6 +725,10 @@ class Waypost_Admin {
 							<label class="wpst-check"><input type="checkbox" name="prevnext_auto" value="1" <?php checked( $o['prevnext_auto'] ); ?>> <?php esc_html_e( 'Previous and next links at the bottom', 'waypost' ); ?></label>
 							<label class="wpst-check"><input type="checkbox" name="crumbs_auto" value="1" <?php checked( $o['crumbs_auto'] ); ?>> <?php esc_html_e( 'Breadcrumbs at the top', 'waypost' ); ?></label>
 							<label class="wpst-check"><input type="checkbox" name="copy_code" value="1" <?php checked( $o['copy_code'] ); ?>> <?php esc_html_e( 'Copy button on code blocks', 'waypost' ); ?></label>
+							<label class="wpst-check"><input type="checkbox" name="show_updated" value="1" <?php checked( $o['show_updated'] ); ?>> <?php esc_html_e( '“Last updated” date under the title', 'waypost' ); ?></label>
+							<label class="wpst-check"><input type="checkbox" name="show_reading" value="1" <?php checked( $o['show_reading'] ); ?>> <?php esc_html_e( 'Reading time under the title', 'waypost' ); ?></label>
+							<label class="wpst-check"><input type="checkbox" name="heading_links" value="1" <?php checked( $o['heading_links'] ); ?>> <?php esc_html_e( 'Link icons on headings, so readers can share a section', 'waypost' ); ?></label>
+							<label class="wpst-check"><input type="checkbox" name="feedback" value="1" <?php checked( $o['feedback'] ); ?>> <?php esc_html_e( '“Was this page helpful?” at the bottom (results in Search insights)', 'waypost' ); ?></label>
 							<p class="description"><?php esc_html_e( 'Untick any of these if you place the block, Divi module or shortcode yourself, for example in a Theme Builder sidebar.', 'waypost' ); ?></p>
 						</td>
 					</tr>
@@ -909,10 +921,10 @@ class Waypost_Admin {
 			'taxonomy'      => isset( $in['taxonomy'] ) ? $in['taxonomy'] : '',
 			'toc_levels'    => isset( $in['toc_levels'] ) ? (array) $in['toc_levels'] : array( 2 ),
 		);
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'delete_on_uninstall' ) as $k ) {
 			$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
-		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title', 'layout', 'sidebar', 'width', 'max_width', 'toc_position' ) as $k ) {
+		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title', 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'chrome' ) as $k ) {
 			if ( isset( $in[ $k ] ) ) {
 				$changes[ $k ] = $in[ $k ];
 			}
@@ -946,6 +958,37 @@ class Waypost_Admin {
 				<?php self::log_table( $top, false ); ?>
 			</section>
 		</div>
+		<?php $votes = Waypost_Feedback::rows(); ?>
+		<section class="wpst-card wpst-feedback-card" id="page-feedback">
+			<div class="wpst-card__head"><h2><?php esc_html_e( 'Page feedback', 'waypost' ); ?></h2><?php echo self::help_link( 'insights' ); // phpcs:ignore ?></div>
+			<p class="wpst-muted"><?php esc_html_e( 'Answers to “Was this page helpful?”, least helpful first. Pages near the top are the ones to improve.', 'waypost' ); ?></p>
+			<?php if ( ! Waypost_Settings::get( 'feedback' ) ) : ?>
+				<div class="notice notice-warning inline"><p><?php esc_html_e( '“Was this page helpful?” is switched off in Settings, Navigation.', 'waypost' ); ?></p></div>
+			<?php endif; ?>
+			<?php if ( ! $votes ) : ?>
+				<div class="wpst-empty"><p><?php esc_html_e( 'No answers yet.', 'waypost' ); ?></p></div>
+			<?php else : ?>
+				<table class="widefat striped wpst-log">
+					<thead><tr><th><?php esc_html_e( 'Page', 'waypost' ); ?></th><th><?php esc_html_e( 'Helpful', 'waypost' ); ?></th><th><?php esc_html_e( 'Not helpful', 'waypost' ); ?></th><th><?php esc_html_e( 'Score', 'waypost' ); ?></th></tr></thead>
+					<tbody>
+					<?php foreach ( $votes as $v ) : $total = $v['yes'] + $v['no']; ?>
+						<tr>
+							<td><a href="<?php echo esc_url( get_permalink( $v['id'] ) ); ?>"><?php echo esc_html( $v['title'] ); ?></a> <a class="wpst-muted" href="<?php echo esc_url( (string) get_edit_post_link( $v['id'] ) ); ?>"><?php esc_html_e( 'Edit', 'waypost' ); ?></a></td>
+							<td><?php echo (int) $v['yes']; ?></td>
+							<td><?php echo (int) $v['no']; ?></td>
+							<td><?php echo esc_html( $total ? round( 100 * $v['yes'] / $total ) . '%' : '–' ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="wpst-clear">
+					<input type="hidden" name="action" value="waypost_reset_feedback">
+					<?php wp_nonce_field( 'waypost_reset_feedback' ); ?>
+					<label class="wpst-check wpst-check--inline"><input type="checkbox" name="confirm" value="1" required> <?php esc_html_e( 'I want to delete all page feedback', 'waypost' ); ?></label>
+					<button type="submit" class="button"><?php esc_html_e( 'Reset feedback', 'waypost' ); ?></button>
+				</form>
+			<?php endif; ?>
+		</section>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="wpst-clear">
 			<input type="hidden" name="action" value="waypost_clear_log">
 			<?php wp_nonce_field( 'waypost_clear_log' ); ?>
@@ -977,6 +1020,16 @@ class Waypost_Admin {
 			echo '<td>' . esc_html( sprintf( __( '%s ago', 'waypost' ), human_time_diff( $r['last'] ) ) ) . '</td></tr>';
 		}
 		echo '</tbody></table>';
+	}
+
+	public static function reset_feedback() {
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_die( esc_html__( 'You are not allowed to do this.', 'waypost' ) );
+		}
+		check_admin_referer( 'waypost_reset_feedback' );
+		Waypost_Feedback::reset();
+		wp_safe_redirect( admin_url( 'admin.php?page=waypost-insights' ) );
+		exit;
 	}
 
 	public static function clear_log() {

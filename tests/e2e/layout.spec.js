@@ -145,6 +145,8 @@ test.describe( 'Docs layout', () => {
 			await expect( page.locator( '#secondary .waypost-menu' ) ).toBeVisible(); // The theme's sidebar widget.
 			await expect( page.locator( '.entry-content .waypost-crumbs' ) ).toHaveCount( 1 ); // Added to the content instead.
 			await expect( page.locator( '.entry-content .waypost-pager' ) ).toHaveCount( 1 );
+			await expect( page.locator( '.entry-content .waypost-meta' ) ).toHaveCount( 1 );
+			await expect( page.locator( '.entry-content [data-waypost-feedback]' ) ).toHaveCount( 1 );
 		} );
 	} );
 } );

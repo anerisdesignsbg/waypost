@@ -30,6 +30,7 @@ require_once WAYPOST_DIR . 'includes/class-render.php';
 require_once WAYPOST_DIR . 'includes/class-search.php';
 require_once WAYPOST_DIR . 'includes/class-frontend.php';
 require_once WAYPOST_DIR . 'includes/class-layout.php';
+require_once WAYPOST_DIR . 'includes/class-feedback.php';
 require_once WAYPOST_DIR . 'includes/class-blocks.php';
 require_once WAYPOST_DIR . 'includes/class-divi.php';
 
@@ -49,6 +50,7 @@ function waypost_boot() {
 	Waypost_Search::init();
 	Waypost_Frontend::init();
 	Waypost_Layout::init();
+	Waypost_Feedback::init();
 	Waypost_Blocks::init();
 	Waypost_Divi::init();
 

@@ -296,3 +296,8 @@
 .wpst-diagram__main i:nth-child(3n) { width: 70%; }
 .wpst-diagram__main b { display: none; height: 24px; margin-bottom: 8px; border: 1px dashed var(--wpst-accent); border-radius: 4px; }
 .wpst-diagram[data-toc="content"] .wpst-diagram__main b { display: block; }
+.wpst-style__sample.waypost-style-auto { background: linear-gradient(135deg, #ffffff 50%, #1a202c 50%); color: #1d2333; text-shadow: 0 0 4px #fff; }
+.wpst-diagram__own, .wpst-diagram[data-chrome="waypost"] .wpst-diagram__theme { display: none; }
+.wpst-diagram[data-chrome="waypost"] .wpst-diagram__own { display: inline; }
+.wpst-diagram[data-chrome="waypost"] .wpst-diagram__bar { color: #fff; background: var(--wpst-accent); }
+.wpst-feedback-card { margin-top: 20px; }

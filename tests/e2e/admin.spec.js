@@ -55,7 +55,7 @@ test( 'settings save and persist', async ( { page } ) => {
 
 test( 'style picker previews, saves and styles the front end', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
-	await expect( page.locator( '.wpst-styles .wpst-style' ) ).toHaveCount( 6 );
+	await expect( page.locator( '.wpst-styles .wpst-style' ) ).toHaveCount( 7 );
 
 	await page.locator( 'label.wpst-style:has(input[name=style][value=dark])' ).click();
 	await expect( page.locator( '.wpst-look' ) ).toHaveClass( /waypost-style-dark/ );

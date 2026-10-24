@@ -232,7 +232,7 @@
 		var val = function (name) { return $l.find('input[name=' + name + ']:checked').val(); };
 		function sync() {
 			$l.toggleClass('is-theme', val('layout') === 'theme');
-			$d.attr({ 'data-sidebar': val('sidebar'), 'data-width': val('width'), 'data-toc': val('toc_position') });
+			$d.attr({ 'data-sidebar': val('sidebar'), 'data-width': val('width'), 'data-toc': val('toc_position'), 'data-chrome': val('chrome') });
 			$l.find('.wpst-layout__max').toggle(val('width') !== 'full');
 		}
 		$l.on('change', 'input', sync);

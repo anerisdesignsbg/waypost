@@ -41,4 +41,23 @@ test.describe.serial( 'Block themes', () => {
 			await expect( page.locator( 'header.wp-block-template-part' ) ).toHaveCount( 1 );
 		} );
 	}
+
+	test( 'Twenty Twenty-Five with the Waypost docs bar', async ( { page } ) => {
+		await activate( page, 'Twenty Twenty-Five' );
+		const docsBar = async ( value ) => {
+			await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+			await page.locator( `input[name=chrome][value=${ value }]` ).check( { force: true } );
+			await page.click( 'button:has-text("Save settings")' );
+		};
+		await docsBar( 'waypost' );
+		try {
+			await page.goto( '/installing-on-ubuntu/' );
+			await expect( page.locator( '.waypost-topbar' ) ).toBeVisible();
+			await expect( page.locator( 'header.wp-block-template-part' ) ).toHaveCount( 0 );
+			await expect( page.locator( 'meta[name=viewport]' ) ).toHaveCount( 1 ); // Only the block theme's own.
+			await expect( page.locator( '.waypost-layout--doc' ) ).toHaveCount( 1 );
+		} finally {
+			await docsBar( 'theme' );
+		}
+	} );
 } );

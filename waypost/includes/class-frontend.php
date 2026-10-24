@@ -21,6 +21,18 @@ class Waypost_Frontend {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
 		add_filter( 'the_content', array( __CLASS__, 'filter_content' ), 20 );
 		add_filter( 'body_class', array( __CLASS__, 'body_class' ) );
+		add_action( 'wp_head', array( __CLASS__, 'scheme_script' ), 1 );
+	}
+
+	/**
+	 * Auto light and dark: apply the reader's saved choice before the page is drawn,
+	 * so a reader who chose dark never sees a flash of light.
+	 */
+	public static function scheme_script() {
+		if ( 'auto' !== Waypost_Settings::get( 'style' ) ) {
+			return;
+		}
+		echo "<script>try{var w=localStorage.getItem('waypost-scheme');if(w==='dark'||w==='light')document.documentElement.classList.add('waypost-scheme-'+w)}catch(e){}</script>\n";
 	}
 
 	/** The chosen style is a body class, so it reaches every component and the Ctrl+K window. */
@@ -31,7 +43,8 @@ class Waypost_Frontend {
 
 	/** Accent colour and the text colour that sits on it. */
 	public static function inline_css() {
-		return ':root{--waypost-accent:' . Waypost_Settings::get( 'accent' ) . ';--waypost-on-accent:' . Waypost_Settings::on_accent() . ';}';
+		$accent = Waypost_Settings::get( 'accent' );
+		return ':root{--waypost-accent:' . $accent . ';--waypost-accent-base:' . $accent . ';--waypost-on-accent:' . Waypost_Settings::on_accent() . ';}';
 	}
 
 	public static function sc_menu( $atts ) {
@@ -88,6 +101,8 @@ class Waypost_Frontend {
 				'placeholder' => Waypost_Settings::placeholder(),
 				'quick'      => array_values( (array) Waypost_Settings::get( 'quick_searches' ) ),
 				'perPage'    => (int) Waypost_Settings::get( 'per_page' ),
+				'feedbackApi' => esc_url_raw( rest_url( 'waypost/v1/feedback' ) ),
+				'headingLinks' => (bool) Waypost_Settings::get( 'heading_links' ),
 				'i18n'       => array(
 					'noResults' => __( 'No results. Try a different word.', 'waypost' ),
 					'searching' => __( 'Searching…', 'waypost' ),
@@ -103,6 +118,8 @@ class Waypost_Frontend {
 					/* translators: 1: number of results, 2: search query */
 					'manyResults' => __( '%1$s results for “%2$s”', 'waypost' ),
 					'noMatch'   => __( 'Nothing matched. Try a shorter or different word.', 'waypost' ),
+					'linkTo'    => __( 'Copy a link to this section', 'waypost' ),
+					'linkCopied' => __( 'Link copied', 'waypost' ),
 					'pages'     => __( 'Search results pages', 'waypost' ),
 					'prev'      => __( '← Previous', 'waypost' ),
 					'next'      => __( 'Next →', 'waypost' ),
@@ -145,6 +162,10 @@ class Waypost_Frontend {
 
 		if ( ! $layout && Waypost_Settings::get( 'crumbs_auto' ) && false === strpos( $content, 'waypost-crumbs' ) ) {
 			$before .= Waypost_Render::breadcrumbs( array( 'post_id' => $post_id ) );
+		}
+		if ( ! $layout ) {
+			$before .= Waypost_Render::page_meta( $post_id );
+			$after  .= Waypost_Render::feedback( $post_id );
 		}
 		if ( ( ! $layout || 'content' === Waypost_Settings::get( 'toc_position' ) ) && Waypost_Settings::get( 'toc_auto' ) && false === strpos( $content, 'waypost-toc' ) ) {
 			$before .= Waypost_Render::toc( array( 'post_id' => $post_id, 'content' => $content ) );

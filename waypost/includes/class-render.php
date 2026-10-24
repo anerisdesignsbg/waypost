@@ -399,6 +399,111 @@ class Waypost_Render {
 		return $html;
 	}
 
+	/** The site logo for the standalone docs bar: the theme's custom logo, or Divi's logo setting. */
+	private static function logo_url() {
+		$id  = (int) get_theme_mod( 'custom_logo' );
+		$url = $id ? wp_get_attachment_image_url( $id, 'medium' ) : '';
+		if ( ! $url && function_exists( 'et_get_option' ) ) {
+			$url = (string) et_get_option( 'divi_logo' );
+		}
+		return (string) apply_filters( 'waypost_logo_url', $url );
+	}
+
+	/** Address of the docs home, or the site's front page when none is set. */
+	private static function docs_home_url() {
+		$home = (int) Waypost_Settings::get( 'home_page' );
+		return ( $home && 'publish' === get_post_status( $home ) ) ? get_permalink( $home ) : home_url( '/' );
+	}
+
+	/** Button readers use to switch between light and dark (the Auto light and dark style). */
+	public static function scheme_toggle() {
+		if ( 'auto' !== Waypost_Settings::get( 'style' ) ) {
+			return '';
+		}
+		return '<button type="button" class="waypost-scheme" data-waypost-scheme aria-label="' . esc_attr__( 'Switch between light and dark', 'waypost' ) . '">'
+			. '<svg class="waypost-scheme__sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+			. '<svg class="waypost-scheme__moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>'
+			. '</button>';
+	}
+
+	/**
+	 * Standalone docs bar that replaces the theme's header on docs pages
+	 * (Settings, Appearance, Header and footer). $kind as in layout().
+	 */
+	public static function topbar( $kind ) {
+		$o    = Waypost_Settings::all();
+		$logo = self::logo_url();
+		$name = get_bloginfo( 'name' );
+		ob_start();
+		?>
+		<header class="waypost-topbar waypost-topbar--<?php echo esc_attr( $o['width'] ); ?>" style="--waypost-max-width: <?php echo (int) $o['max_width']; ?>px">
+			<div class="waypost-topbar__inner">
+				<a class="waypost-topbar__brand" href="<?php echo esc_url( self::docs_home_url() ); ?>">
+					<?php if ( $logo ) : ?>
+						<img class="waypost-topbar__logo" src="<?php echo esc_url( $logo ); ?>" alt="<?php echo esc_attr( $name ); ?>">
+					<?php else : ?>
+						<span class="waypost-topbar__site"><?php echo esc_html( $name ); ?></span>
+					<?php endif; ?>
+					<span class="waypost-topbar__label"><?php esc_html_e( 'Docs', 'waypost' ); ?></span>
+				</a>
+				<div class="waypost-topbar__search">
+					<?php
+					// The docs home and the results page have their own large search box.
+					if ( 'doc' === $kind ) {
+						echo self::search_box( array( 'button' => 'no' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+					}
+					?>
+				</div>
+				<div class="waypost-topbar__links">
+					<?php echo self::scheme_toggle(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+					<a class="waypost-topbar__back" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( sprintf( /* translators: %s: site name */ __( 'Back to %s', 'waypost' ), $name ) ); ?></a>
+				</div>
+			</div>
+		</header>
+		<?php
+		return ob_get_clean();
+	}
+
+	/** Footer for the standalone docs bar. */
+	public static function docs_footer() {
+		$o = Waypost_Settings::all();
+		return '<footer class="waypost-docs-footer waypost-topbar--' . esc_attr( $o['width'] ) . '" style="--waypost-max-width: ' . (int) $o['max_width'] . 'px"><div class="waypost-topbar__inner">'
+			. '<span>&copy; ' . esc_html( wp_date( 'Y' ) . ' ' . get_bloginfo( 'name' ) ) . '</span>'
+			. '<a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'Back to the main site', 'waypost' ) . '</a>'
+			. '</div></footer>';
+	}
+
+	/** "Updated 3 May 2026 · 4 min read" under a doc page title, as chosen in Settings. */
+	public static function page_meta( $post_id ) {
+		$parts = array();
+		if ( Waypost_Settings::get( 'show_updated' ) ) {
+			$parts[] = '<span class="waypost-meta__updated">' . esc_html__( 'Updated', 'waypost' ) . ' <time datetime="' . esc_attr( get_post_modified_time( 'c', true, $post_id ) ) . '">' . esc_html( get_the_modified_date( '', $post_id ) ) . '</time></span>';
+		}
+		if ( Waypost_Settings::get( 'show_reading' ) ) {
+			$words   = count( preg_split( '/\s+/u', Waypost_Search::plain_text( get_post_field( 'post_content', $post_id ) ), -1, PREG_SPLIT_NO_EMPTY ) );
+			$minutes = max( 1, (int) round( $words / 200 ) );
+			/* translators: %d: minutes */
+			$parts[] = '<span class="waypost-meta__reading">' . esc_html( sprintf( _n( '%d min read', '%d min read', $minutes, 'waypost' ), $minutes ) ) . '</span>';
+		}
+		return $parts ? '<p class="waypost-meta">' . implode( '<span class="waypost-meta__sep" aria-hidden="true">·</span>', $parts ) . '</p>' : '';
+	}
+
+	/** "Was this page helpful?" with Yes and No. Votes go to Waypost_Feedback through the REST API. */
+	public static function feedback( $post_id ) {
+		if ( ! Waypost_Settings::get( 'feedback' ) ) {
+			return '';
+		}
+		Waypost_Frontend::enqueue();
+		return '<div class="waypost-feedback" data-waypost-feedback="' . (int) $post_id . '">'
+			. '<p class="waypost-feedback__question">' . esc_html__( 'Was this page helpful?', 'waypost' ) . '</p>'
+			. '<div class="waypost-feedback__buttons">'
+			. '<button type="button" class="waypost-feedback__button" data-vote="yes">' . esc_html__( 'Yes', 'waypost' ) . '</button>'
+			. '<button type="button" class="waypost-feedback__button" data-vote="no">' . esc_html__( 'No', 'waypost' ) . '</button>'
+			. '</div>'
+			. '<p class="waypost-feedback__thanks" role="status" hidden>' . esc_html__( 'Thanks for letting us know.', 'waypost' ) . '</p>'
+			. '</div>';
+	}
+
 	/**
 	 * The Waypost docs layout: sidebar with search and menu, the page itself with
 	 * breadcrumbs, title and previous / next, and the contents list in a column of
@@ -441,9 +546,13 @@ class Waypost_Render {
 				<aside class="waypost-layout__sidebar" aria-label="<?php esc_attr_e( 'Documentation', 'waypost' ); ?>">
 					<div class="waypost-layout__sticky">
 						<?php
-						// The docs home and the results page have a search box of their own.
-						if ( 'doc' === $kind ) {
-							echo self::search_box( array( 'button' => 'no' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+						// The docs home and the results page have a search box of their own, and the
+						// standalone docs bar holds both search and the light / dark switch.
+						if ( 'theme' === $o['chrome'] ) {
+							$tools = ( 'doc' === $kind ? self::search_box( array( 'button' => 'no' ) ) : '' ) . self::scheme_toggle();
+							if ( $tools ) {
+								echo '<div class="waypost-layout__tools">' . $tools . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+							}
 						}
 						echo self::menu(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
 						?>
@@ -459,6 +568,11 @@ class Waypost_Render {
 						<?php if ( 'home' !== $kind ) : ?>
 							<h1 class="waypost-layout__title"><?php echo esc_html( get_the_title( $post_id ) ); ?></h1>
 						<?php endif; ?>
+						<?php
+						if ( 'doc' === $kind ) {
+							echo self::page_meta( $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+						}
+						?>
 						<?php if ( $toc ) : ?>
 							<div class="waypost-layout__toc-inline"><?php echo $toc; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?></div>
 						<?php endif; ?>
@@ -467,6 +581,9 @@ class Waypost_Render {
 						</div>
 					</article>
 					<?php
+					if ( 'doc' === $kind ) {
+						echo self::feedback( $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+					}
 					if ( 'doc' === $kind && $o['prevnext_auto'] ) {
 						echo self::prev_next( array( 'post_id' => $post_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
 					}

@@ -55,6 +55,9 @@ class Waypost_Layout {
 		if ( ! self::applies() ) {
 			return $template;
 		}
+		if ( self::standalone() ) {
+			return WAYPOST_DIR . 'templates/docs-standalone.php';
+		}
 		return WAYPOST_DIR . ( wp_is_block_theme() ? 'templates/docs-block.php' : 'templates/docs.php' );
 	}
 
@@ -102,9 +105,17 @@ class Waypost_Layout {
 		return in_array( $attrs['slug'], array( 'header', 'footer' ), true ) ? $attrs['slug'] : '';
 	}
 
+	/** The Waypost docs bar and footer replace the theme's header and footer. */
+	public static function standalone() {
+		return 'waypost' === Waypost_Settings::get( 'chrome' );
+	}
+
 	public static function body_class( $classes ) {
 		if ( self::applies() ) {
 			$classes[] = 'waypost-layout-page';
+			if ( self::standalone() ) {
+				$classes[] = 'waypost-standalone';
+			}
 		}
 		return $classes;
 	}

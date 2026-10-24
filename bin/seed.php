@@ -46,6 +46,7 @@ foreach ( get_terms( array( 'taxonomy' => $tax, 'hide_empty' => false, 'fields' 
 }
 delete_option( 'waypost_order' );
 delete_option( 'waypost_search_log' );
+Waypost_Feedback::reset();
 delete_transient( 'waypost_tree' );
 Waypost_Settings::update( array( 'taxonomy_mode' => 'own', 'post_types' => array( 'page' ) ) );
 

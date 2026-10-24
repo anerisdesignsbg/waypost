@@ -227,6 +227,9 @@ Troubleshooting</pre>
 						<li><strong><?php esc_html_e( 'Previous and next', 'waypost' ); ?></strong>: <?php esc_html_e( 'follow the menu order, so readers can go through the docs like a book.', 'waypost' ); ?></li>
 						<li><strong><?php esc_html_e( 'Breadcrumbs', 'waypost' ); ?></strong>: <?php esc_html_e( 'show the sections above the current page. Set a Docs home page in Settings to start the trail there. Search engines can read them too.', 'waypost' ); ?></li>
 						<li><strong><?php esc_html_e( 'Copy buttons', 'waypost' ); ?></strong>: <?php esc_html_e( 'appear on code blocks when you hover over them.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Last updated and reading time', 'waypost' ); ?></strong>: <?php esc_html_e( 'a short line under the title with the date the page last changed and how long it takes to read. Switch each on or off in Settings, Navigation.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Heading links', 'waypost' ); ?></strong>: <?php esc_html_e( 'a # appears next to headings on hover. Clicking it copies a link straight to that section, handy for support replies.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Was this page helpful?', 'waypost' ); ?></strong>: <?php esc_html_e( 'Yes and No buttons at the bottom of each doc page. The answers appear in Search insights.', 'waypost' ); ?></li>
 					</ul>
 					<p class="wpst-note"><?php esc_html_e( 'If you place any of these yourself with a block or Divi module, Waypost notices and does not add a second copy to the page content. In a Theme Builder sidebar it cannot see your module, so switch the automatic version off.', 'waypost' ); ?></p>
 				</article>
@@ -240,6 +243,8 @@ Troubleshooting</pre>
 						<li><?php esc_html_e( 'If the answer exists, add the reader’s word to that page, for example in a heading. If it does not, that is your next page to write.', 'waypost' ); ?></li>
 					</ol>
 					<p><?php esc_html_e( 'Only the search words, a count and the number of results are stored. No personal data is kept.', 'waypost' ); ?></p>
+					<h3><?php esc_html_e( 'Page feedback', 'waypost' ); ?></h3>
+					<p><?php esc_html_e( 'Below the searches, Page feedback lists the answers to “Was this page helpful?”, least helpful first. Start improving the pages at the top. Only the counts are kept: to stop repeat votes, a scrambled code made from the reader’s address and the page is held for one day and then deleted.', 'waypost' ); ?></p>
 				</article>
 
 				<article class="wpst-card wpst-topic" id="layout">
@@ -253,6 +258,7 @@ Troubleshooting</pre>
 					</ul>
 					<p><?php esc_html_e( 'The style you pick (Modern, Classic, Dark and so on) colours the whole docs area, including headings, links and code blocks. With Follow my theme, the page keeps your theme’s fonts and colours.', 'waypost' ); ?></p>
 					<p><?php esc_html_e( 'Choose the layout in Settings, Appearance, or in the setup wizard. Prefer your own design? Pick My theme’s layout and place the blocks, Divi modules or shortcodes yourself (see Placing the menu and search).', 'waypost' ); ?></p>
+					<p><?php esc_html_e( 'Header and footer: keep your theme’s, or switch to the Waypost docs bar. The docs bar replaces the theme’s header and footer on docs pages with a clean bar holding your logo (or site name), search, the light / dark switch and a link back to your site, so your docs feel like a separate docs site.', 'waypost' ); ?></p>
 					<p><?php esc_html_e( 'It works with classic themes, Divi included, and with block themes such as Twenty Twenty-Five. In a block theme it uses the header and footer from your page template, including any changes you made to them in the Site Editor.', 'waypost' ); ?></p>
 					<p class="wpst-note"><?php esc_html_e( 'Page builders keep working inside the layout: Divi, for example, still builds the page content, and its Visual Builder opens as normal. If your docs home was built with the menu on it, remove that menu, because the layout already shows one in the sidebar.', 'waypost' ); ?></p>
 				</article>
@@ -260,6 +266,7 @@ Troubleshooting</pre>
 				<article class="wpst-card wpst-topic" id="styling">
 					<h2><?php esc_html_e( 'Styling', 'waypost' ); ?></h2>
 					<p><?php esc_html_e( 'Pick a style in Settings, Appearance. Follow my theme uses your theme’s fonts and text colour. Modern, Minimalist and Classic each bring their own fonts and colours. Light and Dark put the menu and other parts on their own panels, so they stay readable on any background. Each style has a matching accent colour, which you can change.', 'waypost' ); ?></p>
+					<p><?php esc_html_e( 'Auto light and dark follows each reader’s device: light by day, dark if their system is set to dark. A sun and moon switch lets readers choose, and the choice is remembered in their browser. The accent colour is lightened in dark mode so links stay easy to read.', 'waypost' ); ?></p>
 					<p><?php esc_html_e( 'To fine-tune a style, override these CSS variables on body in your theme or in Divi, Theme Options, Custom CSS:', 'waypost' ); ?></p>
 					<pre class="wpst-pre">body {
   --waypost-accent: #2563eb;     /* current page, links, buttons */

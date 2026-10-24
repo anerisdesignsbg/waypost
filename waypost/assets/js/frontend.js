@@ -607,7 +607,7 @@
 		var layout = document.querySelector('.waypost-layout');
 		if (!layout) return;
 		var root = document.documentElement;
-		var headers = '#wpadminbar, #main-header, #top-header, header, .site-header, .et-l--header, .elementor-location-header';
+		var headers = '#wpadminbar, .waypost-topbar, #main-header, #top-header, header, .site-header, .et-l--header, .elementor-location-header';
 		var queued = false;
 		function measure() {
 			queued = false;
@@ -632,6 +632,87 @@
 		window.addEventListener('load', queue);
 	}
 
+	/* ── Auto light and dark: the reader's switch ─────── */
+
+	// The choice is saved per reader; the head script in Waypost_Frontend applies it before the page draws.
+	function initScheme() {
+		var root = document.documentElement;
+		var media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+		function isDark() {
+			if (root.classList.contains('waypost-scheme-dark')) return true;
+			if (root.classList.contains('waypost-scheme-light')) return false;
+			return !!(media && media.matches);
+		}
+		function sync() {
+			document.querySelectorAll('[data-waypost-scheme]').forEach(function (b) { b.setAttribute('aria-pressed', isDark() ? 'true' : 'false'); });
+		}
+		document.addEventListener('click', function (e) {
+			if (!e.target.closest('[data-waypost-scheme]')) return;
+			var next = isDark() ? 'light' : 'dark';
+			root.classList.remove('waypost-scheme-dark', 'waypost-scheme-light');
+			root.classList.add('waypost-scheme-' + next);
+			try { localStorage.setItem('waypost-scheme', next); } catch (err) { /* private mode */ }
+			sync();
+		});
+		if (media && media.addEventListener) media.addEventListener('change', sync);
+		sync();
+	}
+
+	/* ── Link icons on headings ───────────────────────── */
+
+	function initHeadingLinks() {
+		var scope = document.querySelector('.waypost-layout__content') || document.querySelector('.entry-content, .et_pb_post_content, .wp-block-post-content, main');
+		if (!scope) return;
+		scope.querySelectorAll('h2[id], h3[id], h4[id]').forEach(function (h) {
+			if (h.closest('.waypost-toc, .waypost-home, .waypost-results, .waypost-feedback') || h.querySelector('.waypost-anchor')) return;
+			var a = el('a', 'waypost-anchor', '#');
+			a.href = '#' + h.id;
+			a.setAttribute('aria-label', (t.linkTo || 'Copy a link to this section') + ': ' + h.textContent);
+			a.addEventListener('click', function () {
+				var url = location.href.split('#')[0] + '#' + h.id;
+				if (navigator.clipboard && navigator.clipboard.writeText) {
+					navigator.clipboard.writeText(url).then(function () {
+						a.setAttribute('data-copied', t.linkCopied || 'Link copied');
+						setTimeout(function () { a.removeAttribute('data-copied'); }, 1600);
+					}).catch(function () {});
+				}
+			});
+			h.appendChild(a);
+		});
+	}
+
+	/* ── Was this page helpful? ───────────────────────── */
+
+	function initFeedback(box) {
+		var post = box.getAttribute('data-waypost-feedback');
+		var key = 'waypost-fb-' + post;
+		var done = function () {
+			box.classList.add('is-done');
+			box.querySelector('.waypost-feedback__buttons').hidden = true;
+			box.querySelector('.waypost-feedback__thanks').hidden = false;
+		};
+		try { if (localStorage.getItem(key)) { done(); return; } } catch (err) { /* private mode */ }
+		box.addEventListener('click', function (e) {
+			var b = e.target.closest('button[data-vote]');
+			if (!b || !cfg.feedbackApi) return;
+			box.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+			fetch(cfg.feedbackApi, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ post: parseInt(post, 10), vote: b.getAttribute('data-vote') })
+			}).then(function (r) {
+				// 429: this reader already answered today. Either way the vote is in.
+				if (r.ok || r.status === 429) {
+					try { localStorage.setItem(key, b.getAttribute('data-vote')); } catch (err) { /* private mode */ }
+					done();
+				} else {
+					box.querySelectorAll('button').forEach(function (x) { x.disabled = false; });
+				}
+			}).catch(function () { box.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
+		});
+	}
+
 	/* ── Boot ─────────────────────────────────────────── */
 
 	function boot() {
@@ -644,6 +725,9 @@
 		});
 		document.querySelectorAll('.waypost-toc').forEach(initToc);
 		initLayout();
+		initScheme();
+		document.querySelectorAll('[data-waypost-feedback]').forEach(initFeedback);
+		if (cfg.headingLinks && cfg.isDoc) initHeadingLinks();
 		initQuickSearches();
 		if (cfg.shortcut && (cfg.isDoc || boxes.length)) initShortcut();
 		if (cfg.copyCode && cfg.isDoc) initCopy();

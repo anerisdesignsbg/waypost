@@ -328,6 +328,8 @@ class Waypost_Wizard {
 			<label class="wpst-toggle"><input type="checkbox" name="prevnext_auto" value="1" <?php checked( $o['prevnext_auto'] ); ?>><span><strong><?php esc_html_e( 'Previous and next', 'waypost' ); ?></strong><small><?php esc_html_e( 'Links at the bottom, in menu order.', 'waypost' ); ?></small></span></label>
 			<label class="wpst-toggle"><input type="checkbox" name="crumbs_auto" value="1" <?php checked( $o['crumbs_auto'] ); ?>><span><strong><?php esc_html_e( 'Breadcrumbs', 'waypost' ); ?></strong><small><?php esc_html_e( 'Section trail above the content.', 'waypost' ); ?></small></span></label>
 			<label class="wpst-toggle"><input type="checkbox" name="shortcut" value="1" <?php checked( $o['shortcut'] ); ?>><span><strong><?php esc_html_e( 'Ctrl+K search', 'waypost' ); ?></strong><small><?php esc_html_e( 'Open search from anywhere on a doc page.', 'waypost' ); ?></small></span></label>
+			<label class="wpst-toggle"><input type="checkbox" name="show_updated" value="1" <?php checked( $o['show_updated'] ); ?>><span><strong><?php esc_html_e( 'Last updated', 'waypost' ); ?></strong><small><?php esc_html_e( 'The date a page last changed, under its title.', 'waypost' ); ?></small></span></label>
+			<label class="wpst-toggle"><input type="checkbox" name="feedback" value="1" <?php checked( $o['feedback'] ); ?>><span><strong><?php esc_html_e( 'Was this helpful?', 'waypost' ); ?></strong><small><?php esc_html_e( 'Yes and No buttons; see the results in Search insights.', 'waypost' ); ?></small></span></label>
 		</div>
 		<p class="description"><?php esc_html_e( 'Building a Divi Theme Builder template with these modules in a sidebar? Untick the matching boxes so nothing shows twice.', 'waypost' ); ?></p>
 
@@ -445,7 +447,7 @@ class Waypost_Wizard {
 
 			case 'look':
 				$changes = array();
-				foreach ( array( 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'style', 'accent' ) as $k ) {
+				foreach ( array( 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'chrome', 'style', 'accent' ) as $k ) {
 					if ( isset( $in[ $k ] ) ) {
 						$changes[ $k ] = $in[ $k ];
 					}
@@ -457,7 +459,7 @@ class Waypost_Wizard {
 				$changes = array(
 					'home_page' => isset( $in['home_page'] ) ? absint( $in['home_page'] ) : 0,
 				);
-				foreach ( array( 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'shortcut' ) as $k ) {
+				foreach ( array( 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'shortcut', 'show_updated', 'feedback' ) as $k ) {
 					$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 				}
 				$mode                      = isset( $in['results_mode'] ) ? sanitize_key( $in['results_mode'] ) : 'none';

@@ -349,17 +349,46 @@ body.waypost-modal-open { overflow: hidden; }
 :where(.waypost-style-light)   { --waypost-page-bg: #f8fafc; --waypost-page-text: #334155; --waypost-heading: #0f172a; --waypost-code-bg: #0f172a; --waypost-code-text: #e2e8f0; }
 :where(.waypost-style-dark)    { --waypost-page-bg: #0d1117; --waypost-page-text: #c9d1d9; --waypost-heading: #f0f6fc; --waypost-code-bg: #161b22; --waypost-code-text: #e6edf3; }
 
+/* Auto light and dark: light by default, dark when the reader's device is dark or they chose dark.
+   The accent is lightened in dark mode so links stay readable. */
+:where(.waypost-style-auto) {
+	--waypost-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--waypost-text: #1d2333; --waypost-surface-text: #1d2333; --waypost-muted: #5f6b80; --waypost-border: #e2e6ee;
+	--waypost-surface: #ffffff; --waypost-soft: #f4f6fa; --waypost-panel: #ffffff; --waypost-radius: 10px;
+	--waypost-page-bg: #f8fafc; --waypost-page-text: #334155; --waypost-heading: #0f172a; --waypost-code-bg: #0f172a; --waypost-code-text: #e2e8f0;
+}
+:where(html.waypost-scheme-dark) :where(.waypost-style-auto) {
+	--waypost-text: #e6e9f0; --waypost-surface-text: #e6e9f0; --waypost-muted: #9aa4b8; --waypost-border: #2f3747;
+	--waypost-surface: #1a202c; --waypost-soft: #232a38; --waypost-panel: #141922;
+	--waypost-accent: color-mix(in srgb, var(--waypost-accent-base) 62%, #fff); --waypost-on-accent: #0b1220;
+	--waypost-active-bg: color-mix(in srgb, var(--waypost-accent) 22%, transparent);
+	--waypost-shadow: 0 16px 40px rgba(0, 0, 0, .5); --waypost-overlay: rgba(0, 0, 0, .6); --waypost-code-button: rgba(255, 255, 255, .16);
+	--waypost-page-bg: #0d1117; --waypost-page-text: #c9d1d9; --waypost-heading: #f0f6fc; --waypost-code-bg: #161b22; --waypost-code-text: #e6edf3;
+	color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+	:where(html:not(.waypost-scheme-light)) :where(.waypost-style-auto) {
+		--waypost-text: #e6e9f0; --waypost-surface-text: #e6e9f0; --waypost-muted: #9aa4b8; --waypost-border: #2f3747;
+		--waypost-surface: #1a202c; --waypost-soft: #232a38; --waypost-panel: #141922;
+		--waypost-accent: color-mix(in srgb, var(--waypost-accent-base) 62%, #fff); --waypost-on-accent: #0b1220;
+		--waypost-active-bg: color-mix(in srgb, var(--waypost-accent) 22%, transparent);
+		--waypost-shadow: 0 16px 40px rgba(0, 0, 0, .5); --waypost-overlay: rgba(0, 0, 0, .6); --waypost-code-button: rgba(255, 255, 255, .16);
+		--waypost-page-bg: #0d1117; --waypost-page-text: #c9d1d9; --waypost-heading: #f0f6fc; --waypost-code-bg: #161b22; --waypost-code-text: #e6edf3;
+		color-scheme: dark;
+	}
+}
+
 /* Light and Dark bring their own panels, so they read well on any page background. */
-:is(.waypost-style-light, .waypost-style-dark) .waypost-menu,
-:is(.waypost-style-light, .waypost-style-dark) .waypost-results {
+:is(.waypost-style-light, .waypost-style-dark, .waypost-style-auto) .waypost-menu,
+:is(.waypost-style-light, .waypost-style-dark, .waypost-style-auto) .waypost-results {
 	padding: 12px; border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius);
 }
-:is(.waypost-style-light, .waypost-style-dark) .waypost-results { padding: 4px 20px 16px; background: var(--waypost-panel); }
-:is(.waypost-style-light, .waypost-style-dark) .waypost-home .waypost-home__results { padding: 0; border: 0; background: none; } /* Already inside the home panel. */
-:is(.waypost-style-light, .waypost-style-dark) .waypost-home { max-width: 1040px; padding: 36px 28px; background: var(--waypost-panel); border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius); }
-:is(.waypost-style-light, .waypost-style-dark) .waypost-card { background: var(--waypost-surface); }
-:is(.waypost-style-light, .waypost-style-dark) .waypost-pager__link { background: var(--waypost-panel); }
-:is(.waypost-style-light, .waypost-style-dark) .waypost-crumbs { display: inline-block; padding: 4px 10px; background: var(--waypost-panel); border-radius: var(--waypost-radius); }
+:is(.waypost-style-light, .waypost-style-dark, .waypost-style-auto) .waypost-results { padding: 4px 20px 16px; background: var(--waypost-panel); }
+:is(.waypost-style-light, .waypost-style-dark, .waypost-style-auto) .waypost-home .waypost-home__results { padding: 0; border: 0; background: none; } /* Already inside the home panel. */
+:is(.waypost-style-light, .waypost-style-dark, .waypost-style-auto) .waypost-home { max-width: 1040px; padding: 36px 28px; background: var(--waypost-panel); border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius); }
+:is(.waypost-style-light, .waypost-style-dark, .waypost-style-auto) .waypost-card { background: var(--waypost-surface); }
+:is(.waypost-style-light, .waypost-style-dark, .waypost-style-auto) .waypost-pager__link { background: var(--waypost-panel); }
+:is(.waypost-style-light, .waypost-style-dark, .waypost-style-auto) .waypost-crumbs { display: inline-block; padding: 4px 10px; background: var(--waypost-panel); border-radius: var(--waypost-radius); }
 
 /* ── Docs layout (Settings, Appearance, Layout) ────────── */
 /* Spans the window between the theme's header and footer, whatever container the theme puts it in.
@@ -403,26 +432,27 @@ body .waypost-layout__edit a { color: var(--waypost-muted); }
 .waypost-layout__content :is(h2, h3, h4) { scroll-margin-top: calc(var(--waypost-sticky-top, 24px) + 12px); }
 .waypost-layout .waypost-crumbs { margin-bottom: 1.4em; }
 
-/* Content typography for the Waypost styles. Follow my theme leaves it to the theme. */
+/* Content typography for the Waypost styles. Follow my theme leaves it to the theme.
+   Waypost's own parts placed inside the content (contents box, search home, results) keep their own look. */
 body:not(.waypost-style-theme) .waypost-layout__content { font-size: 16px; line-height: 1.75; color: var(--waypost-page-text); }
-body:not(.waypost-style-theme) .waypost-layout__content :is(h1, h2, h3, h4, h5, h6) { color: var(--waypost-heading); font-family: var(--waypost-font); font-weight: 650; line-height: 1.3; padding: 0; }
-body:not(.waypost-style-theme) .waypost-layout__content h2 { font-size: 1.6em; margin: 1.8em 0 .6em; }
-body:not(.waypost-style-theme) .waypost-layout__content h3 { font-size: 1.25em; margin: 1.5em 0 .5em; }
-body:not(.waypost-style-theme) .waypost-layout__content h4 { font-size: 1.05em; margin: 1.3em 0 .4em; }
-body:not(.waypost-style-theme) .waypost-layout__content :is(p, ul, ol, table, blockquote) { margin: 0 0 1.1em; padding-bottom: 0; color: inherit; }
-body:not(.waypost-style-theme) .waypost-layout__content :is(ul, ol) { padding-left: 1.4em; }
-body:not(.waypost-style-theme) .waypost-layout__content li { margin: .3em 0; }
-body:not(.waypost-style-theme) .waypost-layout__content a:not(.waypost-chip):not(.waypost-card):not(.page-numbers) { color: var(--waypost-accent); text-decoration: underline; text-underline-offset: 2px; }
-body:not(.waypost-style-theme) .waypost-layout__content :not(pre) > code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; padding: .15em .35em; background: var(--waypost-soft); border-radius: 4px; }
-body:not(.waypost-style-theme) .waypost-layout__content pre {
+body:not(.waypost-style-theme) .waypost-layout__content :is(h1, h2, h3, h4, h5, h6):not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { color: var(--waypost-heading); font-family: var(--waypost-font); font-weight: 650; line-height: 1.3; padding: 0; }
+body:not(.waypost-style-theme) .waypost-layout__content h2:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { font-size: 1.6em; margin: 1.8em 0 .6em; }
+body:not(.waypost-style-theme) .waypost-layout__content h3:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { font-size: 1.25em; margin: 1.5em 0 .5em; }
+body:not(.waypost-style-theme) .waypost-layout__content h4:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { font-size: 1.05em; margin: 1.3em 0 .4em; }
+body:not(.waypost-style-theme) .waypost-layout__content :is(p, ul, ol, table, blockquote):not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { margin: 0 0 1.1em; padding-bottom: 0; color: inherit; }
+body:not(.waypost-style-theme) .waypost-layout__content :is(ul, ol):not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { padding-left: 1.4em; }
+body:not(.waypost-style-theme) .waypost-layout__content li:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { margin: .3em 0; }
+body:not(.waypost-style-theme) .waypost-layout__content a:not(.waypost-chip):not(.waypost-card):not(.page-numbers):not(.waypost-anchor):not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { color: var(--waypost-accent); text-decoration: underline; text-underline-offset: 2px; }
+body:not(.waypost-style-theme) .waypost-layout__content :not(pre) > code:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; padding: .15em .35em; background: var(--waypost-soft); border-radius: 4px; }
+body:not(.waypost-style-theme) .waypost-layout__content pre:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) {
 	margin: 0 0 1.2em; padding: 16px 18px; overflow-x: auto; font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 	color: var(--waypost-code-text); background: var(--waypost-code-bg); border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius);
 }
-body:not(.waypost-style-theme) .waypost-layout__content pre code { padding: 0; background: none; color: inherit; font: inherit; }
-body:not(.waypost-style-theme) .waypost-layout__content blockquote { padding: 4px 0 4px 16px; border-left: 3px solid var(--waypost-accent); color: var(--waypost-muted); }
-body:not(.waypost-style-theme) .waypost-layout__content table { width: 100%; border-collapse: collapse; font-size: .95em; }
-body:not(.waypost-style-theme) .waypost-layout__content :is(th, td) { padding: 8px 10px; border: 1px solid var(--waypost-border); text-align: left; }
-body:not(.waypost-style-theme) .waypost-layout__content img { max-width: 100%; height: auto; border-radius: var(--waypost-radius); }
+body:not(.waypost-style-theme) .waypost-layout__content pre code:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { padding: 0; background: none; color: inherit; font: inherit; }
+body:not(.waypost-style-theme) .waypost-layout__content blockquote:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { padding: 4px 0 4px 16px; border-left: 3px solid var(--waypost-accent); color: var(--waypost-muted); }
+body:not(.waypost-style-theme) .waypost-layout__content table:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { width: 100%; border-collapse: collapse; font-size: .95em; }
+body:not(.waypost-style-theme) .waypost-layout__content :is(th, td):not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { padding: 8px 10px; border: 1px solid var(--waypost-border); text-align: left; }
+body:not(.waypost-style-theme) .waypost-layout__content img:not(:where(.waypost-toc, .waypost-home, .waypost-results, .waypost-pager, .waypost-crumbs, .waypost-feedback, .waypost-meta, .waypost-menu, .waypost-search) *) { max-width: 100%; height: auto; border-radius: var(--waypost-radius); }
 
 /* Narrower screens: the contents column moves to the top of the page, then the sidebar goes above the page. */
 @media (max-width: 1180px) {
@@ -437,6 +467,70 @@ body:not(.waypost-style-theme) .waypost-layout__content img { max-width: 100%; h
 	.waypost-layout__sticky { position: static; max-height: none; overflow: visible; }
 	.waypost-layout .waypost-layout__title { font-size: 1.8em; }
 }
+
+/* ── Standalone docs bar and footer ────────────────── */
+body.waypost-standalone { margin: 0; }
+.waypost-topbar, .waypost-docs-footer { box-sizing: border-box; font-family: var(--waypost-font); color: var(--waypost-surface-text); background: var(--waypost-surface); }
+.waypost-topbar *, .waypost-docs-footer * { box-sizing: border-box; }
+.waypost-topbar { position: sticky; top: 0; z-index: 9990; border-bottom: 1px solid var(--waypost-border); }
+body.admin-bar .waypost-topbar { top: 32px; }
+@media (max-width: 782px) { body.admin-bar .waypost-topbar { top: 46px; } }
+@media (max-width: 600px) { body.admin-bar .waypost-topbar { top: 0; } }
+.waypost-topbar__inner { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; max-width: var(--waypost-max-width, 1280px); min-height: 62px; margin: 0 auto; padding: 10px 24px; }
+.waypost-topbar--full .waypost-topbar__inner { max-width: none; padding-left: clamp(16px, 3vw, 48px); padding-right: clamp(16px, 3vw, 48px); }
+body .waypost-topbar__brand { display: flex; align-items: center; gap: 10px; color: inherit; font-size: 18px; font-weight: 700; text-decoration: none; border: 0; box-shadow: none; }
+.waypost-topbar__logo { display: block; width: auto; max-height: 36px; }
+.waypost-topbar__label { padding: 2px 9px; font-size: 12px; font-weight: 600; letter-spacing: .03em; color: var(--waypost-accent); background: color-mix(in srgb, var(--waypost-accent) 12%, transparent); border-radius: 999px; }
+.waypost-topbar__search { flex: 1 1 240px; max-width: 520px; margin: 0 auto; }
+.waypost-topbar .waypost-search { max-width: none; }
+.waypost-topbar .waypost-search .waypost-search__input { height: 38px; }
+.waypost-topbar__links { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+body .waypost-topbar__back { font-size: 14px; color: var(--waypost-muted); text-decoration: none; white-space: nowrap; border: 0; box-shadow: none; }
+body .waypost-topbar__back:hover { color: var(--waypost-accent); }
+.waypost-docs-footer { border-top: 1px solid var(--waypost-border); font-size: 14px; color: var(--waypost-muted); }
+.waypost-docs-footer .waypost-topbar__inner { justify-content: space-between; min-height: 0; padding-top: 22px; padding-bottom: 22px; }
+body .waypost-docs-footer a { color: inherit; text-decoration: none; }
+body .waypost-docs-footer a:hover { color: var(--waypost-accent); }
+@media (max-width: 700px) {
+	.waypost-topbar__search { order: 3; flex-basis: 100%; max-width: none; }
+	.waypost-topbar__back { display: none; }
+}
+
+/* ── Light / dark switch ─────────────────────────────── */
+body .waypost-scheme {
+	flex: none; display: inline-grid; place-items: center; width: 38px; height: 38px; margin: 0; padding: 0;
+	color: inherit; background: transparent; border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius); cursor: pointer; box-shadow: none;
+}
+body .waypost-scheme:hover, body .waypost-scheme:focus-visible { color: var(--waypost-accent); background: transparent; border-color: var(--waypost-accent); }
+.waypost-scheme__sun, .waypost-scheme[aria-pressed="true"] .waypost-scheme__moon { display: none; }
+.waypost-scheme[aria-pressed="true"] .waypost-scheme__sun { display: block; }
+.waypost-layout__tools { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
+.waypost-layout__tools .waypost-search { flex: 1; min-width: 0; margin: 0; }
+.waypost-layout__sidebar .waypost-layout__tools .waypost-search { margin-bottom: 0; }
+
+/* ── Page extras: meta line, heading links, feedback ─── */
+.waypost-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: -.3em 0 1.6em; font-size: 14px; color: var(--waypost-muted); }
+.waypost-meta__sep { opacity: .6; }
+body .waypost-anchor { margin-left: .35em; font-size: .75em; font-weight: 400; color: var(--waypost-muted); text-decoration: none; border: 0; box-shadow: none; opacity: 0; transition: opacity var(--waypost-speed); }
+:is(h2, h3, h4):hover > .waypost-anchor, .waypost-anchor:focus-visible, .waypost-anchor[data-copied] { opacity: 1; }
+body .waypost-anchor:hover { color: var(--waypost-accent); }
+.waypost-anchor[data-copied]::after { content: attr(data-copied); margin-left: .5em; padding: 2px 6px; font-size: 12px; color: var(--waypost-on-accent); background: var(--waypost-accent); border-radius: 4px; vertical-align: middle; }
+@media (hover: none) { body .waypost-anchor { opacity: .45; } }
+
+.waypost-feedback {
+	display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 2.4em 0 0; padding: 16px 20px;
+	color: var(--waypost-text); background: var(--waypost-soft); border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius); font-family: var(--waypost-font);
+}
+.waypost-feedback .waypost-feedback__question, .waypost-feedback .waypost-feedback__thanks { margin: 0; padding: 0; font-weight: 600; }
+.waypost-feedback__thanks { color: var(--waypost-muted); font-weight: 500; }
+.waypost-feedback__buttons { display: flex; gap: 8px; }
+.waypost-feedback__buttons[hidden], .waypost-feedback__thanks[hidden] { display: none; }
+.waypost-feedback .waypost-feedback__button {
+	margin: 0; padding: 6px 18px; font: inherit; font-size: 14px; line-height: 1.4; text-transform: none; letter-spacing: normal;
+	color: var(--waypost-surface-text); background: var(--waypost-surface); border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius); cursor: pointer; box-shadow: none;
+}
+.waypost-feedback .waypost-feedback__button:hover, .waypost-feedback .waypost-feedback__button:focus-visible { color: var(--waypost-accent); background: var(--waypost-surface); border-color: var(--waypost-accent); }
+.waypost-feedback .waypost-feedback__button:disabled { opacity: .6; cursor: default; }
 
 @media (prefers-reduced-motion: reduce) {
 	.waypost-menu__toggle svg, .waypost-menu__list.is-animating, .waypost-pager__link, .waypost-copy { transition: none; }
