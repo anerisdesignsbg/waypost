@@ -144,8 +144,10 @@
 		clearTimeout(this.logTimer);
 		if (q.length < 2) {
 			this.q = '';
-			this.panel.innerHTML = '';
-			this.hide();
+			if (!this.suggest()) {
+				this.panel.innerHTML = '';
+				this.hide();
+			}
 			return;
 		}
 		this.timer = setTimeout(function () { self.fetch(q); }, 180);
@@ -222,8 +224,31 @@
 		this.show();
 	};
 
+	/* Quick searches from Settings, shown in the Ctrl+K window before anything is typed. */
+	SearchUI.prototype.suggest = function () {
+		var self = this, quick = cfg.quick || [];
+		if (!this.opts.inModal || !quick.length) return false;
+		this.panel.innerHTML = '';
+		this.active = -1;
+		var box = el('div', 'waypost-search__suggest');
+		box.appendChild(el('div', 'waypost-search__suggest-title', t.popular || 'Popular searches'));
+		var chips = el('div', 'waypost-chips');
+		quick.forEach(function (it, i) {
+			var b = el('button', 'waypost-chip', it.label);
+			b.type = 'button';
+			b.id = self.panel.id + '-s' + i;
+			b.setAttribute('role', 'option');
+			b.setAttribute('data-waypost-query', it.query);
+			chips.appendChild(b);
+		});
+		box.appendChild(chips);
+		this.panel.appendChild(box);
+		this.show();
+		return true;
+	};
+
 	SearchUI.prototype.items = function () {
-		return Array.prototype.slice.call(this.panel.querySelectorAll('a.waypost-hit'));
+		return Array.prototype.slice.call(this.panel.querySelectorAll('a.waypost-hit, .waypost-chip'));
 	};
 
 	SearchUI.prototype.move = function (dir) {
@@ -243,6 +268,7 @@
 			var items = this.items();
 			if (this.active > -1 && items[this.active]) {
 				e.preventDefault();
+				if (items[this.active].tagName === 'BUTTON') { items[this.active].click(); return; }
 				logSearch(this.q);
 				window.location.href = items[this.active].href;
 			}
@@ -314,6 +340,7 @@
 		document.body.classList.add('waypost-modal-open');
 		modalUI.input.focus();
 		modalUI.input.select();
+		if (modalUI.input.value.trim().length < 2) modalUI.suggest();
 	}
 
 	function closeModal() {
@@ -336,6 +363,23 @@
 				e.preventDefault(); // Keep focus inside the dialog; arrows move through results.
 				modalUI.input.focus();
 			}
+		});
+	}
+
+	/* ── Quick search buttons ─────────────────────────── */
+
+	// A button fills the nearest search box and runs the search. Without a box nearby it stays a link to the results page.
+	function initQuickSearches() {
+		document.addEventListener('click', function (e) {
+			var chip = e.target.closest('.waypost-chip[data-waypost-query]');
+			if (!chip) return;
+			var scope = chip.closest('.waypost-home, .waypost-modal');
+			var input = scope && scope.querySelector('.waypost-search__input');
+			if (!input) return;
+			e.preventDefault();
+			input.value = chip.getAttribute('data-waypost-query');
+			input.dispatchEvent(new Event('input', { bubbles: true }));
+			input.focus();
 		});
 	}
 
@@ -391,6 +435,7 @@
 		var boxes = document.querySelectorAll('form[data-waypost-search]');
 		boxes.forEach(function (f) { new SearchUI(f); });
 		document.querySelectorAll('.waypost-toc').forEach(initToc);
+		initQuickSearches();
 		if (cfg.shortcut && (cfg.isDoc || boxes.length)) initShortcut();
 		if (cfg.copyCode && cfg.isDoc) initCopy();
 	}

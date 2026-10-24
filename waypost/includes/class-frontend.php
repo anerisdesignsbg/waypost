@@ -16,6 +16,7 @@ class Waypost_Frontend {
 		add_shortcode( 'waypost_toc', array( __CLASS__, 'sc_toc' ) );
 		add_shortcode( 'waypost_prev_next', array( __CLASS__, 'sc_prev_next' ) );
 		add_shortcode( 'waypost_breadcrumbs', array( __CLASS__, 'sc_breadcrumbs' ) );
+		add_shortcode( 'waypost_search_home', array( __CLASS__, 'sc_search_home' ) );
 
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
 		add_filter( 'the_content', array( __CLASS__, 'filter_content' ), 20 );
@@ -56,6 +57,11 @@ class Waypost_Frontend {
 		return Waypost_Render::breadcrumbs();
 	}
 
+	public static function sc_search_home( $atts ) {
+		$a = shortcode_atts( array( 'title' => '', 'intro' => '', 'topics_title' => '' ), $atts, 'waypost_search_home' );
+		return Waypost_Render::search_home( $a );
+	}
+
 	/** True on a single doc page or the search results page. */
 	public static function is_docs_context() {
 		if ( ! is_singular() ) {
@@ -80,6 +86,7 @@ class Waypost_Frontend {
 				'copyCode'   => (bool) Waypost_Settings::get( 'copy_code' ),
 				'isDoc'      => is_singular() && Waypost_Tree::is_doc( get_queried_object_id() ),
 				'placeholder' => Waypost_Settings::placeholder(),
+				'quick'      => array_values( (array) Waypost_Settings::get( 'quick_searches' ) ),
 				'i18n'       => array(
 					'noResults' => __( 'No results. Try a different word.', 'waypost' ),
 					'searching' => __( 'Searching…', 'waypost' ),
@@ -89,6 +96,7 @@ class Waypost_Frontend {
 					'close'     => __( 'Close', 'waypost' ),
 					'navHint'   => __( '↑ ↓ to move · Enter to open · Esc to close', 'waypost' ),
 					'results'   => __( 'Search results', 'waypost' ),
+					'popular'   => __( 'Popular searches', 'waypost' ),
 				),
 			)
 		);

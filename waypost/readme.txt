@@ -17,6 +17,8 @@ Most documentation plugins ask you to move your content into their own post type
 * **Sidebar menu** built from your sections, with drag-and-drop ordering, the current page highlighted and a mobile toggle.
 * **Docs-only search** with instant results, highlighted matches, keyboard navigation and links that jump straight to the matching heading.
 * **Ctrl+K / Cmd+K search** from anywhere on a doc page.
+* **Search home** for your docs start page: a large search box, up to six quick search buttons and topic cards with icons.
+* **Ready-made styles**: Follow my theme, Modern, Minimalist, Classic, Light and Dark.
 * **On this page** contents with the current heading highlighted as you scroll.
 * **Previous and next** links that follow your menu order.
 * **Breadcrumbs** with schema.org markup.

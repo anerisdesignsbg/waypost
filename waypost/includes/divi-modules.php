@@ -58,6 +58,13 @@ class Waypost_Divi_Search extends ET_Builder_Module {
 	protected function waypost_output() { return Waypost_Render::search_box(); }
 }
 
+class Waypost_Divi_Home extends ET_Builder_Module {
+	use Waypost_Divi_Common;
+	public $slug = 'et_pb_waypost_search_home';
+	protected function waypost_name() { return __( 'Waypost Search Home', 'waypost' ); }
+	protected function waypost_output() { return Waypost_Render::search_home(); }
+}
+
 class Waypost_Divi_Toc extends ET_Builder_Module {
 	use Waypost_Divi_Common;
 	public $slug = 'et_pb_waypost_toc';
@@ -83,6 +90,7 @@ class Waypost_Divi_Crumbs extends ET_Builder_Module {
 // This file only loads on et_builder_ready, when ET_Builder_Module is available.
 new Waypost_Divi_Menu();
 new Waypost_Divi_Search();
+new Waypost_Divi_Home();
 new Waypost_Divi_Toc();
 new Waypost_Divi_Pager();
 new Waypost_Divi_Crumbs();

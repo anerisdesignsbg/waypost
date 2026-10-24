@@ -45,6 +45,10 @@
 		];
 	});
 
+	block('waypost/search-home', __('Docs Search Home', 'waypost'), __('Heading, large search box, quick searches and topic cards for your docs home page. Set them up in Waypost, Settings.', 'waypost'), function (p) {
+		return el(c.TextControl, { label: __('Heading', 'waypost'), placeholder: __('How can we help?', 'waypost'), value: p.attributes.title, onChange: function (v) { p.setAttributes({ title: v }); } });
+	});
+
 	block('waypost/toc', __('Docs: On This Page', 'waypost'), __('Table of contents for the headings on the current page.', 'waypost'), function (p) {
 		return el(c.TextControl, { label: __('Title', 'waypost'), placeholder: __('On this page', 'waypost'), value: p.attributes.title, onChange: function (v) { p.setAttributes({ title: v }); } });
 	});

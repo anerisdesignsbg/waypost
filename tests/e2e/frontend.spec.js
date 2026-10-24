@@ -161,6 +161,40 @@ test.describe( 'Search', () => {
 		await expect( page.locator( '.waypost-results' ) ).not.toContainText( 'About us' );
 	} );
 
+	test( 'results page shows only its own search box', async ( { page } ) => {
+		await page.goto( '/installing-on-ubuntu/' );
+		await expect( page.locator( 'form[data-waypost-search]' ) ).toHaveCount( 1 ); // The sidebar box.
+		await page.goto( '/search-results/?dq=album' );
+		await expect( page.locator( 'form[data-waypost-search]' ) ).toHaveCount( 1 );
+		await expect( page.locator( '.waypost-results form[data-waypost-search]' ) ).toHaveCount( 1 );
+	} );
+
+	test( 'search home quick searches run a search', async ( { page } ) => {
+		await page.goto( '/documentation/' );
+		const home = page.locator( '.waypost-home' );
+		await expect( home.locator( '.waypost-home__title' ) ).toHaveText( 'Search the Magpie docs' );
+		await expect( home.locator( '.waypost-chip' ) ).toHaveCount( 5 );
+		await expect( home.locator( '.waypost-card' ) ).toHaveCount( 6 );
+		await expect( home.locator( '.waypost-card', { hasText: 'Install guide' } ) ).toHaveAttribute( 'href', /system-requirements/ );
+
+		await home.locator( '.waypost-chip', { hasText: 'Docker' } ).click();
+		await expect( home.locator( '.waypost-search__input' ) ).toHaveValue( 'docker' );
+		await expect( home.locator( '.waypost-hit__title', { hasText: 'Installing with Docker' } ) ).toBeVisible();
+	} );
+
+	test( 'Ctrl+K lists the quick searches before typing', async ( { page } ) => {
+		await page.goto( '/installing-on-ubuntu/' );
+		await page.locator( 'body' ).click( { position: { x: 5, y: 5 } } );
+		await page.keyboard.press( 'Control+k' );
+		const modal = page.locator( '.waypost-modal' );
+		await expect( modal.locator( '.waypost-search__suggest-title' ) ).toBeVisible();
+		await expect( modal.locator( '.waypost-chip' ) ).toHaveCount( 5 );
+		await page.keyboard.press( 'ArrowDown' );
+		await page.keyboard.press( 'Enter' );
+		await expect( modal.locator( '.waypost-search__input' ) ).toHaveValue( 'install' );
+		await expect( modal.locator( '.waypost-hit' ).first() ).toBeVisible();
+	} );
+
 	test( 'results page explains when nothing matched', async ( { page } ) => {
 		await page.goto( '/search-results/?dq=zzqxnothing' );
 		await expect( page.locator( '.waypost-results__none' ) ).toBeVisible();

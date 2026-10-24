@@ -233,3 +233,29 @@
 .wpst-look .waypost-pager { margin: 18px 0 0; }
 .wpst-look .waypost-toc { margin: 0; }
 .wpst-look .waypost-search .waypost-search__input { min-height: 0; line-height: normal; box-shadow: none; }
+
+/* ── Search home rows ─────────────────────────────────── */
+.wpst-rows { width: 100%; max-width: 900px; margin: 8px 0; border-collapse: collapse; }
+.wpst-rows th { padding: 4px 6px; text-align: left; font-weight: 600; font-size: 13px; }
+.wpst-rows td { padding: 4px 6px; vertical-align: middle; }
+.wpst-rows td:first-child, .wpst-rows th:first-child { width: 22px; color: var(--wpst-muted); }
+.wpst-rows input[type=text], .wpst-rows select { width: 100%; max-width: none; }
+#wpst-topics td:nth-child(2) { width: 120px; }
+@media (max-width: 782px) {
+	.wpst-rows thead { display: none; }
+	.wpst-rows tr { display: grid; grid-template-columns: 1fr; gap: 4px; padding: 8px 0; border-top: 1px solid var(--wpst-line); }
+	.wpst-rows td:first-child { font-weight: 600; }
+	#wpst-topics td:nth-child(2) { width: auto; }
+}
+/* Topic rows have five fields; below wide screens each card takes two lines. */
+@media (max-width: 1280px) {
+	#wpst-topics thead { display: none; }
+	#wpst-topics tr { display: grid; grid-template-columns: 22px repeat(2, minmax(0, 1fr)); gap: 6px; padding: 8px 0; border-top: 1px solid var(--wpst-line); }
+	#wpst-topics td { padding: 0; }
+	#wpst-topics td:first-child { grid-row: span 2; padding-top: 6px; }
+	#wpst-topics td:nth-child(2) { width: auto; }
+}
+@media (max-width: 782px) {
+	#wpst-topics tr { grid-template-columns: minmax(0, 1fr); }
+	#wpst-topics td:first-child { grid-row: auto; }
+}

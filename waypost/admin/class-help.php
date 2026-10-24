@@ -195,6 +195,20 @@ Troubleshooting</pre>
 						<li><?php esc_html_e( 'Choose it as the Results page in Waypost, Settings, Search.', 'waypost' ); ?></li>
 					</ol>
 					<p><?php esc_html_e( 'Without a results page, search still works: Enter simply keeps the instant results open.', 'waypost' ); ?></p>
+					<p><?php esc_html_e( 'On the results page, other docs search boxes (for example one in a sidebar) are hidden, because the page has its own. Untick this in Settings, Search if you prefer to keep them.', 'waypost' ); ?></p>
+
+					<h3><?php esc_html_e( 'A search home for your docs', 'waypost' ); ?></h3>
+					<p><?php esc_html_e( 'The search home is a start page that helps people find answers quickly: a heading, a large search box, up to six quick search buttons and up to six topic cards.', 'waypost' ); ?></p>
+					<ol class="wpst-tut">
+						<li><?php esc_html_e( 'In Settings, Search home, write a heading and add a few quick searches. Use the questions people really ask; Search insights shows you what they type.', 'waypost' ); ?></li>
+						<li><?php esc_html_e( 'Add topic cards for your most useful pages, such as an install guide, a quick start or your API reference. Pick an icon, a title, one short line and the page.', 'waypost' ); ?></li>
+						<li><?php echo wp_kses( sprintf( /* translators: %s: shortcode */ __( 'Put it on your docs home page with the Docs Search Home block, the Waypost Search Home Divi module or %s.', 'waypost' ), '<code>[waypost_search_home]</code>' ), array( 'code' => array() ) ); ?></li>
+						<li><?php esc_html_e( 'A Docs Menu block below it gives readers the full list of pages too.', 'waypost' ); ?></li>
+					</ol>
+					<p><?php esc_html_e( 'Quick searches also appear in the Ctrl+K search window before anything is typed.', 'waypost' ); ?></p>
+
+					<h3><?php esc_html_e( 'How search finds pages', 'waypost' ); ?></h3>
+					<p><?php esc_html_e( 'Waypost uses WordPress’s own search, limited to your doc pages, so there is no index to build and no extra plugin to install. New and edited pages are searchable as soon as they are published. It matches the words people type in page titles and text; it does not correct spelling or match different word forms, so “installing” will not find a page that only says “install”. Search insights shows which searches find nothing, so you can add those words to the right pages.', 'waypost' ); ?></p>
 				</article>
 
 				<article class="wpst-card wpst-topic" id="page-features">

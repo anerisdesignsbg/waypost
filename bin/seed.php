@@ -295,7 +295,7 @@ update_option( 'waypost_order', $order, false );
 
 $home = $page(
 	'Documentation',
-	"<!-- wp:paragraph --><p>Everything you need to install, configure and run Magpie.</p><!-- /wp:paragraph -->\n<!-- wp:waypost/search /-->\n<!-- wp:waypost/menu {\"title\":\"All documentation\"} /-->"
+	"<!-- wp:waypost/search-home /-->\n<!-- wp:waypost/menu {\"title\":\"All documentation\"} /-->"
 );
 $results = $page( 'Search results', "<!-- wp:shortcode -->\n[waypost_search_results]\n<!-- /wp:shortcode -->" );
 $page(
@@ -313,6 +313,24 @@ Waypost_Settings::update(
 		'crumbs_auto'   => 1,
 		'style'         => 'theme',
 		'accent'        => '#2563eb',
+		'home_title'    => 'Search the Magpie docs',
+		'home_intro'    => 'Everything you need to install, configure and run Magpie.',
+		'topics_title'  => 'Popular topics',
+		'quick_searches' => array(
+			array( 'label' => 'How do I install Magpie?', 'query' => 'install' ),
+			array( 'label' => 'How do I share an album?', 'query' => 'shared albums' ),
+			array( 'label' => 'Import from my phone', 'query' => 'import phone' ),
+			array( 'label' => 'Back up my library', 'query' => 'backup' ),
+			array( 'label' => 'Docker', 'query' => 'docker' ),
+		),
+		'topics'        => array(
+			array( 'icon' => 'rocket', 'title' => 'Get started', 'text' => 'What Magpie is and how it works', 'page' => $ids['Welcome to Magpie'] ),
+			array( 'icon' => 'download', 'title' => 'Install guide', 'text' => 'Requirements and step by step setup', 'page' => $ids['System requirements'] ),
+			array( 'icon' => 'users', 'title' => 'Sharing', 'text' => 'Albums, links and family accounts', 'page' => $ids['Albums overview'] ),
+			array( 'icon' => 'plug', 'title' => 'Integrations', 'text' => 'Lightroom, cloud storage and more', 'page' => $ids['Lightroom integration'] ),
+			array( 'icon' => 'code', 'title' => 'API reference', 'text' => 'Automate Magpie with the REST API', 'page' => $ids['API authentication'] ),
+			array( 'icon' => 'help', 'title' => 'Troubleshooting', 'text' => 'Fixes for common problems', 'page' => $ids['Uploads are stuck'] ),
+		),
 	)
 );
 

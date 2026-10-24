@@ -9,6 +9,9 @@ class Waypost_Settings {
 
 	const OPTION = 'waypost_settings';
 
+	/** Most quick searches and topic cards on the search home. */
+	const MAX_ITEMS = 6;
+
 	private static $cache = null;
 
 	public static function defaults() {
@@ -30,6 +33,12 @@ class Waypost_Settings {
 			'placeholder'     => '',
 			'per_page'        => 10,
 			'log_searches'    => 1,
+			'hide_extra_search' => 1,            // results page: hide other search boxes, it has its own
+			'home_title'      => '',
+			'home_intro'      => '',
+			'topics_title'    => '',
+			'quick_searches'  => array(),        // up to 6 of array( label, query )
+			'topics'          => array(),        // up to 6 of array( icon, title, text, page )
 			'style'           => 'theme',        // a key from styles()
 			'accent'          => '#2563eb',
 			'delete_on_uninstall' => 0,
@@ -141,7 +150,7 @@ class Waypost_Settings {
 		foreach ( array( 'home_page', 'results_page' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? absint( $in[ $k ] ) : 0;
 		}
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'delete_on_uninstall' ) as $k ) {
 			$out[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
 
@@ -152,6 +161,38 @@ class Waypost_Settings {
 		$out['per_page']   = isset( $in['per_page'] ) ? max( 5, min( 50, absint( $in['per_page'] ) ) ) : $d['per_page'];
 
 		$out['placeholder'] = isset( $in['placeholder'] ) ? sanitize_text_field( $in['placeholder'] ) : '';
+		foreach ( array( 'home_title', 'home_intro', 'topics_title' ) as $k ) {
+			$out[ $k ] = isset( $in[ $k ] ) ? sanitize_text_field( $in[ $k ] ) : '';
+		}
+
+		$out['quick_searches'] = array();
+		foreach ( isset( $in['quick_searches'] ) ? (array) $in['quick_searches'] : array() as $row ) {
+			$label = isset( $row['label'] ) ? sanitize_text_field( $row['label'] ) : '';
+			$query = isset( $row['query'] ) ? sanitize_text_field( $row['query'] ) : '';
+			if ( '' === $label && '' === $query ) {
+				continue;
+			}
+			$out['quick_searches'][] = array( 'label' => '' !== $label ? $label : $query, 'query' => '' !== $query ? $query : $label );
+		}
+		$out['quick_searches'] = array_slice( $out['quick_searches'], 0, self::MAX_ITEMS );
+
+		$out['topics'] = array();
+		$icons         = Waypost_Render::icons();
+		foreach ( isset( $in['topics'] ) ? (array) $in['topics'] : array() as $row ) {
+			$title = isset( $row['title'] ) ? sanitize_text_field( $row['title'] ) : '';
+			$page  = isset( $row['page'] ) ? absint( $row['page'] ) : 0;
+			if ( '' === $title || ! $page ) {
+				continue;
+			}
+			$icon            = isset( $row['icon'] ) && is_string( $row['icon'] ) && isset( $icons[ $row['icon'] ] ) ? $row['icon'] : 'book';
+			$out['topics'][] = array(
+				'icon'  => $icon,
+				'title' => $title,
+				'text'  => isset( $row['text'] ) ? sanitize_text_field( $row['text'] ) : '',
+				'page'  => $page,
+			);
+		}
+		$out['topics'] = array_slice( $out['topics'], 0, self::MAX_ITEMS );
 		$accent             = isset( $in['accent'] ) ? sanitize_hex_color( $in['accent'] ) : '';
 		$out['accent']      = $accent ? $accent : $d['accent'];
 		$out['style']       = ( isset( $in['style'] ) && is_string( $in['style'] ) && array_key_exists( $in['style'], self::styles() ) ) ? $in['style'] : $d['style'];

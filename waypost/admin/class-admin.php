@@ -712,8 +712,90 @@ class Waypost_Admin {
 						<th scope="row"><?php esc_html_e( 'Extras', 'waypost' ); ?></th>
 						<td>
 							<label class="wpst-check"><input type="checkbox" name="shortcut" value="1" <?php checked( $o['shortcut'] ); ?>> <?php esc_html_e( 'Open search with Ctrl+K, Cmd+K or / on doc pages', 'waypost' ); ?></label>
+							<label class="wpst-check"><input type="checkbox" name="hide_extra_search" value="1" <?php checked( $o['hide_extra_search'] ); ?>> <?php esc_html_e( 'On the results page, hide other docs search boxes, such as one in a sidebar', 'waypost' ); ?></label>
 							<label class="wpst-check"><input type="checkbox" name="log_searches" value="1" <?php checked( $o['log_searches'] ); ?>> <?php esc_html_e( 'Log search terms for Search insights', 'waypost' ); ?></label>
 							<p class="description"><?php esc_html_e( 'Only the words searched and how many results they found are stored. No IP addresses or user details.', 'waypost' ); ?></p>
+						</td>
+					</tr>
+				</table>
+			</section>
+
+			<section class="wpst-card" id="search-home">
+				<div class="wpst-card__head"><h2><?php esc_html_e( 'Search home', 'waypost' ); ?></h2><?php echo self::help_link( 'search' ); // phpcs:ignore ?></div>
+				<p><?php echo wp_kses( __( 'A welcoming start page for your docs: a heading, a large search box, quick search buttons and topic cards. Add it with the <strong>Docs Search Home</strong> block, the <strong>Waypost Search Home</strong> Divi module or this shortcode:', 'waypost' ), array( 'strong' => array() ) ); ?></p>
+				<?php echo self::copy_field( '[waypost_search_home]' ); // phpcs:ignore ?>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="wpst-home-title"><?php esc_html_e( 'Heading', 'waypost' ); ?></label></th>
+						<td><input type="text" id="wpst-home-title" name="home_title" class="regular-text" value="<?php echo esc_attr( $o['home_title'] ); ?>" placeholder="<?php esc_attr_e( 'How can we help?', 'waypost' ); ?>"></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="wpst-home-intro"><?php esc_html_e( 'Intro line', 'waypost' ); ?></label></th>
+						<td><input type="text" id="wpst-home-intro" name="home_intro" class="large-text" value="<?php echo esc_attr( $o['home_intro'] ); ?>" placeholder="<?php esc_attr_e( 'Optional, for example: Search the guides or pick a topic below.', 'waypost' ); ?>"></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Quick searches', 'waypost' ); ?></th>
+						<td>
+							<p class="description"><?php esc_html_e( 'Up to six buttons under the search box. One click runs the search. Questions people really ask work best. They also appear in the Ctrl+K search window.', 'waypost' ); ?></p>
+							<table class="wpst-rows" id="wpst-quick">
+								<thead><tr><th>#</th><th><?php esc_html_e( 'Button text', 'waypost' ); ?></th><th><?php esc_html_e( 'Searches for', 'waypost' ); ?> <span class="wpst-muted"><?php esc_html_e( '(optional)', 'waypost' ); ?></span></th></tr></thead>
+								<tbody>
+								<?php for ( $i = 0; $i < Waypost_Settings::MAX_ITEMS; $i++ ) : $q = isset( $o['quick_searches'][ $i ] ) ? $o['quick_searches'][ $i ] : array( 'label' => '', 'query' => '' ); ?>
+									<tr>
+										<td><?php echo (int) ( $i + 1 ); ?></td>
+										<td><input type="text" name="quick_searches[<?php echo (int) $i; ?>][label]" value="<?php echo esc_attr( $q['label'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: row number */ __( 'Button %d text', 'waypost' ), $i + 1 ) ); ?>" placeholder="<?php esc_attr_e( 'How do I install it?', 'waypost' ); ?>"></td>
+										<td><input type="text" name="quick_searches[<?php echo (int) $i; ?>][query]" value="<?php echo esc_attr( $q['query'] === $q['label'] ? '' : $q['query'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: row number */ __( 'Button %d search words', 'waypost' ), $i + 1 ) ); ?>" placeholder="<?php esc_attr_e( 'install', 'waypost' ); ?>"></td>
+									</tr>
+								<?php endfor; ?>
+								</tbody>
+							</table>
+							<p class="description"><?php esc_html_e( 'Leave “Searches for” empty to search for the button text itself. Short keywords usually find more pages than whole questions.', 'waypost' ); ?></p>
+							<?php
+							$popular = array();
+							foreach ( Waypost_Search::log_rows( false, 20 ) as $term => $row ) {
+								if ( (int) $row['hits'] > 0 ) {
+									$popular[] = (string) $term;
+								}
+							}
+							if ( $popular ) :
+								?>
+								<p><button type="button" class="button" id="wpst-quick-fill" data-terms="<?php echo esc_attr( wp_json_encode( array_slice( $popular, 0, Waypost_Settings::MAX_ITEMS ) ) ); ?>"><?php esc_html_e( 'Fill empty rows from Search insights', 'waypost' ); ?></button> <span class="description"><?php esc_html_e( 'Uses the most searched words that found results.', 'waypost' ); ?></span></p>
+							<?php endif; ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="wpst-topics-title"><?php esc_html_e( 'Topic cards heading', 'waypost' ); ?></label></th>
+						<td><input type="text" id="wpst-topics-title" name="topics_title" class="regular-text" value="<?php echo esc_attr( $o['topics_title'] ); ?>" placeholder="<?php esc_attr_e( 'Popular topics', 'waypost' ); ?>"></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Topic cards', 'waypost' ); ?></th>
+						<td>
+							<p class="description"><?php esc_html_e( 'Up to six shortcuts to your most useful pages, such as an install guide or quick start. A card needs a title and a page.', 'waypost' ); ?></p>
+							<table class="wpst-rows" id="wpst-topics">
+								<thead><tr><th>#</th><th><?php esc_html_e( 'Icon', 'waypost' ); ?></th><th><?php esc_html_e( 'Title', 'waypost' ); ?></th><th><?php esc_html_e( 'Short description', 'waypost' ); ?></th><th><?php esc_html_e( 'Links to', 'waypost' ); ?></th></tr></thead>
+								<tbody>
+								<?php for ( $i = 0; $i < Waypost_Settings::MAX_ITEMS; $i++ ) : $tp = isset( $o['topics'][ $i ] ) ? $o['topics'][ $i ] : array( 'icon' => 'book', 'title' => '', 'text' => '', 'page' => 0 ); ?>
+									<tr>
+										<td><?php echo (int) ( $i + 1 ); ?></td>
+										<td>
+											<select name="topics[<?php echo (int) $i; ?>][icon]" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: row number */ __( 'Card %d icon', 'waypost' ), $i + 1 ) ); ?>">
+												<?php foreach ( Waypost_Render::icons() as $key => $icon ) : ?>
+													<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $tp['icon'], $key ); ?>><?php echo esc_html( $icon[0] ); ?></option>
+												<?php endforeach; ?>
+											</select>
+										</td>
+										<td><input type="text" name="topics[<?php echo (int) $i; ?>][title]" value="<?php echo esc_attr( $tp['title'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: row number */ __( 'Card %d title', 'waypost' ), $i + 1 ) ); ?>" placeholder="<?php esc_attr_e( 'Install guide', 'waypost' ); ?>"></td>
+										<td><input type="text" name="topics[<?php echo (int) $i; ?>][text]" value="<?php echo esc_attr( $tp['text'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: row number */ __( 'Card %d description', 'waypost' ), $i + 1 ) ); ?>" placeholder="<?php esc_attr_e( 'System requirements and setup', 'waypost' ); ?>"></td>
+										<td>
+											<select name="topics[<?php echo (int) $i; ?>][page]" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: row number */ __( 'Card %d page', 'waypost' ), $i + 1 ) ); ?>">
+												<option value="0"><?php esc_html_e( 'Choose a page…', 'waypost' ); ?></option>
+												<?php foreach ( $pages as $p ) : ?><option value="<?php echo (int) $p->ID; ?>" <?php selected( $tp['page'], $p->ID ); ?>><?php echo esc_html( $p->post_title ); ?></option><?php endforeach; ?>
+											</select>
+										</td>
+									</tr>
+								<?php endfor; ?>
+								</tbody>
+							</table>
 						</td>
 					</tr>
 				</table>
@@ -757,14 +839,16 @@ class Waypost_Admin {
 			'taxonomy'      => isset( $in['taxonomy'] ) ? $in['taxonomy'] : '',
 			'toc_levels'    => isset( $in['toc_levels'] ) ? (array) $in['toc_levels'] : array( 2 ),
 		);
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'delete_on_uninstall' ) as $k ) {
 			$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
-		foreach ( array( 'home_page', 'results_page', 'toc_min', 'per_page', 'placeholder', 'style', 'accent' ) as $k ) {
+		foreach ( array( 'home_page', 'results_page', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title' ) as $k ) {
 			if ( isset( $in[ $k ] ) ) {
 				$changes[ $k ] = $in[ $k ];
 			}
 		}
+		$changes['quick_searches'] = isset( $in['quick_searches'] ) ? (array) $in['quick_searches'] : array();
+		$changes['topics']         = isset( $in['topics'] ) ? (array) $in['topics'] : array();
 		Waypost_Settings::update( $changes );
 		wp_safe_redirect( admin_url( 'admin.php?page=waypost-settings&saved=1' ) );
 		exit;

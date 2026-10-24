@@ -53,6 +53,15 @@ class Waypost_Blocks {
 			)
 		);
 		register_block_type(
+			'waypost/search-home',
+			$common + array(
+				'attributes'      => array( 'title' => array( 'type' => 'string', 'default' => '' ) ),
+				'render_callback' => function ( $a ) {
+					return Waypost_Render::search_home( array( 'title' => $a['title'] ) );
+				},
+			)
+		);
+		register_block_type(
 			'waypost/toc',
 			$common + array(
 				'attributes'      => array( 'title' => array( 'type' => 'string', 'default' => '' ) ),

@@ -77,6 +77,27 @@ test( 'style picker previews, saves and styles the front end', async ( { page } 
 	await expect( page.locator( '#wpst-accent' ) ).toHaveValue( '#2563eb' );
 } );
 
+test( 'search home settings save and show on the docs home', async ( { page } ) => {
+	const title = unique();
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	const original = await page.inputValue( '#wpst-home-title' );
+	await page.fill( '#wpst-home-title', title );
+	await page.fill( 'input[name="quick_searches[5][label]"]', 'Grafana dashboards' );
+	await page.click( 'button:has-text("Save settings")' );
+	await expect( page.locator( '.notice-success' ) ).toBeVisible();
+	await expect( page.locator( 'input[name="quick_searches[5][label]"]' ) ).toHaveValue( 'Grafana dashboards' );
+
+	await page.goto( '/documentation/' );
+	await expect( page.locator( '.waypost-home__title' ) ).toHaveText( title );
+	await expect( page.locator( '.waypost-home .waypost-chip' ) ).toHaveCount( 6 );
+
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	await page.fill( '#wpst-home-title', original );
+	await page.fill( 'input[name="quick_searches[5][label]"]', '' );
+	await page.click( 'button:has-text("Save settings")' );
+	await expect( page.locator( '.notice-success' ) ).toBeVisible();
+} );
+
 test( 'search insights lists searches with no results', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-insights' );
 	await expect( page.locator( '.wpst-log' ).first() ).toContainText( 'heic' );

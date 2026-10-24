@@ -28,6 +28,11 @@ class Waypost_Render {
 		return $prefix . '-' . ( ++self::$uid );
 	}
 
+	private static function on_results_page() {
+		$results = (int) Waypost_Settings::get( 'results_page' );
+		return $results && is_singular() && (int) get_queried_object_id() === $results;
+	}
+
 	// ── Menu ────────────────────────────────────────────────────────────────
 
 	public static function menu( $args = array() ) {
@@ -146,7 +151,11 @@ class Waypost_Render {
 	// ── Search box ──────────────────────────────────────────────────────────
 
 	public static function search_box( $args = array() ) {
-		$args = wp_parse_args( $args, array( 'placeholder' => '', 'button' => 'yes' ) );
+		$args = wp_parse_args( $args, array( 'placeholder' => '', 'button' => 'yes', 'context' => '' ) );
+		// The results page has its own box, so a second one (say, in a sidebar) is only clutter.
+		if ( 'results' !== $args['context'] && Waypost_Settings::get( 'hide_extra_search' ) && self::on_results_page() ) {
+			return '';
+		}
 		Waypost_Frontend::enqueue();
 
 		$id     = self::uid( 'waypost-search' );
@@ -303,6 +312,92 @@ class Waypost_Render {
 		}
 		echo '</ol></nav>';
 		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>';
+		return ob_get_clean();
+	}
+
+	/** Icons for topic cards: key => array( label, SVG path data on a 24 x 24 grid ). */
+	public static function icons() {
+		return array(
+			'book'     => array( __( 'Book', 'waypost' ), 'M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2V5Zm0 15a2 2 0 0 0 2 2h13v-4' ),
+			'rocket'   => array( __( 'Rocket', 'waypost' ), 'M12 15l-3-3c1.5-4.5 4.5-8 10-9-1 5.5-4.5 8.5-9 10M9 12H5l2-4h4M12 15v4l4-2v-4M6 17c-1 1-1.5 3-1.5 3s2-.5 3-1.5' ),
+			'gear'     => array( __( 'Settings', 'waypost' ), 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7.4-3a7.4 7.4 0 0 0-.1-1.3l2-1.6-2-3.4-2.4 1a7.3 7.3 0 0 0-2.2-1.3L14.4 2h-4l-.4 2.4a7.3 7.3 0 0 0-2.2 1.3l-2.4-1-2 3.4 2 1.6a7.4 7.4 0 0 0 0 2.6l-2 1.6 2 3.4 2.4-1c.7.6 1.4 1 2.2 1.3l.4 2.4h4l.4-2.4c.8-.3 1.5-.7 2.2-1.3l2.4 1 2-3.4-2-1.6c.1-.4.1-.9.1-1.3Z' ),
+			'code'     => array( __( 'Code', 'waypost' ), 'M8 8l-4 4 4 4M16 8l4 4-4 4M14 4l-4 16' ),
+			'terminal' => array( __( 'Terminal', 'waypost' ), 'M3 5h18v14H3zM7 9l3 3-3 3M13 15h4' ),
+			'plug'     => array( __( 'Integration', 'waypost' ), 'M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0V7Zm6 10v5' ),
+			'chart'    => array( __( 'Chart', 'waypost' ), 'M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-3' ),
+			'layers'   => array( __( 'Layers', 'waypost' ), 'M12 3l9 5-9 5-9-5 9-5Zm-9 9l9 5 9-5M3 16l9 5 9-5' ),
+			'shield'   => array( __( 'Security', 'waypost' ), 'M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6l8-3Z' ),
+			'users'    => array( __( 'People', 'waypost' ), 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 10a7 7 0 0 1 14 0M17 3.5a4 4 0 0 1 0 7M22 21a7 7 0 0 0-4-6.3' ),
+			'download' => array( __( 'Download', 'waypost' ), 'M12 3v12M7 10l5 5 5-5M4 20h16' ),
+			'help'     => array( __( 'Help', 'waypost' ), 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM9.5 9a2.5 2.5 0 0 1 4.9.7c0 1.8-2.4 2.3-2.4 3.8M12 17h.01' ),
+		);
+	}
+
+	public static function icon_svg( $key, $size = 24 ) {
+		$icons = self::icons();
+		$path  = isset( $icons[ $key ] ) ? $icons[ $key ][1] : $icons['book'][1];
+		return '<svg width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' . esc_attr( $path ) . '"/></svg>';
+	}
+
+	/** Buttons that run a ready-made search. Without JavaScript they open the results page. */
+	public static function quick_searches( $class = '' ) {
+		$items = (array) Waypost_Settings::get( 'quick_searches' );
+		if ( ! $items ) {
+			return '';
+		}
+		$results = Waypost_Search::results_url();
+		$out     = '<div class="waypost-chips' . ( $class ? ' ' . esc_attr( $class ) : '' ) . '">';
+		foreach ( $items as $it ) {
+			$href = $results ? add_query_arg( 'dq', rawurlencode( $it['query'] ), $results ) : '#';
+			$out .= '<a class="waypost-chip" href="' . esc_url( $href ) . '" data-waypost-query="' . esc_attr( $it['query'] ) . '">' . esc_html( $it['label'] ) . '</a>';
+		}
+		return $out . '</div>';
+	}
+
+	/**
+	 * Docs home: heading, large search box, quick searches and topic cards.
+	 * Everything comes from Settings, Search home; the arguments only override text.
+	 */
+	public static function search_home( $args = array() ) {
+		$o    = Waypost_Settings::all();
+		$args = wp_parse_args( $args, array( 'title' => '', 'intro' => '', 'topics_title' => '' ) );
+
+		$title = '' !== $args['title'] ? $args['title'] : ( '' !== $o['home_title'] ? $o['home_title'] : __( 'How can we help?', 'waypost' ) );
+		$intro = '' !== $args['intro'] ? $args['intro'] : $o['home_intro'];
+		$ttl   = '' !== $args['topics_title'] ? $args['topics_title'] : ( '' !== $o['topics_title'] ? $o['topics_title'] : __( 'Popular topics', 'waypost' ) );
+
+		$cards = array();
+		foreach ( (array) $o['topics'] as $t ) {
+			if ( 'publish' === get_post_status( $t['page'] ) ) {
+				$cards[] = $t + array( 'url' => get_permalink( $t['page'] ) );
+			}
+		}
+
+		ob_start();
+		?>
+		<section class="waypost-home">
+			<h2 class="waypost-home__title"><?php echo esc_html( $title ); ?></h2>
+			<?php if ( '' !== $intro ) : ?>
+				<p class="waypost-home__intro"><?php echo esc_html( $intro ); ?></p>
+			<?php endif; ?>
+			<?php echo self::search_box(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+			<?php echo self::quick_searches(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+			<?php if ( $cards ) : ?>
+				<h3 class="waypost-home__subtitle"><?php echo esc_html( $ttl ); ?></h3>
+				<div class="waypost-cards">
+					<?php foreach ( $cards as $c ) : ?>
+						<a class="waypost-card" href="<?php echo esc_url( $c['url'] ); ?>">
+							<span class="waypost-card__icon"><?php echo self::icon_svg( $c['icon'], 28 ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from a fixed list. ?></span>
+							<span class="waypost-card__title"><?php echo esc_html( $c['title'] ); ?></span>
+							<?php if ( '' !== $c['text'] ) : ?>
+								<span class="waypost-card__text"><?php echo esc_html( $c['text'] ); ?></span>
+							<?php endif; ?>
+						</a>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+		</section>
+		<?php
 		return ob_get_clean();
 	}
 

@@ -213,6 +213,19 @@
 	});
 	$('#wpst-accent').on('input change', function () { setAccent(this.value); });
 
+	/* ── Search home: fill quick searches from Search insights ── */
+	$('#wpst-quick-fill').on('click', function () {
+		var terms = $(this).data('terms') || [];
+		var used = $('#wpst-quick input[name$="[label]"]').map(function () { return this.value.trim().toLowerCase(); }).get();
+		$('#wpst-quick tbody tr').each(function () {
+			var $label = $(this).find('input[name$="[label]"]');
+			if ($label.val().trim() || !terms.length) return;
+			var term;
+			while (terms.length && used.indexOf(term = terms.shift()) > -1) { term = ''; }
+			if (term) { $label.val(term); used.push(term); }
+		});
+	});
+
 	/* ── Help page: highlight topic in nav ────────────── */
 	var $helpLinks = $('.wpst-help__nav a[href^="#"]');
 	if ($helpLinks.length && 'IntersectionObserver' in window) {

@@ -163,7 +163,7 @@ class Waypost_Search {
 		$q    = isset( $_GET['dq'] ) ? sanitize_text_field( wp_unslash( $_GET['dq'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		$page = isset( $_GET['pg'] ) ? max( 1, absint( $_GET['pg'] ) ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
 
-		$html = '<div class="waypost-results">' . Waypost_Render::search_box();
+		$html = '<div class="waypost-results">' . Waypost_Render::search_box( array( 'context' => 'results' ) );
 
 		if ( mb_strlen( $q ) < 2 ) {
 			return $html . '<p class="waypost-results__hint">' . esc_html__( 'Type at least two characters to search the documentation.', 'waypost' ) . '</p></div>';
