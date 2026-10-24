@@ -247,8 +247,8 @@
 	.wpst-rows td:first-child { font-weight: 600; }
 	#wpst-topics td:nth-child(2) { width: auto; }
 }
-/* Topic rows have five fields; below wide screens each card takes two lines. */
-@media (max-width: 1280px) {
+/* Topic rows have five fields; below wide screens (1440px) each card takes two lines. */
+@media (max-width: 1440px) {
 	#wpst-topics thead { display: none; }
 	#wpst-topics tr { display: grid; grid-template-columns: 22px repeat(2, minmax(0, 1fr)); gap: 6px; padding: 8px 0; border-top: 1px solid var(--wpst-line); }
 	#wpst-topics td { padding: 0; }
@@ -310,3 +310,21 @@
 .wpst-settings .wpst-help__body > .wpst-card + .wpst-card { margin-top: 20px; }
 .wpst-settings.is-tabbed .wpst-help__body > .wpst-card + .wpst-card { margin-top: 0; }
 .wpst-settings .wpst-card[hidden] { display: none; }
+
+/* Fieldsets are never narrower than their widest content by default, and a page dropdown is as
+   wide as its longest page title. Let both shrink to the card instead of spilling out of it. */
+.wpst-wizard fieldset, .wpst-settings fieldset, .wpst-choices { min-width: 0; min-inline-size: 0; }
+.wpst-choice > span { flex: 1; }
+.wpst-choice select, .wpst-wizard select, .wpst-settings select { width: auto; max-width: min(100%, 32em); }
+/* In a table cell, 100% grows with the content, so the em cap is what keeps long titles in check. */
+.wpst-choice select { width: 100%; }
+/* Settings tables: fixed layout keeps the label column at its width and stops long content
+   (notes, page dropdowns) from widening the table past its card. */
+.wpst-settings .form-table { table-layout: fixed; }
+.wpst-rows { table-layout: fixed; }
+.wpst-rows th:first-child { width: 22px; }
+#wpst-topics th:nth-child(2) { width: 120px; }
+/* WordPress gives every th inside .form-table 200px, including the headers of these nested tables. */
+.wpst-settings .wpst-rows th { width: auto; }
+.wpst-settings .wpst-rows th:first-child { width: 22px; }
+.wpst-settings #wpst-topics th:nth-child(2) { width: 120px; }

@@ -43,6 +43,38 @@ test( 'section links can be saved', async ( { page } ) => {
 	await expect( row.locator( '.wpst-status' ) ).toHaveText( 'Saved' );
 } );
 
+test( 'nothing in the wizard or settings spills out of its card', async ( { page } ) => {
+	// Elements wider than their card, e.g. a page dropdown sized to a long page title.
+	const spills = ( cards ) => page.evaluate( ( selector ) => {
+		const out = [];
+		document.querySelectorAll( selector ).forEach( ( card ) => {
+			if ( ! card.offsetParent ) {
+				return;
+			}
+			const c = card.getBoundingClientRect();
+			card.querySelectorAll( '*' ).forEach( ( el ) => {
+				const r = el.getBoundingClientRect();
+				if ( el.offsetParent && r.width && ( r.right > c.right + 1 || r.left < c.left - 1 ) ) {
+					out.push( el.tagName.toLowerCase() + '.' + String( el.className ).split( ' ' )[ 0 ] );
+				}
+			} );
+		} );
+		return [ ...new Set( out ) ];
+	}, cards );
+
+	for ( const width of [ 1300, 700 ] ) {
+		await page.setViewportSize( { width, height: 900 } );
+		for ( const step of [ 'welcome', 'content', 'sections', 'assign', 'look', 'features', 'done' ] ) {
+			await page.goto( '/wp-admin/admin.php?page=waypost-setup&step=' + step );
+			expect( await spills( '.wpst-wizard__card' ), `wizard ${ step } at ${ width }px` ).toEqual( [] );
+		}
+		for ( const section of [ 'content', 'navigation', 'search', 'search-home', 'appearance', 'advanced' ] ) {
+			await page.goto( '/wp-admin/admin.php?page=waypost-settings#' + section );
+			expect( await spills( '.wpst-help__body > section.wpst-card' ), `settings ${ section } at ${ width }px` ).toEqual( [] );
+		}
+	}
+} );
+
 test( 'settings show one section at a time and return to it after saving', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
 	const visible = () => page.locator( '.wpst-settings .wpst-help__body > section.wpst-card:visible' );
