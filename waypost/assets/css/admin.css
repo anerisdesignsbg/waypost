@@ -301,3 +301,12 @@
 .wpst-diagram[data-chrome="waypost"] .wpst-diagram__own { display: inline; }
 .wpst-diagram[data-chrome="waypost"] .wpst-diagram__bar { color: #fff; background: var(--wpst-accent); }
 .wpst-feedback-card { margin-top: 20px; }
+
+/* ── Settings: one section at a time ──────────────────── */
+.wpst-sections-nav a:not(.button) { padding: 8px 10px; }
+.wpst-sections-nav a strong { display: block; font-weight: 600; }
+.wpst-sections-nav a small { display: block; margin-top: 1px; color: var(--wpst-muted); font-size: 12px; font-weight: 400; }
+.wpst-sections-nav a.is-active strong { color: var(--wpst-accent); }
+.wpst-settings .wpst-help__body > .wpst-card + .wpst-card { margin-top: 20px; }
+.wpst-settings.is-tabbed .wpst-help__body > .wpst-card + .wpst-card { margin-top: 0; }
+.wpst-settings .wpst-card[hidden] { display: none; }

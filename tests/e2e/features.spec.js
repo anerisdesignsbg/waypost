@@ -3,9 +3,16 @@ const { test, expect } = require( '@playwright/test' );
 
 const SEEDED = { chrome: 'theme', style: 'theme', show_updated: true, show_reading: false, heading_links: true, feedback: true };
 
+// Settings shows one section at a time: open the one that holds the field first.
+async function openSection( page, selector ) {
+	const id = await page.locator( selector ).first().evaluate( ( el ) => el.closest( 'section[id]' ).id );
+	await page.locator( `.wpst-sections-nav a[href="#${ id }"]` ).click();
+}
+
 async function settings( page, values ) {
 	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
 	for ( const [ name, value ] of Object.entries( values ) ) {
+		await openSection( page, `input[name=${ name }]` );
 		const box = page.locator( `input[type=checkbox][name=${ name }]` );
 		if ( 'boolean' === typeof value ) {
 			await box.setChecked( value );

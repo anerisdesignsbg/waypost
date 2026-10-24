@@ -672,10 +672,32 @@ class Waypost_Admin {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved.', 'waypost' ) . '</p></div>';
 		}
 		?>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="wpst-settings">
+		<?php
+		// One section at a time, picked from the sidebar (admin.js). Without JavaScript all sections show.
+		$sections = array(
+			'content'     => array( __( 'Content', 'waypost' ), __( 'Where your docs live', 'waypost' ) ),
+			'navigation'  => array( __( 'Navigation', 'waypost' ), __( 'Menu and page features', 'waypost' ) ),
+			'search'      => array( __( 'Search', 'waypost' ), __( 'Results and logging', 'waypost' ) ),
+			'search-home' => array( __( 'Search home', 'waypost' ), __( 'Quick searches and topics', 'waypost' ) ),
+			'appearance'  => array( __( 'Appearance', 'waypost' ), __( 'Layout and style', 'waypost' ) ),
+			'advanced'    => array( __( 'Advanced', 'waypost' ), __( 'Uninstall options', 'waypost' ) ),
+		);
+		?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="wpst-settings wpst-help" data-wpst-sections>
 			<input type="hidden" name="action" value="waypost_save_settings">
+			<input type="hidden" name="section" value="">
 			<?php wp_nonce_field( 'waypost_settings' ); ?>
 
+			<nav class="wpst-help__nav wpst-sections-nav" aria-label="<?php esc_attr_e( 'Settings sections', 'waypost' ); ?>">
+				<ul>
+					<?php foreach ( $sections as $id => $s ) : ?>
+						<li><a href="#<?php echo esc_attr( $id ); ?>"><strong><?php echo esc_html( $s[0] ); ?></strong><small><?php echo esc_html( $s[1] ); ?></small></a></li>
+					<?php endforeach; ?>
+				</ul>
+				<a class="button" href="<?php echo esc_url( Waypost_Wizard::url() ); ?>"><?php esc_html_e( 'Open setup wizard', 'waypost' ); ?></a>
+			</nav>
+
+			<div class="wpst-help__body">
 			<section class="wpst-card" id="content">
 				<div class="wpst-card__head"><h2><?php esc_html_e( 'Content', 'waypost' ); ?></h2><?php echo self::help_link( 'getting-started' ); // phpcs:ignore ?></div>
 				<table class="form-table" role="presentation">
@@ -904,6 +926,7 @@ class Waypost_Admin {
 			</section>
 
 			<p class="submit wpst-submit"><button type="submit" class="button button-primary button-hero"><?php esc_html_e( 'Save settings', 'waypost' ); ?></button></p>
+			</div>
 		</form>
 		<?php
 		self::footer();
@@ -932,7 +955,9 @@ class Waypost_Admin {
 		$changes['quick_searches'] = isset( $in['quick_searches'] ) ? (array) $in['quick_searches'] : array();
 		$changes['topics']         = isset( $in['topics'] ) ? (array) $in['topics'] : array();
 		Waypost_Settings::update( $changes );
-		wp_safe_redirect( admin_url( 'admin.php?page=waypost-settings&saved=1' ) );
+		// Back to the section that was open.
+		$section = isset( $in['section'] ) ? sanitize_key( $in['section'] ) : '';
+		wp_safe_redirect( admin_url( 'admin.php?page=waypost-settings&saved=1' ) . ( $section ? '#' . $section : '' ) );
 		exit;
 	}
 

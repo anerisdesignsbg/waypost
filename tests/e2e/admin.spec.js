@@ -43,8 +43,29 @@ test( 'section links can be saved', async ( { page } ) => {
 	await expect( row.locator( '.wpst-status' ) ).toHaveText( 'Saved' );
 } );
 
-test( 'settings save and persist', async ( { page } ) => {
+test( 'settings show one section at a time and return to it after saving', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	const visible = () => page.locator( '.wpst-settings .wpst-help__body > section.wpst-card:visible' );
+	await expect( visible() ).toHaveCount( 1 );
+	await expect( visible() ).toHaveAttribute( 'id', 'content' );
+
+	await page.locator( '.wpst-sections-nav a[href="#search-home"]' ).click();
+	await expect( visible() ).toHaveCount( 1 );
+	await expect( visible() ).toHaveAttribute( 'id', 'search-home' );
+	await expect( page.locator( '.wpst-sections-nav a.is-active' ) ).toContainText( 'Search home' );
+	await expect( page ).toHaveURL( /#search-home$/ );
+
+	await page.click( 'button:has-text("Save settings")' );
+	await expect( page.locator( '.notice-success' ) ).toBeVisible();
+	await expect( page ).toHaveURL( /#search-home$/ ); // WordPress removes saved=1 from the address.
+	await expect( visible() ).toHaveAttribute( 'id', 'search-home' );
+
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings#appearance' ); // A link straight to a section.
+	await expect( visible() ).toHaveAttribute( 'id', 'appearance' );
+} );
+
+test( 'settings save and persist', async ( { page } ) => {
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings#search' );
 	await page.fill( '#wpst-ph', 'Search Magpie docs…' );
 	await page.click( 'button:has-text("Save settings")' );
 	await expect( page.locator( '.notice-success' ) ).toBeVisible();
@@ -54,7 +75,7 @@ test( 'settings save and persist', async ( { page } ) => {
 } );
 
 test( 'style picker previews, saves and styles the front end', async ( { page } ) => {
-	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings#appearance' );
 	await expect( page.locator( '.wpst-styles .wpst-style' ) ).toHaveCount( 7 );
 
 	await page.locator( 'label.wpst-style:has(input[name=style][value=dark])' ).click();
@@ -70,7 +91,7 @@ test( 'style picker previews, saves and styles the front end', async ( { page } 
 	const onAccent = await page.evaluate( () => getComputedStyle( document.documentElement ).getPropertyValue( '--waypost-on-accent' ).trim() );
 	expect( onAccent ).toBe( '#111111' ); // Dark text on the light accent.
 
-	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings#appearance' );
 	await page.locator( 'label.wpst-style:has(input[name=style][value=theme])' ).click();
 	await page.click( 'button:has-text("Save settings")' );
 	await expect( page.locator( 'input[name=style][value=theme]' ) ).toBeChecked();
@@ -79,7 +100,7 @@ test( 'style picker previews, saves and styles the front end', async ( { page } 
 
 test( 'search home settings save and show on the docs home', async ( { page } ) => {
 	const title = unique();
-	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings#search-home' );
 	const original = await page.inputValue( '#wpst-home-title' );
 	await page.fill( '#wpst-home-title', title );
 	await page.fill( 'input[name="quick_searches[5][label]"]', 'Grafana dashboards' );
@@ -91,7 +112,7 @@ test( 'search home settings save and show on the docs home', async ( { page } ) 
 	await expect( page.locator( '.waypost-home__title' ) ).toHaveText( title );
 	await expect( page.locator( '.waypost-home .waypost-chip' ) ).toHaveCount( 6 );
 
-	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings#search-home' );
 	await page.fill( '#wpst-home-title', original );
 	await page.fill( 'input[name="quick_searches[5][label]"]', '' );
 	await page.click( 'button:has-text("Save settings")' );
@@ -116,7 +137,7 @@ test( 'the wizard can create the docs home page', async ( { page } ) => {
 	await expect( page.locator( '.waypost-layout--home .waypost-home' ) ).toBeVisible();
 	await expect( page.locator( '.waypost-layout__title' ) ).toHaveCount( 0 );
 
-	await page.goto( '/wp-admin/admin.php?page=waypost-settings' ); // Put the seeded docs home back.
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings#navigation' ); // Put the seeded docs home back.
 	await page.selectOption( '#wpst-home', original );
 	await page.click( 'button:has-text("Save settings")' );
 	await expect( page.locator( '#wpst-home' ) ).toHaveValue( original );

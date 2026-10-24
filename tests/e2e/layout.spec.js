@@ -3,9 +3,16 @@ const { test, expect } = require( '@playwright/test' );
 
 const DEFAULTS = { layout: 'waypost', sidebar: 'left', width: 'contained', toc_position: 'side', max_width: 1280, style: 'theme' };
 
+// Settings shows one section at a time: open the one that holds the field first.
+async function openSection( page, selector ) {
+	const id = await page.locator( selector ).first().evaluate( ( el ) => el.closest( 'section[id]' ).id );
+	await page.locator( `.wpst-sections-nav a[href="#${ id }"]` ).click();
+}
+
 async function settings( page, values ) {
 	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
 	for ( const [ name, value ] of Object.entries( values ) ) {
+		await openSection( page, `input[name=${ name }]` );
 		if ( 'max_width' === name ) {
 			await page.fill( 'input[name=max_width]', String( value ) );
 		} else {
@@ -102,7 +109,7 @@ test.describe( 'Docs layout', () => {
 	} );
 
 	test( 'the settings diagram follows the options', async ( { page } ) => {
-		await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+		await page.goto( '/wp-admin/admin.php?page=waypost-settings#appearance' );
 		const diagram = page.locator( '.wpst-diagram' );
 		await page.locator( 'input[name=sidebar][value=right]' ).check( { force: true } );
 		await page.locator( 'input[name=width][value=full]' ).check( { force: true } );

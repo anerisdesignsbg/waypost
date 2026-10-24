@@ -45,7 +45,7 @@ test.describe.serial( 'Block themes', () => {
 	test( 'Twenty Twenty-Five with the Waypost docs bar', async ( { page } ) => {
 		await activate( page, 'Twenty Twenty-Five' );
 		const docsBar = async ( value ) => {
-			await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+			await page.goto( '/wp-admin/admin.php?page=waypost-settings#appearance' );
 			await page.locator( `input[name=chrome][value=${ value }]` ).check( { force: true } );
 			await page.click( 'button:has-text("Save settings")' );
 		};

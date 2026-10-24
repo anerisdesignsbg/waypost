@@ -242,8 +242,30 @@
 		sync();
 	});
 
+	/* ── Settings: one section at a time ──────────────── */
+	$('[data-wpst-sections]').each(function () {
+		var $form = $(this);
+		var $sections = $form.find('.wpst-help__body > section.wpst-card[id]');
+		var $links = $form.find('.wpst-sections-nav a[href^="#"]');
+		function show(id, remember) {
+			if (!id || !$sections.filter(function () { return this.id === id; }).length) id = $sections.first().attr('id');
+			$sections.each(function () { this.hidden = this.id !== id; });
+			$links.removeClass('is-active').removeAttr('aria-current').filter('[href="#' + id + '"]').addClass('is-active').attr('aria-current', 'true');
+			$form.find('input[name=section]').val(id);
+			if (remember) history.replaceState(null, '', '#' + id);
+		}
+		$form.addClass('is-tabbed');
+		$links.on('click', function (e) {
+			e.preventDefault();
+			show(this.hash.slice(1), true);
+			window.scrollTo(0, 0);
+		});
+		$(window).on('hashchange', function () { show(location.hash.slice(1), false); });
+		show(location.hash.slice(1), false);
+	});
+
 	/* ── Help page: highlight topic in nav ────────────── */
-	var $helpLinks = $('.wpst-help__nav a[href^="#"]');
+	var $helpLinks = $('.wpst-help__nav:not(.wpst-sections-nav) a[href^="#"]');
 	if ($helpLinks.length && 'IntersectionObserver' in window) {
 		var obs = new IntersectionObserver(function (entries) {
 			entries.forEach(function (en) {
