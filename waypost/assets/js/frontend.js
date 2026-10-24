@@ -122,6 +122,7 @@
 		this.input.addEventListener('keydown', function (e) { self.onKey(e); });
 		this.input.addEventListener('focus', function () { if (self.panel.childNodes.length && self.q) self.show(); });
 		form.addEventListener('submit', function (e) {
+			if (self.opts.inHome) return; // initHome() lists the results on the page instead.
 			var q = self.input.value.trim();
 			if (!cfg.resultsUrl || q.length < 2) {
 				e.preventDefault();
@@ -368,7 +369,8 @@
 
 	/* ── Quick search buttons ─────────────────────────── */
 
-	// A button fills the nearest search box and runs the search. Without a box nearby it stays a link to the results page.
+	// In the search home a button runs a full search on the page; in the Ctrl+K window it fills the box
+	// for instant results. Anywhere else it stays a link to where results are listed.
 	function initQuickSearches() {
 		document.addEventListener('click', function (e) {
 			var chip = e.target.closest('.waypost-chip[data-waypost-query]');
@@ -378,9 +380,169 @@
 			if (!input) return;
 			e.preventDefault();
 			input.value = chip.getAttribute('data-waypost-query');
+			if (scope.classList.contains('waypost-home')) {
+				input.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+				return;
+			}
 			input.dispatchEvent(new Event('input', { bubbles: true }));
 			input.focus();
 		});
+	}
+
+	/* ── Full results inside the search home ──────────── */
+
+	function fill(str, a, b) { return String(str || '').replace('%1$s', a).replace('%2$s', b); }
+
+	// Same markup as Waypost_Render::results(), built with textContent only.
+	function renderResults(list, data, q, pg, urlFor) {
+		var per = cfg.perPage || 10;
+		var total = (data && data.total) || 0;
+		var results = (data && data.results) || [];
+		list.textContent = '';
+		// Two plural forms only; enough for the count line.
+		var count = el('p', 'waypost-results__count', fill(total === 1 ? t.oneResult : t.manyResults, total.toLocaleString(), q));
+		count.setAttribute('role', 'status');
+		list.appendChild(count);
+		if (!results.length) {
+			var none = el('div', 'waypost-results__none');
+			none.appendChild(el('p', '', t.noMatch || ''));
+			list.appendChild(none);
+			return;
+		}
+		var ol = el('ol', 'waypost-results__list');
+		ol.start = (pg - 1) * per + 1;
+		results.forEach(function (r) {
+			var li = el('li', 'waypost-result');
+			if (r.section) li.appendChild(el('p', 'waypost-result__section', r.section));
+			var h = el('h3', 'waypost-result__title');
+			var a = el('a');
+			a.href = r.url;
+			appendHighlighted(a, r.title, q);
+			h.appendChild(a);
+			li.appendChild(h);
+			if (r.excerpt) {
+				var ex = el('p', 'waypost-result__excerpt');
+				appendHighlighted(ex, r.excerpt, q);
+				li.appendChild(ex);
+			}
+			if (r.headings && r.headings.length) {
+				var ul = el('ul', 'waypost-result__headings');
+				r.headings.forEach(function (hd) {
+					var hli = el('li');
+					var ha = el('a');
+					ha.href = hd.url;
+					appendHighlighted(ha, hd.text, q);
+					hli.appendChild(ha);
+					ul.appendChild(hli);
+				});
+				li.appendChild(ul);
+			}
+			ol.appendChild(li);
+		});
+		list.appendChild(ol);
+
+		if (data.pages > 1) {
+			var nav = el('nav', 'waypost-results__pages');
+			nav.setAttribute('aria-label', t.pages || '');
+			var link = function (n, text, cls) {
+				var l = el('a', 'page-numbers' + (cls ? ' ' + cls : ''), text);
+				l.href = urlFor(q, n);
+				nav.appendChild(l);
+			};
+			if (pg > 1) link(pg - 1, t.prev || '‹', 'prev');
+			var gap = false;
+			for (var n = 1; n <= data.pages; n++) {
+				if (n === 1 || n === data.pages || Math.abs(n - pg) <= 2) {
+					gap = false;
+					if (n === pg) {
+						var cur = el('span', 'page-numbers current', String(n));
+						cur.setAttribute('aria-current', 'page');
+						nav.appendChild(cur);
+					} else {
+						link(n, String(n));
+					}
+				} else if (!gap) {
+					gap = true;
+					nav.appendChild(el('span', 'page-numbers dots', '…'));
+				}
+			}
+			if (pg < data.pages) link(pg + 1, t.next || '›', 'next');
+			list.appendChild(nav);
+		}
+	}
+
+	// Pressing Enter in the search home lists every result below the box, on the same page, so the
+	// page layout and any sidebar stay put. The address gets ?dq= so results can be shared and Back works.
+	function initHome(home, ui) {
+		var input = ui.input;
+		var base = home.getAttribute('data-base') || location.href.split('?')[0];
+		var box = home.querySelector('.waypost-home__results');
+		var list = home.querySelector('.waypost-home__list');
+		var back = home.querySelector('.waypost-home__back a');
+		var ctrl = null, current = '';
+		if (!box || !list || !cfg.api) return;
+
+		function urlFor(q, pg) {
+			var u = new URL(base, location.href);
+			if (q) u.searchParams.set('dq', q);
+			if (pg > 1) u.searchParams.set('pg', String(pg));
+			return u.toString();
+		}
+		function show(on) {
+			home.classList.toggle('is-searching', on);
+			box.hidden = !on;
+		}
+		function load(q, pg, push, scroll) {
+			current = q;
+			ui.hide();
+			if (ctrl) ctrl.abort();
+			ctrl = window.AbortController ? new AbortController() : null;
+			show(true);
+			list.setAttribute('aria-busy', 'true');
+			var url = cfg.api + (cfg.api.indexOf('?') > -1 ? '&' : '?') + 'q=' + encodeURIComponent(q) + '&page=' + pg + '&per=' + (cfg.perPage || 10) + (pg === 1 ? '&log=1' : '');
+			fetch(url, { signal: ctrl ? ctrl.signal : undefined, credentials: 'same-origin' })
+				.then(function (r) { return r.json(); })
+				.then(function (data) {
+					renderResults(list, data, q, pg, urlFor);
+					list.removeAttribute('aria-busy');
+					if (push) history.pushState({ waypostHome: true }, '', urlFor(q, pg));
+					if (scroll) box.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+				})
+				.catch(function (err) { if (err && err.name !== 'AbortError') list.removeAttribute('aria-busy'); });
+		}
+		function clear(push) {
+			if (ctrl) ctrl.abort();
+			current = '';
+			show(false);
+			list.textContent = '';
+			input.value = '';
+			if (push) history.pushState({ waypostHome: true }, '', base);
+		}
+
+		ui.form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var q = input.value.trim();
+			if (q.length >= 2) load(q, 1, true, false);
+		});
+		if (back) back.addEventListener('click', function (e) { e.preventDefault(); clear(true); input.focus(); });
+		list.addEventListener('click', function (e) {
+			var a = e.target.closest('.waypost-results__pages a.page-numbers');
+			if (!a) return;
+			e.preventDefault();
+			var pg = parseInt(new URL(a.href, location.href).searchParams.get('pg') || '1', 10);
+			load(current || input.value.trim(), pg, true, true);
+		});
+		window.addEventListener('popstate', function () {
+			var p = new URLSearchParams(location.search);
+			var q = (p.get('dq') || '').trim();
+			if (q.length >= 2) {
+				input.value = q;
+				load(q, parseInt(p.get('pg') || '1', 10), false, false);
+			} else {
+				clear(false);
+			}
+		});
+		current = input.value.trim(); // Page loaded with ?dq= and server-rendered results.
 	}
 
 	/* ── Table of contents highlighting ───────────────── */
@@ -433,7 +595,11 @@
 	function boot() {
 		document.querySelectorAll('.waypost-menu').forEach(initMenu);
 		var boxes = document.querySelectorAll('form[data-waypost-search]');
-		boxes.forEach(function (f) { new SearchUI(f); });
+		boxes.forEach(function (f) {
+			var home = f.closest('[data-waypost-home]');
+			var ui = new SearchUI(f, { inHome: !!home });
+			if (home) initHome(home, ui);
+		});
 		document.querySelectorAll('.waypost-toc').forEach(initToc);
 		initQuickSearches();
 		if (cfg.shortcut && (cfg.isDoc || boxes.length)) initShortcut();

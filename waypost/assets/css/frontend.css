@@ -172,6 +172,13 @@ body .waypost-home a.waypost-card:hover { border-color: var(--waypost-accent); t
 .waypost-card__text { font-size: 14px; color: var(--waypost-muted); }
 .waypost-results__hint { margin-top: 1em; color: var(--waypost-muted); }
 
+/* Full results listed inside the search home. Topic cards step aside while searching. */
+.waypost-home.is-searching .waypost-home__topics { display: none; }
+.waypost-home .waypost-home__results { margin: 26px auto 0; max-width: 820px; padding: 0; text-align: left; background: none; border: 0; }
+.waypost-home__back { margin: 0 0 4px !important; font-size: 14px; }
+body .waypost-home .waypost-home__back a { color: var(--waypost-accent); }
+.waypost-home__list[aria-busy="true"] { opacity: .5; transition: opacity var(--waypost-speed); }
+
 /* ── Ctrl/Cmd + K modal ───────────────────────────────── */
 .waypost-modal { position: fixed; inset: 0; z-index: 100000; display: flex; justify-content: center; align-items: flex-start; padding: 10vh 16px 16px; background: var(--waypost-overlay); }
 .waypost-modal[hidden] { display: none; }
@@ -336,6 +343,7 @@ body.waypost-modal-open { overflow: hidden; }
 	padding: 12px; border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius);
 }
 :is(.waypost-style-light, .waypost-style-dark) .waypost-results { padding: 4px 20px 16px; background: var(--waypost-panel); }
+:is(.waypost-style-light, .waypost-style-dark) .waypost-home .waypost-home__results { padding: 0; border: 0; background: none; } /* Already inside the home panel. */
 :is(.waypost-style-light, .waypost-style-dark) .waypost-home { max-width: 1040px; padding: 36px 28px; background: var(--waypost-panel); border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius); }
 :is(.waypost-style-light, .waypost-style-dark) .waypost-card { background: var(--waypost-surface); }
 :is(.waypost-style-light, .waypost-style-dark) .waypost-pager__link { background: var(--waypost-panel); }

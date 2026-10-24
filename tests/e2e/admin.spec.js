@@ -125,7 +125,7 @@ test( 'setup wizard runs end to end without breaking the site', async ( { page }
 	await expect( page.locator( '.notice-success' ) ).toContainText( '2 sections created' );
 
 	await page.click( 'text=Skip this step' ); // Pages.
-	await expect( page.locator( 'input[name=results_mode][value=existing]' ) ).toBeChecked();
+	await expect( page.locator( 'input[name=results_mode][value=home]' ) ).toBeChecked();
 	await page.click( 'button:has-text("Save and continue")' ); // Extras.
 	await expect( page.locator( 'h1' ) ).toContainText( 'Your docs are set up' );
 

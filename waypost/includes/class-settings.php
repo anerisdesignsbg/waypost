@@ -22,6 +22,7 @@ class Waypost_Settings {
 			'post_types'      => array( 'page' ),
 			'home_page'       => 0,
 			'results_page'    => 0,
+			'results_target'  => 'page',         // page: the results page | home: inside the search home on the docs home page
 			'accordion'       => 1,              // only one top-level section open at a time
 			'toc_auto'        => 1,
 			'toc_levels'      => array( 2, 3 ),
@@ -147,6 +148,7 @@ class Waypost_Settings {
 		$types = array_values( array_unique( array_filter( array_map( 'sanitize_key', $types ) ) ) );
 		$out['post_types'] = $types ? $types : array( 'page' );
 
+		$out['results_target'] = ( isset( $in['results_target'] ) && 'home' === $in['results_target'] ) ? 'home' : 'page';
 		foreach ( array( 'home_page', 'results_page' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? absint( $in[ $k ] ) : 0;
 		}

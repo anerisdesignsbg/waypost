@@ -324,6 +324,7 @@ Waypost_Settings::update(
 		'crumbs_auto'   => 1,
 		'style'         => 'theme',
 		'accent'        => '#2563eb',
+		'results_target' => 'home',
 		'home_title'    => 'Search the Magpie docs',
 		'home_intro'    => 'Everything you need to install, configure and run Magpie.',
 		'topics_title'  => 'Popular topics',

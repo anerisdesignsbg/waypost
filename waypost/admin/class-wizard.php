@@ -273,16 +273,21 @@ class Waypost_Wizard {
 	private static function step_features() {
 		$o       = Waypost_Settings::all();
 		$pages   = get_pages( array( 'post_status' => 'publish' ) );
-		$results = Waypost_Search::results_url();
+		$home    = 'home' === $o['results_target'];
+		$results = ! $home && Waypost_Search::results_url();
 		?>
 		<h1><?php esc_html_e( 'Search and page extras', 'waypost' ); ?></h1>
 
-		<h2><?php esc_html_e( 'Search results page', 'waypost' ); ?></h2>
-		<p><?php esc_html_e( 'Instant results show as people type. When they press Enter, they go to a page listing every result.', 'waypost' ); ?></p>
+		<h2><?php esc_html_e( 'Search results', 'waypost' ); ?></h2>
+		<p><?php esc_html_e( 'Instant results show as people type. When they press Enter, they see a full list of results.', 'waypost' ); ?></p>
 		<fieldset class="wpst-choices wpst-choices--stack">
-			<legend class="screen-reader-text"><?php esc_html_e( 'Results page', 'waypost' ); ?></legend>
+			<legend class="screen-reader-text"><?php esc_html_e( 'Where full results show', 'waypost' ); ?></legend>
 			<label class="wpst-choice">
-				<input type="radio" name="results_mode" value="create" <?php checked( ! $results ); ?>>
+				<input type="radio" name="results_mode" value="home" <?php checked( $home ); ?>>
+				<span><strong><?php esc_html_e( 'On my docs home page', 'waypost' ); ?></strong><small><?php esc_html_e( 'Results appear inside the search home, below the search box, so your layout and sidebar stay in place. Choose the docs home page below.', 'waypost' ); ?></small></span>
+			</label>
+			<label class="wpst-choice">
+				<input type="radio" name="results_mode" value="create" <?php checked( ! $home && ! $results ); ?>>
 				<span><strong><?php esc_html_e( 'Create a “Search results” page for me', 'waypost' ); ?></strong><small><?php esc_html_e( 'A new published page with the results list already on it.', 'waypost' ); ?></small></span>
 			</label>
 			<label class="wpst-choice">
@@ -438,8 +443,11 @@ class Waypost_Wizard {
 				foreach ( array( 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'shortcut' ) as $k ) {
 					$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 				}
-				$mode = isset( $in['results_mode'] ) ? sanitize_key( $in['results_mode'] ) : 'none';
-				if ( 'create' === $mode ) {
+				$mode                      = isset( $in['results_mode'] ) ? sanitize_key( $in['results_mode'] ) : 'none';
+				$changes['results_target'] = 'home' === $mode ? 'home' : 'page';
+				if ( 'home' === $mode ) {
+					// Keep any results page; it is simply not used while results show on the docs home.
+				} elseif ( 'create' === $mode ) {
 					$id = wp_insert_post(
 						array(
 							'post_type'    => 'page',

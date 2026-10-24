@@ -28,9 +28,30 @@ class Waypost_Render {
 		return $prefix . '-' . ( ++self::$uid );
 	}
 
+	/**
+	 * True where full results are listed: the results page, or the docs home
+	 * while it shows results for a search.
+	 */
 	private static function on_results_page() {
-		$results = (int) Waypost_Settings::get( 'results_page' );
-		return $results && is_singular() && (int) get_queried_object_id() === $results;
+		if ( ! is_singular() ) {
+			return false;
+		}
+		$id = (int) get_queried_object_id();
+		if ( $id && $id === (int) Waypost_Settings::get( 'results_page' ) ) {
+			return true;
+		}
+		return $id && $id === Waypost_Search::results_page_id() && '' !== self::query();
+	}
+
+	/** The search words in the address (?dq=), if any. */
+	private static function query() {
+		return isset( $_GET['dq'] ) ? trim( sanitize_text_field( wp_unslash( $_GET['dq'] ) ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+	}
+
+	/** The address of the page being viewed, without search arguments. */
+	private static function current_url() {
+		$id = (int) get_queried_object_id();
+		return $id ? get_permalink( $id ) : home_url( '/' );
 	}
 
 	// ── Menu ────────────────────────────────────────────────────────────────
@@ -152,14 +173,14 @@ class Waypost_Render {
 
 	public static function search_box( $args = array() ) {
 		$args = wp_parse_args( $args, array( 'placeholder' => '', 'button' => 'yes', 'context' => '' ) );
-		// The results page has its own box, so a second one (say, in a sidebar) is only clutter.
-		if ( 'results' !== $args['context'] && Waypost_Settings::get( 'hide_extra_search' ) && self::on_results_page() ) {
+		// Where results are listed there is already a box, so a second one (say, in a sidebar) is only clutter.
+		if ( ! in_array( $args['context'], array( 'results', 'home' ), true ) && Waypost_Settings::get( 'hide_extra_search' ) && self::on_results_page() ) {
 			return '';
 		}
 		Waypost_Frontend::enqueue();
 
 		$id     = self::uid( 'waypost-search' );
-		$action = Waypost_Search::results_url();
+		$action = 'home' === $args['context'] ? self::current_url() : Waypost_Search::results_url();
 		$value  = isset( $_GET['dq'] ) ? sanitize_text_field( wp_unslash( $_GET['dq'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		$ph     = $args['placeholder'] ? $args['placeholder'] : Waypost_Settings::placeholder();
 		$key    = Waypost_Settings::get( 'shortcut' );
@@ -313,6 +334,71 @@ class Waypost_Render {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Full results for a search: count, list and page links. Used by the results
+	 * page and the search home. $base is the page the page links point to.
+	 * frontend.js builds the same markup when results load without a page reload.
+	 */
+	public static function results( $q, $page, $base ) {
+		if ( mb_strlen( $q ) < 2 ) {
+			return '<p class="waypost-results__hint">' . esc_html__( 'Type at least two characters to search the documentation.', 'waypost' ) . '</p>';
+		}
+		$per  = (int) Waypost_Settings::get( 'per_page' );
+		$data = Waypost_Search::run( $q, $page, $per );
+		if ( 1 === $page ) {
+			Waypost_Search::log( $q, $data['total'] );
+		}
+
+		$html = '<p class="waypost-results__count" role="status">' . esc_html(
+			sprintf(
+				/* translators: 1: number of results, 2: search query */
+				_n( '%1$s result for “%2$s”', '%1$s results for “%2$s”', $data['total'], 'waypost' ),
+				number_format_i18n( $data['total'] ),
+				$q
+			)
+		) . '</p>';
+
+		if ( ! $data['results'] ) {
+			return $html . '<div class="waypost-results__none"><p>' . esc_html__( 'Nothing matched. Try a shorter or different word.', 'waypost' ) . '</p></div>';
+		}
+
+		$html .= '<ol class="waypost-results__list" start="' . esc_attr( ( $page - 1 ) * $per + 1 ) . '">';
+		foreach ( $data['results'] as $r ) {
+			$html .= '<li class="waypost-result">';
+			if ( $r['section'] ) {
+				$html .= '<p class="waypost-result__section">' . esc_html( $r['section'] ) . '</p>';
+			}
+			$html .= '<h3 class="waypost-result__title"><a href="' . esc_url( $r['url'] ) . '">' . Waypost_Search::highlight( $r['title'], $q ) . '</a></h3>';
+			if ( $r['excerpt'] ) {
+				$html .= '<p class="waypost-result__excerpt">' . Waypost_Search::highlight( $r['excerpt'], $q ) . '</p>';
+			}
+			if ( $r['headings'] ) {
+				$html .= '<ul class="waypost-result__headings">';
+				foreach ( $r['headings'] as $h ) {
+					$html .= '<li><a href="' . esc_url( $h['url'] ) . '">' . Waypost_Search::highlight( $h['text'], $q ) . '</a></li>';
+				}
+				$html .= '</ul>';
+			}
+			$html .= '</li>';
+		}
+		$html .= '</ol>';
+
+		if ( $data['pages'] > 1 ) {
+			$links = paginate_links(
+				array(
+					'base'      => add_query_arg( array( 'dq' => rawurlencode( $q ), 'pg' => '%#%' ), $base ),
+					'format'    => '',
+					'current'   => $page,
+					'total'     => $data['pages'],
+					'prev_text' => __( '← Previous', 'waypost' ),
+					'next_text' => __( 'Next →', 'waypost' ),
+				)
+			);
+			$html .= '<nav class="waypost-results__pages" aria-label="' . esc_attr__( 'Search results pages', 'waypost' ) . '">' . $links . '</nav>';
+		}
+		return $html;
+	}
+
 	/** Icons for topic cards: key => array( label, SVG path data on a 24 x 24 grid ). */
 	public static function icons() {
 		return array(
@@ -337,13 +423,13 @@ class Waypost_Render {
 		return '<svg width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' . esc_attr( $path ) . '"/></svg>';
 	}
 
-	/** Buttons that run a ready-made search. Without JavaScript they open the results page. */
-	public static function quick_searches( $class = '' ) {
+	/** Buttons that run a ready-made search. Without JavaScript they open $base (default: where results are listed). */
+	public static function quick_searches( $class = '', $base = null ) {
 		$items = (array) Waypost_Settings::get( 'quick_searches' );
 		if ( ! $items ) {
 			return '';
 		}
-		$results = Waypost_Search::results_url();
+		$results = null !== $base ? $base : Waypost_Search::results_url();
 		$out     = '<div class="waypost-chips' . ( $class ? ' ' . esc_attr( $class ) : '' ) . '">';
 		foreach ( $items as $it ) {
 			$href = $results ? add_query_arg( 'dq', rawurlencode( $it['query'] ), $results ) : '#';
@@ -371,16 +457,27 @@ class Waypost_Render {
 			}
 		}
 
+		// Results are listed right here, on this page, below the search box. With JavaScript
+		// they load without a page reload (frontend.js); without it the page reloads with ?dq=.
+		$here = self::current_url();
+		$q    = self::query();
+		$page = isset( $_GET['pg'] ) ? max( 1, absint( $_GET['pg'] ) ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
+
 		ob_start();
 		?>
-		<section class="waypost-home">
+		<section class="waypost-home<?php echo '' !== $q ? ' is-searching' : ''; ?>" data-waypost-home data-base="<?php echo esc_url( $here ); ?>">
 			<h2 class="waypost-home__title"><?php echo esc_html( $title ); ?></h2>
 			<?php if ( '' !== $intro ) : ?>
 				<p class="waypost-home__intro"><?php echo esc_html( $intro ); ?></p>
 			<?php endif; ?>
-			<?php echo self::search_box(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
-			<?php echo self::quick_searches(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+			<?php echo self::search_box( array( 'context' => 'home' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+			<?php echo self::quick_searches( '', $here ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+			<div class="waypost-home__results waypost-results" aria-live="polite"<?php echo '' === $q ? ' hidden' : ''; ?>>
+				<p class="waypost-home__back"><a href="<?php echo esc_url( $here ); ?>">&larr; <?php echo esc_html( $cards ? __( 'Back to topics', 'waypost' ) : __( 'Clear search', 'waypost' ) ); ?></a></p>
+				<div class="waypost-home__list"><?php echo '' !== $q ? self::results( $q, $page, $here ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?></div>
+			</div>
 			<?php if ( $cards ) : ?>
+				<div class="waypost-home__topics">
 				<h3 class="waypost-home__subtitle"><?php echo esc_html( $ttl ); ?></h3>
 				<div class="waypost-cards">
 					<?php foreach ( $cards as $c ) : ?>
@@ -392,6 +489,7 @@ class Waypost_Render {
 							<?php endif; ?>
 						</a>
 					<?php endforeach; ?>
+				</div>
 				</div>
 			<?php endif; ?>
 		</section>

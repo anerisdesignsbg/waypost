@@ -179,7 +179,42 @@ test.describe( 'Search', () => {
 
 		await home.locator( '.waypost-chip', { hasText: 'Docker' } ).click();
 		await expect( home.locator( '.waypost-search__input' ) ).toHaveValue( 'docker' );
-		await expect( home.locator( '.waypost-hit__title', { hasText: 'Installing with Docker' } ) ).toBeVisible();
+		await expect( home.locator( '.waypost-home__list .waypost-result__title', { hasText: 'Installing with Docker' } ) ).toBeVisible();
+	} );
+
+	test( 'search home lists full results on the same page', async ( { page } ) => {
+		await page.goto( '/documentation/' );
+		const home = page.locator( '.waypost-home' );
+		await home.locator( '.waypost-search__input' ).fill( 'album' );
+		await home.locator( '.waypost-search__input' ).press( 'Enter' );
+		await expect( page ).toHaveURL( /\/documentation\/\?dq=album$/ );
+		await expect( home.locator( '.waypost-home__list .waypost-result' ) ).toHaveCount( 10 );
+		await expect( home.locator( '.waypost-card' ).first() ).toBeHidden();
+		await expect( page.locator( '.waypost-menu' ).first() ).toBeVisible(); // The rest of the page stays.
+
+		await home.locator( '.waypost-results__pages a.page-numbers', { hasText: '2' } ).click();
+		await expect( page ).toHaveURL( /dq=album&pg=2/ );
+		await expect( home.locator( '.waypost-results__pages .current' ) ).toHaveText( '2' );
+		await page.goBack();
+		await expect( home.locator( '.waypost-results__pages .current' ) ).toHaveText( '1' );
+
+		await home.locator( '.waypost-home__back a' ).click();
+		await expect( page ).toHaveURL( /\/documentation\/$/ );
+		await expect( home.locator( '.waypost-card' ).first() ).toBeVisible();
+	} );
+
+	test( 'a shared results link opens with the results listed', async ( { page } ) => {
+		await page.goto( '/documentation/?dq=album&pg=2' );
+		const home = page.locator( '.waypost-home' );
+		await expect( home ).toHaveClass( /is-searching/ );
+		await expect( home.locator( '.waypost-search__input' ) ).toHaveValue( 'album' );
+		await expect( home.locator( '.waypost-results__pages .current' ) ).toHaveText( '2' );
+		await expect( page.locator( 'form[data-waypost-search]' ) ).toHaveCount( 1 ); // Sidebar box hidden while results show.
+	} );
+
+	test( 'other search boxes send full results to the docs home', async ( { page } ) => {
+		await page.goto( '/installing-on-ubuntu/' );
+		await expect( page.locator( 'form[data-waypost-search]' ).first() ).toHaveAttribute( 'action', /\/documentation\/$/ );
 	} );
 
 	test( 'Ctrl+K lists the quick searches before typing', async ( { page } ) => {

@@ -692,12 +692,26 @@ class Waypost_Admin {
 				<div class="wpst-card__head"><h2><?php esc_html_e( 'Search', 'waypost' ); ?></h2><?php echo self::help_link( 'search' ); // phpcs:ignore ?></div>
 				<table class="form-table" role="presentation">
 					<tr>
+						<th scope="row"><?php esc_html_e( 'Full results show', 'waypost' ); ?></th>
+						<td>
+							<fieldset>
+								<legend class="screen-reader-text"><?php esc_html_e( 'Where full results show', 'waypost' ); ?></legend>
+								<label class="wpst-radio"><input type="radio" name="results_target" value="home" <?php checked( 'home', $o['results_target'] ); ?>> <strong><?php esc_html_e( 'On the docs home page, inside the search home', 'waypost' ); ?></strong> <span class="wpst-muted"><?php esc_html_e( '(recommended)', 'waypost' ); ?></span></label>
+								<p class="description wpst-indent"><?php esc_html_e( 'Results appear below the search box on the same page, so your layout and sidebar menu stay in place. Uses the Docs home page set under Navigation, which needs the Docs Search Home block, module or shortcode.', 'waypost' ); ?></p>
+								<?php if ( 'home' === $o['results_target'] && ! Waypost_Search::results_page_id() ) : ?>
+									<p class="wpst-danger wpst-indent"><?php esc_html_e( 'Choose a Docs home page under Navigation, or results have nowhere to show.', 'waypost' ); ?></p>
+								<?php endif; ?>
+								<label class="wpst-radio"><input type="radio" name="results_target" value="page" <?php checked( 'page', $o['results_target'] ); ?>> <strong><?php esc_html_e( 'On a separate results page', 'waypost' ); ?></strong></label>
+							</fieldset>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row"><label for="wpst-results"><?php esc_html_e( 'Results page', 'waypost' ); ?></label></th>
 						<td>
 							<select id="wpst-results" name="results_page"><option value="0"><?php esc_html_e( 'None (instant results only)', 'waypost' ); ?></option>
 								<?php foreach ( $pages as $p ) : ?><option value="<?php echo (int) $p->ID; ?>" <?php selected( $o['results_page'], $p->ID ); ?>><?php echo esc_html( $p->post_title ); ?></option><?php endforeach; ?>
 							</select>
-							<p class="description"><?php echo wp_kses( sprintf( /* translators: %s: shortcode */ __( 'The page must contain %s. The setup wizard can create it for you.', 'waypost' ), '<code>[waypost_search_results]</code>' ), array( 'code' => array() ) ); ?></p>
+							<p class="description"><?php echo wp_kses( sprintf( /* translators: %s: shortcode */ __( 'Only used with a separate results page. It must contain %s; the setup wizard can create it for you.', 'waypost' ), '<code>[waypost_search_results]</code>' ), array( 'code' => array() ) ); ?></p>
 						</td>
 					</tr>
 					<tr>
@@ -842,7 +856,7 @@ class Waypost_Admin {
 		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'delete_on_uninstall' ) as $k ) {
 			$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
-		foreach ( array( 'home_page', 'results_page', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title' ) as $k ) {
+		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title' ) as $k ) {
 			if ( isset( $in[ $k ] ) ) {
 				$changes[ $k ] = $in[ $k ];
 			}

@@ -187,8 +187,15 @@ Troubleshooting</pre>
 						<li><strong><?php esc_html_e( 'Keyboard', 'waypost' ); ?></strong>: <?php esc_html_e( 'arrow keys move through results, Enter opens one, Esc closes the list.', 'waypost' ); ?></li>
 						<li><strong><?php esc_html_e( 'Search anywhere', 'waypost' ); ?></strong>: <?php esc_html_e( 'on doc pages, Ctrl+K (Cmd+K on Mac) or the / key opens a search window.', 'waypost' ); ?></li>
 					</ul>
-					<h3><?php esc_html_e( 'The results page', 'waypost' ); ?></h3>
-					<p><?php esc_html_e( 'When someone presses Enter, they go to a full list of results. The setup wizard creates this page for you. To make one yourself:', 'waypost' ); ?></p>
+					<h3><?php esc_html_e( 'Where full results show', 'waypost' ); ?></h3>
+					<p><?php esc_html_e( 'When someone presses Enter, they see a full list of results. Choose where in Settings, Search, Full results show:', 'waypost' ); ?></p>
+					<ul class="wpst-list">
+						<li><strong><?php esc_html_e( 'On the docs home page', 'waypost' ); ?></strong>: <?php esc_html_e( 'results appear inside the search home, below the search box, without leaving the page. Your layout and sidebar menu stay in place, quick searches stay on top and the topic cards step aside until the reader goes back. Search boxes anywhere else on the site send readers here too. Set the Docs home page under Navigation.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'On a separate results page', 'waypost' ); ?></strong>: <?php esc_html_e( 'a page of its own that lists results. The setup wizard can create it.', 'waypost' ); ?></li>
+					</ul>
+					<p><?php esc_html_e( 'Either way the address includes the search words, so readers can share a link to their results and the Back button works.', 'waypost' ); ?></p>
+					<h3><?php esc_html_e( 'A separate results page', 'waypost' ); ?></h3>
+					<p><?php esc_html_e( 'The setup wizard creates this page for you. To make one yourself:', 'waypost' ); ?></p>
 					<ol class="wpst-tut">
 						<li><?php esc_html_e( 'Create a page called Search results.', 'waypost' ); ?></li>
 						<li><?php echo wp_kses( sprintf( /* translators: %s: shortcode */ __( 'Add the shortcode %s to it and publish.', 'waypost' ), '<code>[waypost_search_results]</code>' ), array( 'code' => array() ) ); ?></li>

@@ -68,7 +68,7 @@ class Waypost_Frontend {
 			return false;
 		}
 		$id = (int) get_queried_object_id();
-		return Waypost_Tree::is_doc( $id ) || $id === (int) Waypost_Settings::get( 'results_page' );
+		return Waypost_Tree::is_doc( $id ) || $id === Waypost_Search::results_page_id();
 	}
 
 	public static function register_assets() {
@@ -87,6 +87,7 @@ class Waypost_Frontend {
 				'isDoc'      => is_singular() && Waypost_Tree::is_doc( get_queried_object_id() ),
 				'placeholder' => Waypost_Settings::placeholder(),
 				'quick'      => array_values( (array) Waypost_Settings::get( 'quick_searches' ) ),
+				'perPage'    => (int) Waypost_Settings::get( 'per_page' ),
 				'i18n'       => array(
 					'noResults' => __( 'No results. Try a different word.', 'waypost' ),
 					'searching' => __( 'Searching…', 'waypost' ),
@@ -97,6 +98,14 @@ class Waypost_Frontend {
 					'navHint'   => __( '↑ ↓ to move · Enter to open · Esc to close', 'waypost' ),
 					'results'   => __( 'Search results', 'waypost' ),
 					'popular'   => __( 'Popular searches', 'waypost' ),
+					/* translators: 1: number of results, 2: search query */
+					'oneResult' => __( '%1$s result for “%2$s”', 'waypost' ),
+					/* translators: 1: number of results, 2: search query */
+					'manyResults' => __( '%1$s results for “%2$s”', 'waypost' ),
+					'noMatch'   => __( 'Nothing matched. Try a shorter or different word.', 'waypost' ),
+					'pages'     => __( 'Search results pages', 'waypost' ),
+					'prev'      => __( '← Previous', 'waypost' ),
+					'next'      => __( 'Next →', 'waypost' ),
 				),
 			)
 		);
