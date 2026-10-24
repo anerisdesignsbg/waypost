@@ -333,12 +333,55 @@ class Waypost_Wizard {
 		</div>
 		<p class="description"><?php esc_html_e( 'Building a Divi Theme Builder template with these modules in a sidebar? Untick the matching boxes so nothing shows twice.', 'waypost' ); ?></p>
 
-		<h2><label for="wpst-home"><?php esc_html_e( 'Docs home page', 'waypost' ); ?></label> <span class="wpst-muted"><?php esc_html_e( '(optional)', 'waypost' ); ?></span></h2>
-		<select id="wpst-home" name="home_page"><option value="0"><?php esc_html_e( 'None', 'waypost' ); ?></option>
-			<?php foreach ( $pages as $p ) : ?><option value="<?php echo (int) $p->ID; ?>" <?php selected( $o['home_page'], $p->ID ); ?>><?php echo esc_html( $p->post_title ); ?></option><?php endforeach; ?>
-		</select>
-		<p class="description"><?php esc_html_e( 'Shown as the first step in breadcrumbs.', 'waypost' ); ?></p>
+		<?php $has_home = $o['home_page'] && 'publish' === get_post_status( $o['home_page'] ); ?>
+		<h2><?php esc_html_e( 'Docs home page', 'waypost' ); ?></h2>
+		<p><?php esc_html_e( 'The start page of your docs: a large search box, quick searches and topic cards. It is also the first step in breadcrumbs.', 'waypost' ); ?></p>
+		<fieldset class="wpst-choices wpst-choices--stack">
+			<legend class="screen-reader-text"><?php esc_html_e( 'Docs home page', 'waypost' ); ?></legend>
+			<label class="wpst-choice">
+				<input type="radio" name="home_mode" value="create" <?php checked( ! $has_home ); ?>>
+				<span><strong><?php esc_html_e( 'Create a “Documentation” page for me', 'waypost' ); ?></strong><small><?php esc_html_e( 'A new published page with the search home already on it. Change its heading, quick searches and topic cards in Settings, Search home.', 'waypost' ); ?></small></span>
+			</label>
+			<label class="wpst-choice">
+				<input type="radio" name="home_mode" value="existing" <?php checked( $has_home ); ?>>
+				<span><strong><?php esc_html_e( 'Use an existing page', 'waypost' ); ?></strong>
+					<small><?php esc_html_e( 'With the Waypost docs layout, the search home is added to it automatically if it is not there yet.', 'waypost' ); ?></small>
+					<select id="wpst-home" name="home_page" aria-label="<?php esc_attr_e( 'Docs home page', 'waypost' ); ?>">
+						<option value="0"><?php esc_html_e( 'Choose…', 'waypost' ); ?></option>
+						<?php foreach ( $pages as $p ) : ?><option value="<?php echo (int) $p->ID; ?>" <?php selected( $o['home_page'], $p->ID ); ?>><?php echo esc_html( $p->post_title ); ?></option><?php endforeach; ?>
+					</select>
+				</span>
+			</label>
+			<label class="wpst-choice">
+				<input type="radio" name="home_mode" value="none">
+				<span><strong><?php esc_html_e( 'No docs home page', 'waypost' ); ?></strong><small><?php esc_html_e( 'Readers start on your doc pages. Full search results then need a separate results page.', 'waypost' ); ?></small></span>
+			</label>
+		</fieldset>
 		<?php
+	}
+
+	/**
+	 * A published "Documentation" page holding the search home. With the theme's own
+	 * layout it gets the docs menu too, since there is no Waypost sidebar to show it.
+	 */
+	private static function create_docs_home() {
+		$content = '<!-- wp:waypost/search-home /-->';
+		if ( 'waypost' !== Waypost_Settings::get( 'layout' ) ) {
+			$content .= "\n" . '<!-- wp:waypost/menu {"title":"' . esc_attr__( 'All documentation', 'waypost' ) . '"} /-->';
+		}
+		$id = wp_insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => __( 'Documentation', 'waypost' ),
+				'post_content' => $content,
+			)
+		);
+		if ( ! $id || is_wp_error( $id ) ) {
+			return 0;
+		}
+		update_post_meta( $id, '_waypost_created', 1 );
+		return (int) $id;
 	}
 
 	private static function step_done() {
@@ -456,9 +499,13 @@ class Waypost_Wizard {
 				break;
 
 			case 'features':
-				$changes = array(
-					'home_page' => isset( $in['home_page'] ) ? absint( $in['home_page'] ) : 0,
-				);
+				$home_mode = isset( $in['home_mode'] ) ? sanitize_key( $in['home_mode'] ) : 'existing';
+				$changes   = array( 'home_page' => 0 );
+				if ( 'create' === $home_mode ) {
+					$changes['home_page'] = self::create_docs_home();
+				} elseif ( 'existing' === $home_mode ) {
+					$changes['home_page'] = isset( $in['home_page'] ) ? absint( $in['home_page'] ) : 0;
+				}
 				foreach ( array( 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'shortcut', 'show_updated', 'feedback' ) as $k ) {
 					$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 				}

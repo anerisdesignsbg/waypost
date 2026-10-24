@@ -191,6 +191,9 @@
 	$('select[name=results_page]').on('change', function () {
 		$('input[name=results_mode][value=existing]').prop('checked', true);
 	});
+	$('select[name=home_page]').on('change', function () {
+		$('input[name=home_mode][value=existing]').prop('checked', true);
+	});
 	$('select[name=taxonomy]').on('change', function () {
 		$('input[name=taxonomy_mode][value=existing]').prop('checked', true);
 	});

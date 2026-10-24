@@ -416,10 +416,10 @@ body.waypost-modal-open { overflow: hidden; }
 .waypost-layout__sidebar { grid-area: side; min-width: 0; }
 .waypost-layout__main { grid-area: main; min-width: 0; }
 .waypost-layout__toc { grid-area: toc; min-width: 0; }
-.waypost-layout__sticky {
-	position: sticky; top: var(--waypost-sticky-top, 24px);
-	max-height: calc(100vh - var(--waypost-sticky-top, 24px) - 16px); overflow-y: auto; overscroll-behavior: contain; padding-bottom: 8px;
-}
+/* Sticky while it fits the window. Taller than the window, it scrolls with the page instead of
+   getting a scrollbar of its own (frontend.js adds .is-tall). */
+.waypost-layout__sticky { position: sticky; top: var(--waypost-sticky-top, 24px); }
+.waypost-layout__sticky.is-tall { position: static; }
 .waypost-layout__sidebar .waypost-search { margin-bottom: 16px; }
 .waypost-layout__toc .waypost-toc { margin: 0; }
 .waypost-layout__toc-inline { display: none; }
@@ -430,6 +430,11 @@ body.waypost-modal-open { overflow: hidden; }
 .waypost-layout__edit { margin: 2em 0 0; font-size: 13px; }
 body .waypost-layout__edit a { color: var(--waypost-muted); }
 .waypost-layout__content :is(h2, h3, h4) { scroll-margin-top: calc(var(--waypost-sticky-top, 24px) + 12px); }
+/* Page builders paint sections white by default, which would cover the style's page colour.
+   Backgrounds set on purpose in the builder still win (Divi marks those !important). */
+.waypost-layout .waypost-layout__content :is(.et_pb_section, .et_pb_row, .et_pb_column, .et-l, .et_builder_inner_content) { background-color: transparent; }
+.waypost-layout .waypost-layout__content .et_pb_section { padding-top: 0; padding-bottom: 0; }
+.waypost-layout .waypost-layout__content .et_pb_row { width: 100%; max-width: none; }
 .waypost-layout .waypost-crumbs { margin-bottom: 1.4em; }
 
 /* Content typography for the Waypost styles. Follow my theme leaves it to the theme.
@@ -464,7 +469,7 @@ body:not(.waypost-style-theme) .waypost-layout__content img:not(:where(.waypost-
 @media (max-width: 900px) {
 	.waypost-layout { padding: 24px 0 48px; }
 	.waypost-layout .waypost-layout__inner { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; gap: 24px; padding: 0 16px; }
-	.waypost-layout__sticky { position: static; max-height: none; overflow: visible; }
+	.waypost-layout__sticky { position: static; }
 	.waypost-layout .waypost-layout__title { font-size: 1.8em; }
 }
 

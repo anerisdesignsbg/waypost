@@ -98,6 +98,30 @@ test( 'search home settings save and show on the docs home', async ( { page } ) 
 	await expect( page.locator( '.notice-success' ) ).toBeVisible();
 } );
 
+test( 'the wizard can create the docs home page', async ( { page } ) => {
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	const original = await page.inputValue( '#wpst-home' );
+
+	await page.goto( '/wp-admin/admin.php?page=waypost-setup&step=features' );
+	await page.locator( 'input[name=home_mode][value=create]' ).check();
+	await page.click( 'button:has-text("Save and continue")' );
+	await expect( page.locator( 'h1' ) ).toContainText( 'Your docs are set up' );
+
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
+	const created = await page.inputValue( '#wpst-home' );
+	expect( created ).not.toBe( original );
+	await expect( page.locator( '#wpst-home option:checked' ) ).toHaveText( 'Documentation' );
+
+	await page.goto( '/?page_id=' + created );
+	await expect( page.locator( '.waypost-layout--home .waypost-home' ) ).toBeVisible();
+	await expect( page.locator( '.waypost-layout__title' ) ).toHaveCount( 0 );
+
+	await page.goto( '/wp-admin/admin.php?page=waypost-settings' ); // Put the seeded docs home back.
+	await page.selectOption( '#wpst-home', original );
+	await page.click( 'button:has-text("Save settings")' );
+	await expect( page.locator( '#wpst-home' ) ).toHaveValue( original );
+} );
+
 test( 'search insights lists searches with no results', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-insights' );
 	await expect( page.locator( '.wpst-log' ).first() ).toContainText( 'heic' );

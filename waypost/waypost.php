@@ -22,6 +22,15 @@ define( 'WAYPOST_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WAYPOST_URL', plugin_dir_url( __FILE__ ) );
 define( 'WAYPOST_OWN_TAXONOMY', 'waypost_section' );
 
+/**
+ * Version string for a plugin asset: the plugin version plus the file's last
+ * change, so browsers fetch a new copy whenever the file changes.
+ */
+function waypost_asset_version( $file ) {
+	$path = WAYPOST_DIR . $file;
+	return WAYPOST_VERSION . ( file_exists( $path ) ? '.' . filemtime( $path ) : '' );
+}
+
 require_once WAYPOST_DIR . 'includes/class-settings.php';
 require_once WAYPOST_DIR . 'includes/class-taxonomy.php';
 require_once WAYPOST_DIR . 'includes/class-tree.php';

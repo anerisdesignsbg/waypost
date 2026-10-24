@@ -35,7 +35,11 @@ $old = get_posts(
 		'post_status'    => 'any',
 		'posts_per_page' => -1,
 		'fields'         => 'ids',
-		'meta_key'       => WAYPOST_SEED_META, // phpcs:ignore WordPress.DB.SlowDBQuery
+		'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery
+			'relation' => 'OR',
+			array( 'key' => WAYPOST_SEED_META ),
+			array( 'key' => '_waypost_created' ), // Docs home pages made by the setup wizard.
+		),
 	)
 );
 foreach ( $old as $id ) {

@@ -85,10 +85,10 @@ class Waypost_Frontend {
 	}
 
 	public static function register_assets() {
-		wp_register_style( 'waypost', WAYPOST_URL . 'assets/css/frontend.css', array(), WAYPOST_VERSION );
+		wp_register_style( 'waypost', WAYPOST_URL . 'assets/css/frontend.css', array(), waypost_asset_version( 'assets/css/frontend.css' ) );
 		wp_add_inline_style( 'waypost', self::inline_css() );
 
-		wp_register_script( 'waypost', WAYPOST_URL . 'assets/js/frontend.js', array(), WAYPOST_VERSION, true );
+		wp_register_script( 'waypost', WAYPOST_URL . 'assets/js/frontend.js', array(), waypost_asset_version( 'assets/js/frontend.js' ), true );
 		wp_localize_script(
 			'waypost',
 			'waypostConfig',

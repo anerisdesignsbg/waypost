@@ -624,9 +624,20 @@
 			var top = 0;
 			bars.forEach(function (r) { if (r.top <= top + 1) top = Math.max(top, r.bottom); });
 			root.style.setProperty('--waypost-sticky-top', Math.round(top + 20) + 'px');
+			fit(top + 20);
+		}
+		// A column taller than the window stops being sticky, so it scrolls with the page.
+		var columns = layout.querySelectorAll('.waypost-layout__sticky');
+		function fit(top) {
+			columns.forEach(function (c) { c.classList.toggle('is-tall', c.offsetHeight > window.innerHeight - top - 16); });
 		}
 		function queue() { if (!queued) { queued = true; requestAnimationFrame(measure); } }
 		measure();
+		// Opening or closing a menu section changes the sidebar's height.
+		if (window.ResizeObserver) {
+			var ro = new ResizeObserver(queue);
+			columns.forEach(function (c) { ro.observe(c); });
+		}
 		window.addEventListener('resize', queue);
 		window.addEventListener('scroll', queue, { passive: true });
 		window.addEventListener('load', queue);

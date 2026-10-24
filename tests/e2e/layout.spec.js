@@ -87,6 +87,20 @@ test.describe( 'Docs layout', () => {
 		expect( scroll ).toBe( 0 );
 	} );
 
+	test( 'the sidebar never scrolls inside; when taller than the window it scrolls with the page', async ( { page } ) => {
+		const sticky = page.locator( '.waypost-layout__sidebar .waypost-layout__sticky' );
+		const check = () => sticky.evaluate( ( el ) => ( { tall: el.classList.contains( 'is-tall' ), position: getComputedStyle( el ).position, overflow: getComputedStyle( el ).overflowY } ) );
+
+		await page.setViewportSize( { width: 1280, height: 600 } ); // Shorter than the open menu.
+		await page.goto( '/installing-on-ubuntu/' );
+		await expect.poll( async () => ( await check() ).tall ).toBe( true );
+		expect( await check() ).toEqual( { tall: true, position: 'static', overflow: 'visible' } );
+
+		await page.setViewportSize( { width: 1280, height: 1600 } ); // Tall enough to fit it.
+		await expect.poll( async () => ( await check() ).tall ).toBe( false );
+		expect( await check() ).toEqual( { tall: false, position: 'sticky', overflow: 'visible' } );
+	} );
+
 	test( 'the settings diagram follows the options', async ( { page } ) => {
 		await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
 		const diagram = page.locator( '.wpst-diagram' );

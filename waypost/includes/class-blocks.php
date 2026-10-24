@@ -21,10 +21,10 @@ class Waypost_Blocks {
 			'waypost-blocks',
 			WAYPOST_URL . 'assets/js/blocks.js',
 			array( 'wp-blocks', 'wp-element', 'wp-server-side-render', 'wp-block-editor', 'wp-components', 'wp-i18n' ),
-			WAYPOST_VERSION,
+			waypost_asset_version( 'assets/js/blocks.js' ),
 			true
 		);
-		wp_register_style( 'waypost-editor', WAYPOST_URL . 'assets/css/frontend.css', array(), WAYPOST_VERSION );
+		wp_register_style( 'waypost-editor', WAYPOST_URL . 'assets/css/frontend.css', array(), waypost_asset_version( 'assets/css/frontend.css' ) );
 
 		$common = array(
 			'editor_script' => 'waypost-blocks',

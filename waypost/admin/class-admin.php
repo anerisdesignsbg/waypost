@@ -87,11 +87,11 @@ class Waypost_Admin {
 			return;
 		}
 		// The front-end styles power the style preview.
-		wp_enqueue_style( 'waypost-preview', WAYPOST_URL . 'assets/css/frontend.css', array(), WAYPOST_VERSION );
+		wp_enqueue_style( 'waypost-preview', WAYPOST_URL . 'assets/css/frontend.css', array(), waypost_asset_version( 'assets/css/frontend.css' ) );
 		wp_add_inline_style( 'waypost-preview', Waypost_Frontend::inline_css() );
-		wp_enqueue_style( 'waypost-admin', WAYPOST_URL . 'assets/css/admin.css', array( 'waypost-preview' ), WAYPOST_VERSION );
+		wp_enqueue_style( 'waypost-admin', WAYPOST_URL . 'assets/css/admin.css', array( 'waypost-preview' ), waypost_asset_version( 'assets/css/admin.css' ) );
 		wp_enqueue_script( 'jquery-ui-sortable' );
-		wp_enqueue_script( 'waypost-admin', WAYPOST_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-sortable' ), WAYPOST_VERSION, true );
+		wp_enqueue_script( 'waypost-admin', WAYPOST_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-sortable' ), waypost_asset_version( 'assets/js/admin.js' ), true );
 		wp_localize_script(
 			'waypost-admin',
 			'waypostAdmin',
