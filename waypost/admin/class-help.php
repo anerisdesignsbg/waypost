@@ -253,6 +253,7 @@ Troubleshooting</pre>
 					</ul>
 					<p><?php esc_html_e( 'The style you pick (Modern, Classic, Dark and so on) colours the whole docs area, including headings, links and code blocks. With Follow my theme, the page keeps your theme’s fonts and colours.', 'waypost' ); ?></p>
 					<p><?php esc_html_e( 'Choose the layout in Settings, Appearance, or in the setup wizard. Prefer your own design? Pick My theme’s layout and place the blocks, Divi modules or shortcodes yourself (see Placing the menu and search).', 'waypost' ); ?></p>
+					<p><?php esc_html_e( 'It works with classic themes, Divi included, and with block themes such as Twenty Twenty-Five. In a block theme it uses the header and footer from your page template, including any changes you made to them in the Site Editor.', 'waypost' ); ?></p>
 					<p class="wpst-note"><?php esc_html_e( 'Page builders keep working inside the layout: Divi, for example, still builds the page content, and its Visual Builder opens as normal. If your docs home was built with the menu on it, remove that menu, because the layout already shows one in the sidebar.', 'waypost' ); ?></p>
 				</article>
 

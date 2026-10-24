@@ -55,7 +55,51 @@ class Waypost_Layout {
 		if ( ! self::applies() ) {
 			return $template;
 		}
-		return WAYPOST_DIR . 'templates/docs.php';
+		return WAYPOST_DIR . ( wp_is_block_theme() ? 'templates/docs-block.php' : 'templates/docs.php' );
+	}
+
+	/**
+	 * Block themes: the theme's header and footer template parts, taken from the
+	 * page template it would have used, so a customised header or footer shows too.
+	 * Returns array( header HTML, footer HTML ).
+	 */
+	public static function block_chrome() {
+		global $_wp_current_template_content;
+		$header = null;
+		$footer = null;
+		foreach ( parse_blocks( (string) $_wp_current_template_content ) as $block ) {
+			if ( 'core/template-part' !== $block['blockName'] ) {
+				continue;
+			}
+			$area = self::part_area( $block['attrs'] );
+			if ( 'header' === $area && ! $header ) {
+				$header = $block; // The first header.
+			} elseif ( 'footer' === $area ) {
+				$footer = $block; // The last footer.
+			}
+		}
+		$fallback = function ( $slug ) {
+			return parse_blocks( '<!-- wp:template-part {"slug":"' . $slug . '","tagName":"' . $slug . '"} /-->' )[0];
+		};
+		return array(
+			render_block( $header ? $header : $fallback( 'header' ) ),
+			render_block( $footer ? $footer : $fallback( 'footer' ) ),
+		);
+	}
+
+	private static function part_area( array $attrs ) {
+		if ( ! empty( $attrs['area'] ) ) {
+			return $attrs['area'];
+		}
+		if ( empty( $attrs['slug'] ) ) {
+			return '';
+		}
+		$theme = ! empty( $attrs['theme'] ) ? $attrs['theme'] : get_stylesheet();
+		$part  = get_block_template( $theme . '//' . $attrs['slug'], 'wp_template_part' );
+		if ( $part && ! empty( $part->area ) && 'uncategorized' !== $part->area ) {
+			return $part->area;
+		}
+		return in_array( $attrs['slug'], array( 'header', 'footer' ), true ) ? $attrs['slug'] : '';
 	}
 
 	public static function body_class( $classes ) {

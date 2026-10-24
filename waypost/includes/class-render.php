@@ -449,7 +449,7 @@ class Waypost_Render {
 						?>
 					</div>
 				</aside>
-				<div class="waypost-layout__main">
+				<main class="waypost-layout__main" id="wp--skip-link--target">
 					<?php
 					if ( 'doc' === $kind && $o['crumbs_auto'] ) {
 						echo self::breadcrumbs( array( 'post_id' => $post_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
@@ -475,7 +475,7 @@ class Waypost_Render {
 						echo '<p class="waypost-layout__edit"><a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit this page', 'waypost' ) . '</a></p>';
 					}
 					?>
-				</div>
+				</main>
 				<?php if ( $toc ) : ?>
 					<aside class="waypost-layout__toc" aria-label="<?php esc_attr_e( 'On this page', 'waypost' ); ?>">
 						<div class="waypost-layout__sticky"><?php echo $toc; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?></div>
