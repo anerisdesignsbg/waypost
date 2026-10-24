@@ -11,8 +11,104 @@ class Waypost_Search {
 	const LOG_OPTION = 'waypost_search_log';
 	const LOG_MAX    = 500;
 
+	/** Plain text of each doc page, kept up to date on save. Search reads this instead of raw content. */
+	const TEXT_META = '_waypost_text';
+	/** Which post types and text version have been filled in for existing pages. */
+	const TEXT_OPTION = 'waypost_text_ready';
+	const TEXT_VERSION = 1;
+	const TEXT_BATCH   = 200;
+
 	public static function init() {
 		add_action( 'rest_api_init', array( __CLASS__, 'routes' ) );
+		add_action( 'save_post', array( __CLASS__, 'save_text' ), 10, 2 );
+		add_action( 'admin_init', array( __CLASS__, 'fill_text' ) );
+		add_filter( 'posts_search', array( __CLASS__, 'where' ), 10, 2 );
+	}
+
+	// ── Searchable text ─────────────────────────────────────────────────────
+
+	/**
+	 * Readable text of post content: page builder data unpacked, shortcode tags
+	 * and HTML removed, with a space wherever a tag was so words do not run together.
+	 */
+	public static function plain_text( $content ) {
+		$html = Waypost_Render::content_html( $content );
+		$html = Waypost_Headings::strip_shortcode_tags( $html );
+		$html = preg_replace( '/<(script|style)\b.*?<\/\1>/is', ' ', $html );
+		// Block-level tags only: a space inside <em>Mag</em>pie would split the word.
+		$html = preg_replace( '#<(/?)(p|h[1-6]|li|dt|dd|div|section|article|br|hr|td|th|tr|ul|ol|pre|blockquote|figcaption)\b#i', ' <$1$2', $html );
+		$text = wp_strip_all_tags( $html );
+		$text = html_entity_decode( $text, ENT_QUOTES, get_bloginfo( 'charset' ) );
+		return trim( preg_replace( '/\s+/u', ' ', $text ) );
+	}
+
+	public static function save_text( $post_id, $post ) {
+		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) || ! in_array( $post->post_type, Waypost_Settings::post_types(), true ) ) {
+			return;
+		}
+		update_post_meta( $post_id, self::TEXT_META, wp_slash( self::plain_text( $post->post_content ) ) );
+	}
+
+	/**
+	 * Fills in the text for pages saved before this existed, or of a newly ticked
+	 * post type. Runs in batches on admin pages and before a search, and stops
+	 * checking once everything is done.
+	 */
+	public static function fill_text() {
+		static $ran = false;
+		$key = self::TEXT_VERSION . ':' . implode( ',', Waypost_Settings::post_types() );
+		if ( $ran || get_option( self::TEXT_OPTION ) === $key ) {
+			return;
+		}
+		$ran = true;
+		$ids = get_posts(
+			array(
+				'post_type'      => Waypost_Settings::post_types(),
+				'post_status'    => 'any',
+				'posts_per_page' => self::TEXT_BATCH,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'meta_query'     => array( array( 'key' => self::TEXT_META, 'compare' => 'NOT EXISTS' ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		foreach ( $ids as $id ) {
+			update_post_meta( $id, self::TEXT_META, wp_slash( self::plain_text( get_post_field( 'post_content', $id ) ) ) );
+		}
+		if ( count( $ids ) < self::TEXT_BATCH ) {
+			update_option( self::TEXT_OPTION, $key, false );
+		}
+	}
+
+	/**
+	 * Matches every search word in the title or the page's plain text, instead of
+	 * WordPress's match on raw content. Raw Divi 5 content holds layout data, so it
+	 * finds words like "desktop" on every page, and it writes & and quotes as codes.
+	 * A page without plain text yet falls back to its raw content.
+	 */
+	public static function where( $search, $query ) {
+		global $wpdb;
+		if ( ! $query->get( 'waypost' ) || '' === $search ) {
+			return $search;
+		}
+		$terms = (array) $query->get( 'search_terms' );
+		if ( ! $terms ) {
+			return $search;
+		}
+		$and = array();
+		foreach ( $terms as $term ) {
+			$like  = '%' . $wpdb->esc_like( ltrim( $term, '-' ) ) . '%';
+			$and[] = $wpdb->prepare(
+				"({$wpdb->posts}.post_title LIKE %s
+					OR {$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value LIKE %s )
+					OR ( {$wpdb->posts}.post_content LIKE %s AND NOT EXISTS ( SELECT 1 FROM {$wpdb->postmeta} m WHERE m.post_id = {$wpdb->posts}.ID AND m.meta_key = %s ) ))",
+				$like,
+				self::TEXT_META,
+				$like,
+				$like,
+				self::TEXT_META
+			);
+		}
+		return ' AND ( ' . implode( ' AND ', $and ) . ' ) ';
 	}
 
 	public static function routes() {
@@ -57,6 +153,7 @@ class Waypost_Search {
 		if ( ! taxonomy_exists( $tax ) ) {
 			return $out;
 		}
+		self::fill_text();
 
 		$query = new WP_Query(
 			array(
@@ -67,6 +164,7 @@ class Waypost_Search {
 				'paged'               => $page,
 				'ignore_sticky_posts' => true,
 				'no_found_rows'       => false,
+				'waypost'             => 1, // Picked up by where().
 				'tax_query'           => array(
 					array(
 						'taxonomy' => $tax,
@@ -80,15 +178,15 @@ class Waypost_Search {
 		$out['pages'] = (int) $query->max_num_pages;
 
 		foreach ( $query->posts as $post ) {
-			$content = $post->post_content;
-			$url     = get_permalink( $post );
+			$url  = get_permalink( $post );
+			$text = get_post_meta( $post->ID, self::TEXT_META, true );
 			$out['results'][] = array(
 				'id'       => $post->ID,
 				'title'    => html_entity_decode( get_the_title( $post ), ENT_QUOTES, get_bloginfo( 'charset' ) ),
 				'url'      => $url,
 				'section'  => self::section_label( $post->ID ),
-				'excerpt'  => self::excerpt( $content, $q ),
-				'headings' => self::matching_headings( $content, $q, $url ),
+				'excerpt'  => self::excerpt( '' !== $text ? $text : self::plain_text( $post->post_content ), $q ),
+				'headings' => self::matching_headings( Waypost_Render::content_html( $post->post_content ), $q, $url ),
 			);
 		}
 		return $out;
@@ -108,11 +206,9 @@ class Waypost_Search {
 		return implode( ' › ', $names );
 	}
 
-	/** Plain-text snippet centred on the first match. */
-	public static function excerpt( $content, $q, $len = 170 ) {
-		$text = Waypost_Headings::strip_shortcode_tags( $content );
-		$text = html_entity_decode( wp_strip_all_tags( $text ), ENT_QUOTES, get_bloginfo( 'charset' ) );
-		$text = trim( preg_replace( '/\s+/u', ' ', $text ) );
+	/** Snippet of plain text (see plain_text()) centred on the first match. */
+	public static function excerpt( $text, $q, $len = 170 ) {
+		$text = (string) $text;
 		if ( '' === $text ) {
 			return '';
 		}

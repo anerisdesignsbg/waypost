@@ -6,6 +6,10 @@
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
+// The plain-text copy of each page used by search is rebuilt on demand, so it always goes.
+delete_metadata( 'post', 0, '_waypost_text', '', true );
+delete_option( 'waypost_text_ready' );
+
 $waypost_settings = get_option( 'waypost_settings', array() );
 
 if ( empty( $waypost_settings['delete_on_uninstall'] ) ) {

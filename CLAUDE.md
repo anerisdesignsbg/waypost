@@ -33,6 +33,7 @@ After changing PHP, JS or CSS: reload the page (wp-env mounts the folder live). 
 - One source of HTML: shortcodes, blocks and Divi modules all call `Waypost_Render`. Change output there only.
 - Heading anchors: `Waypost_Headings` is the single slug algorithm used by the TOC, the IDs added to content and search deep links. Keep them in sync by never generating anchors elsewhere.
 - Security: escape all output (`esc_html`, `esc_attr`, `esc_url`), nonces plus capability checks on every AJAX/admin-post handler, sanitise through `Waypost_Settings::sanitize`. Search results are rendered client-side with `textContent`, never `innerHTML` with data.
+- Search matches titles and `_waypost_text`, a plain-text copy of each page saved on `save_post` and filled in for older pages by `Waypost_Search::fill_text()` (batches, tracked in `waypost_text_ready`). It is not raw `post_content`, which for Divi 5 is JSON layout data. Read content through `Waypost_Render::content_html()` / `Waypost_Search::plain_text()`, never raw.
 - Cache: the menu tree is a transient (`waypost_tree`); call `Waypost_Tree::flush()` after changing terms, order or links.
 - Settings live in one option array (`waypost_settings`); add new keys to `defaults()` and `sanitize()`.
 - Copy and docs: UK English, plain wording, no em dashes anywhere (code comments, UI strings, readme, commit messages).

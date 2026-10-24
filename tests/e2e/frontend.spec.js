@@ -195,6 +195,20 @@ test.describe( 'Search', () => {
 		await expect( modal.locator( '.waypost-hit' ).first() ).toBeVisible();
 	} );
 
+	test( 'Divi 5 pages are found by their text, not their layout data', async ( { request } ) => {
+		const search = async ( q ) => ( await ( await request.get( '/wp-json/waypost/v1/search?q=' + encodeURIComponent( q ) ) ).json() );
+
+		const accented = await search( 'lumière' );
+		const hit = accented.results.find( ( r ) => r.title === 'Edge case: Divi 5 content' );
+		expect( hit ).toBeTruthy();
+		expect( hit.excerpt ).toContain( 'Lumière keeps every café photo safe.' );
+		expect( hit.headings.map( ( h ) => h.text ) ).toContain( 'Ảnh động và Lumière' );
+
+		for ( const layoutWord of [ 'builderVersion', 'innerContent', 'desktop' ] ) {
+			expect( ( await search( layoutWord ) ).total, layoutWord ).toBe( 0 );
+		}
+	} );
+
 	test( 'results page explains when nothing matched', async ( { page } ) => {
 		await page.goto( '/search-results/?dq=zzqxnothing' );
 		await expect( page.locator( '.waypost-results__none' ) ).toBeVisible();

@@ -256,6 +256,17 @@ $ids['Edge case: tricky headings'] = $page(
 	$s_guides
 );
 
+// Saved the way Divi 5 saves pages: text inside block attributes as JSON, with <, >, &
+// and quotes as \u codes. Search must read the text, not the layout data. wp_slash()
+// because wp_insert_post() strips backslashes, which would turn \u003c into u003c.
+$ids['Edge case: Divi 5 content'] = $page(
+	'Edge case: Divi 5 content',
+	wp_slash( '<!-- wp:divi/placeholder --><!-- wp:divi/section {"builderVersion":"5.10.1"} --><!-- wp:divi/text '
+		. serialize_block_attributes( array( 'content' => array( 'innerContent' => array( 'desktop' => array( 'value' => '<p>Lumière keeps every café photo safe.</p><h2>Ảnh động và Lumière</h2><p>Animated photos play when you hover over them.</p><h2>Exporting</h2><p>Export albums as a zip file.</p><h2>Printing</h2><p>Order prints of any album.</p>' ) ) ), 'builderVersion' => '5.10.1' ) )
+		. ' /--><!-- /wp:divi/section --><!-- /wp:divi/placeholder -->' ),
+	$s_guides
+);
+
 // Very long title (tests menu wrapping and pager).
 $ids['long'] = $page( 'Keeping originals and previews on separate disks across several servers with automatic failover and a shared cache', $body( 'long' ), $s_config );
 
