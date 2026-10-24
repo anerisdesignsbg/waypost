@@ -399,6 +399,94 @@ class Waypost_Render {
 		return $html;
 	}
 
+	/**
+	 * The Waypost docs layout: sidebar with search and menu, the page itself with
+	 * breadcrumbs, title and previous / next, and the contents list in a column of
+	 * its own. $kind is 'doc', 'home' or 'results' (see Waypost_Layout::page_kind()).
+	 */
+	public static function layout( $kind ) {
+		$o       = Waypost_Settings::all();
+		$post_id = (int) get_queried_object_id();
+
+		// The page first: the_content adds the heading anchors the contents list links to.
+		ob_start();
+		while ( have_posts() ) {
+			the_post();
+			the_content();
+		}
+		$content = ob_get_clean();
+		if ( 'home' === $kind && false === strpos( $content, 'waypost-home' ) ) {
+			$content = self::search_home() . $content; // A docs home without one still gets search.
+		}
+
+		$toc = '';
+		if ( 'doc' === $kind && $o['toc_auto'] && 'side' === $o['toc_position'] ) {
+			$toc = self::toc( array( 'post_id' => $post_id, 'content' => $content ) );
+		}
+
+		$classes = array(
+			'waypost-layout',
+			'waypost-layout--sidebar-' . $o['sidebar'],
+			'waypost-layout--' . $o['width'],
+			'waypost-layout--' . $kind,
+		);
+		if ( $toc ) {
+			$classes[] = 'waypost-layout--with-toc';
+		}
+
+		ob_start();
+		?>
+		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" style="--waypost-max-width: <?php echo (int) $o['max_width']; ?>px">
+			<div class="waypost-layout__inner">
+				<aside class="waypost-layout__sidebar" aria-label="<?php esc_attr_e( 'Documentation', 'waypost' ); ?>">
+					<div class="waypost-layout__sticky">
+						<?php
+						// The docs home and the results page have a search box of their own.
+						if ( 'doc' === $kind ) {
+							echo self::search_box( array( 'button' => 'no' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+						}
+						echo self::menu(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+						?>
+					</div>
+				</aside>
+				<div class="waypost-layout__main">
+					<?php
+					if ( 'doc' === $kind && $o['crumbs_auto'] ) {
+						echo self::breadcrumbs( array( 'post_id' => $post_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+					}
+					?>
+					<article id="post-<?php echo (int) $post_id; ?>" <?php post_class( 'waypost-layout__article', $post_id ); ?>>
+						<?php if ( 'home' !== $kind ) : ?>
+							<h1 class="waypost-layout__title"><?php echo esc_html( get_the_title( $post_id ) ); ?></h1>
+						<?php endif; ?>
+						<?php if ( $toc ) : ?>
+							<div class="waypost-layout__toc-inline"><?php echo $toc; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?></div>
+						<?php endif; ?>
+						<div class="entry-content waypost-layout__content">
+							<?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput -- the post content, filtered by WordPress. ?>
+						</div>
+					</article>
+					<?php
+					if ( 'doc' === $kind && $o['prevnext_auto'] ) {
+						echo self::prev_next( array( 'post_id' => $post_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+					}
+					$edit = get_edit_post_link( $post_id );
+					if ( $edit ) {
+						echo '<p class="waypost-layout__edit"><a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit this page', 'waypost' ) . '</a></p>';
+					}
+					?>
+				</div>
+				<?php if ( $toc ) : ?>
+					<aside class="waypost-layout__toc" aria-label="<?php esc_attr_e( 'On this page', 'waypost' ); ?>">
+						<div class="waypost-layout__sticky"><?php echo $toc; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?></div>
+					</aside>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
 	/** Icons for topic cards: key => array( label, SVG path data on a 24 x 24 grid ). */
 	public static function icons() {
 		return array(

@@ -226,6 +226,19 @@
 		});
 	});
 
+	/* ── Layout picker: live diagram ──────────────────── */
+	$('[data-wpst-layout]').each(function () {
+		var $l = $(this), $d = $l.find('.wpst-diagram');
+		var val = function (name) { return $l.find('input[name=' + name + ']:checked').val(); };
+		function sync() {
+			$l.toggleClass('is-theme', val('layout') === 'theme');
+			$d.attr({ 'data-sidebar': val('sidebar'), 'data-width': val('width'), 'data-toc': val('toc_position') });
+			$l.find('.wpst-layout__max').toggle(val('width') !== 'full');
+		}
+		$l.on('change', 'input', sync);
+		sync();
+	});
+
 	/* ── Help page: highlight topic in nav ────────────── */
 	var $helpLinks = $('.wpst-help__nav a[href^="#"]');
 	if ($helpLinks.length && 'IntersectionObserver' in window) {

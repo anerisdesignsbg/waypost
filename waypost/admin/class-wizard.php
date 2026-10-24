@@ -15,6 +15,7 @@ class Waypost_Wizard {
 			'content'  => __( 'Your docs', 'waypost' ),
 			'sections' => __( 'Sections', 'waypost' ),
 			'assign'   => __( 'Pages', 'waypost' ),
+			'look'     => __( 'Look', 'waypost' ),
 			'features' => __( 'Extras', 'waypost' ),
 			'done'     => __( 'Done', 'waypost' ),
 		);
@@ -270,6 +271,21 @@ class Waypost_Wizard {
 		<?php
 	}
 
+	private static function step_look() {
+		$o = Waypost_Settings::all();
+		if ( ! $o['setup_done'] ) {
+			$o['layout'] = 'waypost'; // First run: suggest the ready-made layout.
+		}
+		?>
+		<h1><?php esc_html_e( 'Choose how your docs look', 'waypost' ); ?></h1>
+		<p class="wpst-lead"><?php esc_html_e( 'Pick a layout and a style. Everything here can be changed later in Settings, Appearance.', 'waypost' ); ?></p>
+		<h2><?php esc_html_e( 'Layout', 'waypost' ); ?></h2>
+		<?php Waypost_Admin::layout_picker( $o ); ?>
+		<h2><?php esc_html_e( 'Style', 'waypost' ); ?></h2>
+		<?php Waypost_Admin::style_picker( $o ); ?>
+		<?php
+	}
+
 	private static function step_features() {
 		$o       = Waypost_Settings::all();
 		$pages   = get_pages( array( 'post_status' => 'publish' ) );
@@ -314,10 +330,6 @@ class Waypost_Wizard {
 			<label class="wpst-toggle"><input type="checkbox" name="shortcut" value="1" <?php checked( $o['shortcut'] ); ?>><span><strong><?php esc_html_e( 'Ctrl+K search', 'waypost' ); ?></strong><small><?php esc_html_e( 'Open search from anywhere on a doc page.', 'waypost' ); ?></small></span></label>
 		</div>
 		<p class="description"><?php esc_html_e( 'Building a Divi Theme Builder template with these modules in a sidebar? Untick the matching boxes so nothing shows twice.', 'waypost' ); ?></p>
-
-		<h2><?php esc_html_e( 'Look', 'waypost' ); ?></h2>
-		<p><?php esc_html_e( 'Pick a ready-made style. You can change it any time in Settings.', 'waypost' ); ?></p>
-		<?php Waypost_Admin::style_picker( $o ); ?>
 
 		<h2><label for="wpst-home"><?php esc_html_e( 'Docs home page', 'waypost' ); ?></label> <span class="wpst-muted"><?php esc_html_e( '(optional)', 'waypost' ); ?></span></h2>
 		<select id="wpst-home" name="home_page"><option value="0"><?php esc_html_e( 'None', 'waypost' ); ?></option>
@@ -431,15 +443,20 @@ class Waypost_Wizard {
 				}
 				break;
 
-			case 'features':
-				$changes = array(
-					'home_page' => isset( $in['home_page'] ) ? absint( $in['home_page'] ) : 0,
-				);
-				foreach ( array( 'style', 'accent' ) as $k ) {
+			case 'look':
+				$changes = array();
+				foreach ( array( 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'style', 'accent' ) as $k ) {
 					if ( isset( $in[ $k ] ) ) {
 						$changes[ $k ] = $in[ $k ];
 					}
 				}
+				Waypost_Settings::update( $changes );
+				break;
+
+			case 'features':
+				$changes = array(
+					'home_page' => isset( $in['home_page'] ) ? absint( $in['home_page'] ) : 0,
+				);
 				foreach ( array( 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'shortcut' ) as $k ) {
 					$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 				}

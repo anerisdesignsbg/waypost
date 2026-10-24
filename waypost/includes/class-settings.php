@@ -40,6 +40,11 @@ class Waypost_Settings {
 			'topics_title'    => '',
 			'quick_searches'  => array(),        // up to 6 of array( label, query )
 			'topics'          => array(),        // up to 6 of array( icon, title, text, page )
+			'layout'          => 'theme',        // theme: the theme's own page template | waypost: the Waypost docs layout
+			'sidebar'         => 'left',         // left | right
+			'width'           => 'contained',    // contained | full
+			'max_width'       => 1280,           // px, when contained
+			'toc_position'    => 'side',         // side: a column of its own | content: at the top of the page
 			'style'           => 'theme',        // a key from styles()
 			'accent'          => '#2563eb',
 			'delete_on_uninstall' => 0,
@@ -149,6 +154,16 @@ class Waypost_Settings {
 		$out['post_types'] = $types ? $types : array( 'page' );
 
 		$out['results_target'] = ( isset( $in['results_target'] ) && 'home' === $in['results_target'] ) ? 'home' : 'page';
+		$choices = array(
+			'layout'       => array( 'theme', 'waypost' ),
+			'sidebar'      => array( 'left', 'right' ),
+			'width'        => array( 'contained', 'full' ),
+			'toc_position' => array( 'side', 'content' ),
+		);
+		foreach ( $choices as $k => $allowed ) {
+			$out[ $k ] = ( isset( $in[ $k ] ) && in_array( $in[ $k ], $allowed, true ) ) ? $in[ $k ] : $d[ $k ];
+		}
+		$out['max_width'] = isset( $in['max_width'] ) ? max( 760, min( 2400, absint( $in['max_width'] ) ) ) : $d['max_width'];
 		foreach ( array( 'home_page', 'results_page' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? absint( $in[ $k ] ) : 0;
 		}

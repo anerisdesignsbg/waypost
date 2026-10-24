@@ -135,6 +135,59 @@ class Waypost_Admin {
 			. esc_html( $label ? $label : __( 'How this works', 'waypost' ) ) . '</a>';
 	}
 
+	/** Layout choice, sidebar side, width and contents position, with a live diagram. Used by Settings and the setup wizard. */
+	public static function layout_picker( array $o ) {
+		$radio = function ( $name, $value, $label ) use ( $o ) {
+			return '<label class="wpst-seg"><input type="radio" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" ' . checked( $o[ $name ], $value, false ) . '><span>' . esc_html( $label ) . '</span></label>';
+		};
+		?>
+		<div class="wpst-layout" data-wpst-layout>
+			<fieldset class="wpst-layout__choice">
+				<legend class="screen-reader-text"><?php esc_html_e( 'Page layout', 'waypost' ); ?></legend>
+				<label class="wpst-style">
+					<input type="radio" name="layout" value="waypost" <?php checked( $o['layout'], 'waypost' ); ?>>
+					<span class="wpst-style__text"><strong><?php esc_html_e( 'Waypost docs layout', 'waypost' ); ?></strong><small><?php esc_html_e( 'Ready in seconds. Doc pages, your docs home and search results get a complete docs layout with a sidebar menu, between your theme’s header and footer.', 'waypost' ); ?></small></span>
+				</label>
+				<label class="wpst-style">
+					<input type="radio" name="layout" value="theme" <?php checked( $o['layout'], 'theme' ); ?>>
+					<span class="wpst-style__text"><strong><?php esc_html_e( 'My theme’s layout', 'waypost' ); ?></strong><small><?php esc_html_e( 'Pages keep your theme’s template. You place the menu and search yourself with blocks, Divi modules or shortcodes.', 'waypost' ); ?></small></span>
+				</label>
+			</fieldset>
+			<div class="wpst-layout__body">
+				<table class="form-table wpst-layout__options" role="presentation">
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Sidebar', 'waypost' ); ?></th>
+						<td><fieldset class="wpst-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Sidebar', 'waypost' ); ?></legend><?php echo $radio( 'sidebar', 'left', __( 'Left', 'waypost' ) ) . $radio( 'sidebar', 'right', __( 'Right', 'waypost' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Width', 'waypost' ); ?></th>
+						<td>
+							<fieldset class="wpst-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Width', 'waypost' ); ?></legend><?php echo $radio( 'width', 'contained', __( 'Within a page width', 'waypost' ) ) . $radio( 'width', 'full', __( 'Full width', 'waypost' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset>
+							<p class="wpst-layout__max"><label><?php esc_html_e( 'Page width', 'waypost' ); ?> <input type="number" name="max_width" min="760" max="2400" step="10" value="<?php echo (int) $o['max_width']; ?>" class="small-text"> px</label></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'On this page contents', 'waypost' ); ?></th>
+						<td>
+							<fieldset class="wpst-segs"><legend class="screen-reader-text"><?php esc_html_e( 'On this page contents', 'waypost' ); ?></legend><?php echo $radio( 'toc_position', 'side', __( 'Own column', 'waypost' ) ) . $radio( 'toc_position', 'content', __( 'Top of the page', 'waypost' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset>
+							<p class="description"><?php esc_html_e( 'The column sits opposite the menu on wide screens and moves to the top of the page on smaller ones.', 'waypost' ); ?></p>
+						</td>
+					</tr>
+				</table>
+				<div class="wpst-diagram" aria-hidden="true" data-sidebar="<?php echo esc_attr( $o['sidebar'] ); ?>" data-width="<?php echo esc_attr( $o['width'] ); ?>" data-toc="<?php echo esc_attr( $o['toc_position'] ); ?>">
+					<span class="wpst-diagram__bar"><?php esc_html_e( 'Your header', 'waypost' ); ?></span>
+					<span class="wpst-diagram__body">
+						<span class="wpst-diagram__side"><i></i><i></i><i></i><i></i><i></i></span>
+						<span class="wpst-diagram__main"><b></b><i></i><i></i><i></i><i></i><i></i><i></i></span>
+						<span class="wpst-diagram__toc"><i></i><i></i><i></i></span>
+					</span>
+					<span class="wpst-diagram__bar"><?php esc_html_e( 'Your footer', 'waypost' ); ?></span>
+				</div>
+			</div>
+		</div>
+		<?php
+	}
+
 	/** Style cards, accent colour and a live preview. Used by Settings and the setup wizard. */
 	public static function style_picker( array $o ) {
 		?>
@@ -816,7 +869,10 @@ class Waypost_Admin {
 			</section>
 
 			<section class="wpst-card" id="appearance">
-				<div class="wpst-card__head"><h2><?php esc_html_e( 'Appearance', 'waypost' ); ?></h2><?php echo self::help_link( 'styling' ); // phpcs:ignore ?></div>
+				<div class="wpst-card__head"><h2><?php esc_html_e( 'Appearance', 'waypost' ); ?></h2><?php echo self::help_link( 'layout' ); // phpcs:ignore ?></div>
+				<h3 class="wpst-subhead"><?php esc_html_e( 'Layout', 'waypost' ); ?></h3>
+				<?php self::layout_picker( $o ); ?>
+				<h3 class="wpst-subhead"><?php esc_html_e( 'Style', 'waypost' ); ?> <?php echo self::help_link( 'styling' ); // phpcs:ignore ?></h3>
 				<table class="form-table" role="presentation">
 					<tr>
 						<td colspan="2" class="wpst-flush"><?php self::style_picker( $o ); ?></td>
@@ -856,7 +912,7 @@ class Waypost_Admin {
 		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'delete_on_uninstall' ) as $k ) {
 			$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
-		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title' ) as $k ) {
+		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title', 'layout', 'sidebar', 'width', 'max_width', 'toc_position' ) as $k ) {
 			if ( isset( $in[ $k ] ) ) {
 				$changes[ $k ] = $in[ $k ];
 			}

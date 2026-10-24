@@ -82,7 +82,7 @@ test.describe( 'Page features', () => {
 
 	test( 'long pages list every heading', async ( { page } ) => {
 		await page.goto( '/glossary/' );
-		await expect( page.locator( '.waypost-toc a' ) ).toHaveCount( 26 * 3 );
+		await expect( page.locator( '.waypost-toc:visible a' ) ).toHaveCount( 26 * 3 );
 	} );
 
 	test( 'previous and next links follow menu order', async ( { page } ) => {

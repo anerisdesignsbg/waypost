@@ -55,9 +55,9 @@ test( 'settings save and persist', async ( { page } ) => {
 
 test( 'style picker previews, saves and styles the front end', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
-	await expect( page.locator( '.wpst-style' ) ).toHaveCount( 6 );
+	await expect( page.locator( '.wpst-styles .wpst-style' ) ).toHaveCount( 6 );
 
-	await page.locator( 'label.wpst-style:has(input[value=dark])' ).click();
+	await page.locator( 'label.wpst-style:has(input[name=style][value=dark])' ).click();
 	await expect( page.locator( '.wpst-look' ) ).toHaveClass( /waypost-style-dark/ );
 	await expect( page.locator( '#wpst-accent' ) ).toHaveValue( '#60a5fa' );
 	await page.click( 'button:has-text("Save settings")' );
@@ -71,7 +71,7 @@ test( 'style picker previews, saves and styles the front end', async ( { page } 
 	expect( onAccent ).toBe( '#111111' ); // Dark text on the light accent.
 
 	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
-	await page.locator( 'label.wpst-style:has(input[value=theme])' ).click();
+	await page.locator( 'label.wpst-style:has(input[name=style][value=theme])' ).click();
 	await page.click( 'button:has-text("Save settings")' );
 	await expect( page.locator( 'input[name=style][value=theme]' ) ).toBeChecked();
 	await expect( page.locator( '#wpst-accent' ) ).toHaveValue( '#2563eb' );
@@ -105,7 +105,7 @@ test( 'search insights lists searches with no results', async ( { page } ) => {
 
 test( 'help page has every topic and the contextual help tab', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-help' );
-	await expect( page.locator( '.wpst-topic' ) ).toHaveCount( 12 );
+	await expect( page.locator( '.wpst-topic' ) ).toHaveCount( 13 );
 	await page.goto( '/wp-admin/admin.php?page=waypost-structure' );
 	await page.click( '#contextual-help-link' );
 	await expect( page.locator( '#tab-link-waypost-order' ) ).toBeVisible();
@@ -125,6 +125,9 @@ test( 'setup wizard runs end to end without breaking the site', async ( { page }
 	await expect( page.locator( '.notice-success' ) ).toContainText( '2 sections created' );
 
 	await page.click( 'text=Skip this step' ); // Pages.
+	await expect( page.locator( 'h1' ) ).toContainText( 'Choose how your docs look' );
+	await expect( page.locator( 'input[name=layout][value=waypost]' ) ).toBeChecked();
+	await page.click( 'button:has-text("Save and continue")' ); // Look.
 	await expect( page.locator( 'input[name=results_mode][value=home]' ) ).toBeChecked();
 	await page.click( 'button:has-text("Save and continue")' ); // Extras.
 	await expect( page.locator( 'h1' ) ).toContainText( 'Your docs are set up' );

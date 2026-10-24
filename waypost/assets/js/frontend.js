@@ -285,6 +285,15 @@
 		this.input.setAttribute('aria-expanded', 'true');
 	};
 
+	/* Drops a pending or running instant search, so its dropdown cannot open after the reader moved on. */
+	SearchUI.prototype.cancel = function () {
+		clearTimeout(this.timer);
+		clearTimeout(this.logTimer);
+		if (this.ctrl) this.ctrl.abort();
+		this.ctrl = null;
+		this.hide();
+	};
+
 	SearchUI.prototype.hide = function () {
 		if (this.opts.inModal) return;
 		this.panel.hidden = true;
@@ -494,7 +503,7 @@
 		}
 		function load(q, pg, push, scroll) {
 			current = q;
-			ui.hide();
+			ui.cancel();
 			if (ctrl) ctrl.abort();
 			ctrl = window.AbortController ? new AbortController() : null;
 			show(true);
@@ -590,6 +599,39 @@
 		});
 	}
 
+	/* ── Docs layout: full width and sticky columns ───── */
+
+	// The layout spans the window (100vw minus the scrollbar) and its sticky columns sit below any
+	// fixed header, such as the admin bar or Divi's fixed navigation, which may shrink on scroll.
+	function initLayout() {
+		var layout = document.querySelector('.waypost-layout');
+		if (!layout) return;
+		var root = document.documentElement;
+		var headers = '#wpadminbar, #main-header, #top-header, header, .site-header, .et-l--header, .elementor-location-header';
+		var queued = false;
+		function measure() {
+			queued = false;
+			root.style.setProperty('--waypost-sbw', (window.innerWidth - root.clientWidth) + 'px');
+			// Fixed bars stack: the admin bar, then a theme header right below it, and so on.
+			var bars = [];
+			document.querySelectorAll(headers).forEach(function (h) {
+				var pos = getComputedStyle(h).position;
+				if (pos !== 'fixed' && pos !== 'sticky') return;
+				var r = h.getBoundingClientRect();
+				if (r.bottom > 0 && r.height > 0 && r.height < window.innerHeight / 2) bars.push(r);
+			});
+			bars.sort(function (a, b) { return a.top - b.top; });
+			var top = 0;
+			bars.forEach(function (r) { if (r.top <= top + 1) top = Math.max(top, r.bottom); });
+			root.style.setProperty('--waypost-sticky-top', Math.round(top + 20) + 'px');
+		}
+		function queue() { if (!queued) { queued = true; requestAnimationFrame(measure); } }
+		measure();
+		window.addEventListener('resize', queue);
+		window.addEventListener('scroll', queue, { passive: true });
+		window.addEventListener('load', queue);
+	}
+
 	/* ── Boot ─────────────────────────────────────────── */
 
 	function boot() {
@@ -601,6 +643,7 @@
 			if (home) initHome(home, ui);
 		});
 		document.querySelectorAll('.waypost-toc').forEach(initToc);
+		initLayout();
 		initQuickSearches();
 		if (cfg.shortcut && (cfg.isDoc || boxes.length)) initShortcut();
 		if (cfg.copyCode && cfg.isDoc) initCopy();

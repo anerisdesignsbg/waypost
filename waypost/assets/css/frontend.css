@@ -18,6 +18,12 @@
 	--waypost-shadow: 0 12px 32px rgba(20, 30, 60, .14);
 	--waypost-overlay: rgba(15, 20, 35, .45);
 	--waypost-code-button: rgba(30, 36, 50, .75);
+	/* Docs layout page colours. Follow my theme leaves the page to the theme. */
+	--waypost-page-bg: transparent;
+	--waypost-page-text: inherit;
+	--waypost-heading: inherit;
+	--waypost-code-bg: #f6f8fa;
+	--waypost-code-text: inherit;
 }
 
 .waypost-menu, .waypost-search, .waypost-toc, .waypost-pager, .waypost-crumbs, .waypost-results, .waypost-modal, .waypost-home {
@@ -337,6 +343,12 @@ body.waypost-modal-open { overflow: hidden; }
 }
 .waypost-style-dark .waypost-hit mark, .waypost-style-dark .waypost-results mark { background: color-mix(in srgb, var(--waypost-accent) 35%, transparent); }
 
+:where(.waypost-style-modern)  { --waypost-page-bg: #ffffff; --waypost-page-text: #374151; --waypost-heading: #111827; --waypost-code-bg: #0f172a; --waypost-code-text: #e2e8f0; }
+:where(.waypost-style-minimal) { --waypost-page-bg: #ffffff; --waypost-page-text: #333333; --waypost-heading: #111111; --waypost-code-bg: #f7f7f7; --waypost-code-text: #222222; }
+:where(.waypost-style-classic) { --waypost-page-bg: #fffdf9; --waypost-page-text: #3b342b; --waypost-heading: #2b2620; --waypost-code-bg: #f4eee3; --waypost-code-text: #2b2620; }
+:where(.waypost-style-light)   { --waypost-page-bg: #f8fafc; --waypost-page-text: #334155; --waypost-heading: #0f172a; --waypost-code-bg: #0f172a; --waypost-code-text: #e2e8f0; }
+:where(.waypost-style-dark)    { --waypost-page-bg: #0d1117; --waypost-page-text: #c9d1d9; --waypost-heading: #f0f6fc; --waypost-code-bg: #161b22; --waypost-code-text: #e6edf3; }
+
 /* Light and Dark bring their own panels, so they read well on any page background. */
 :is(.waypost-style-light, .waypost-style-dark) .waypost-menu,
 :is(.waypost-style-light, .waypost-style-dark) .waypost-results {
@@ -348,6 +360,83 @@ body.waypost-modal-open { overflow: hidden; }
 :is(.waypost-style-light, .waypost-style-dark) .waypost-card { background: var(--waypost-surface); }
 :is(.waypost-style-light, .waypost-style-dark) .waypost-pager__link { background: var(--waypost-panel); }
 :is(.waypost-style-light, .waypost-style-dark) .waypost-crumbs { display: inline-block; padding: 4px 10px; background: var(--waypost-panel); border-radius: var(--waypost-radius); }
+
+/* ── Docs layout (Settings, Appearance, Layout) ────────── */
+/* Spans the window between the theme's header and footer, whatever container the theme puts it in.
+   --waypost-sbw (scrollbar width) and --waypost-sticky-top (fixed headers) are measured by frontend.js. */
+.waypost-layout {
+	--waypost-sidebar-width: 272px;
+	--waypost-toc-width: 220px;
+	--waypost-gap: 48px;
+	position: relative; box-sizing: border-box; clear: both;
+	width: calc(100vw - var(--waypost-sbw, 0px));
+	margin-left: calc(50% - (100vw - var(--waypost-sbw, 0px)) / 2);
+	padding: 40px 0 64px;
+	color: var(--waypost-page-text); background: var(--waypost-page-bg); font-family: var(--waypost-font);
+}
+.waypost-layout *, .waypost-layout *::before, .waypost-layout *::after { box-sizing: border-box; }
+.waypost-layout__inner {
+	display: grid; grid-template-columns: var(--waypost-sidebar-width) minmax(0, 1fr); grid-template-areas: "side main";
+	gap: var(--waypost-gap); max-width: var(--waypost-max-width, 1280px); margin: 0 auto; padding: 0 24px;
+}
+.waypost-layout--full .waypost-layout__inner { max-width: none; padding: 0 clamp(16px, 3vw, 48px); }
+.waypost-layout--sidebar-right .waypost-layout__inner { grid-template-columns: minmax(0, 1fr) var(--waypost-sidebar-width); grid-template-areas: "main side"; }
+/* The contents column sits on the side opposite the menu. */
+.waypost-layout--with-toc .waypost-layout__inner { grid-template-columns: var(--waypost-sidebar-width) minmax(0, 1fr) var(--waypost-toc-width); grid-template-areas: "side main toc"; }
+.waypost-layout--with-toc.waypost-layout--sidebar-right .waypost-layout__inner { grid-template-columns: var(--waypost-toc-width) minmax(0, 1fr) var(--waypost-sidebar-width); grid-template-areas: "toc main side"; }
+.waypost-layout__sidebar { grid-area: side; min-width: 0; }
+.waypost-layout__main { grid-area: main; min-width: 0; }
+.waypost-layout__toc { grid-area: toc; min-width: 0; }
+.waypost-layout__sticky {
+	position: sticky; top: var(--waypost-sticky-top, 24px);
+	max-height: calc(100vh - var(--waypost-sticky-top, 24px) - 16px); overflow-y: auto; overscroll-behavior: contain; padding-bottom: 8px;
+}
+.waypost-layout__sidebar .waypost-search { margin-bottom: 16px; }
+.waypost-layout__toc .waypost-toc { margin: 0; }
+.waypost-layout__toc-inline { display: none; }
+.waypost-layout .waypost-layout__title {
+	margin: 0 0 .6em; padding: 0; font-family: var(--waypost-font); font-size: 2.2em; line-height: 1.2; color: var(--waypost-heading);
+}
+.waypost-layout--home .waypost-home { margin-top: 0; }
+.waypost-layout__edit { margin: 2em 0 0; font-size: 13px; }
+body .waypost-layout__edit a { color: var(--waypost-muted); }
+.waypost-layout__content :is(h2, h3, h4) { scroll-margin-top: calc(var(--waypost-sticky-top, 24px) + 12px); }
+.waypost-layout .waypost-crumbs { margin-bottom: 1.4em; }
+
+/* Content typography for the Waypost styles. Follow my theme leaves it to the theme. */
+body:not(.waypost-style-theme) .waypost-layout__content { font-size: 16px; line-height: 1.75; color: var(--waypost-page-text); }
+body:not(.waypost-style-theme) .waypost-layout__content :is(h1, h2, h3, h4, h5, h6) { color: var(--waypost-heading); font-family: var(--waypost-font); font-weight: 650; line-height: 1.3; padding: 0; }
+body:not(.waypost-style-theme) .waypost-layout__content h2 { font-size: 1.6em; margin: 1.8em 0 .6em; }
+body:not(.waypost-style-theme) .waypost-layout__content h3 { font-size: 1.25em; margin: 1.5em 0 .5em; }
+body:not(.waypost-style-theme) .waypost-layout__content h4 { font-size: 1.05em; margin: 1.3em 0 .4em; }
+body:not(.waypost-style-theme) .waypost-layout__content :is(p, ul, ol, table, blockquote) { margin: 0 0 1.1em; padding-bottom: 0; color: inherit; }
+body:not(.waypost-style-theme) .waypost-layout__content :is(ul, ol) { padding-left: 1.4em; }
+body:not(.waypost-style-theme) .waypost-layout__content li { margin: .3em 0; }
+body:not(.waypost-style-theme) .waypost-layout__content a:not(.waypost-chip):not(.waypost-card):not(.page-numbers) { color: var(--waypost-accent); text-decoration: underline; text-underline-offset: 2px; }
+body:not(.waypost-style-theme) .waypost-layout__content :not(pre) > code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; padding: .15em .35em; background: var(--waypost-soft); border-radius: 4px; }
+body:not(.waypost-style-theme) .waypost-layout__content pre {
+	margin: 0 0 1.2em; padding: 16px 18px; overflow-x: auto; font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	color: var(--waypost-code-text); background: var(--waypost-code-bg); border: 1px solid var(--waypost-border); border-radius: var(--waypost-radius);
+}
+body:not(.waypost-style-theme) .waypost-layout__content pre code { padding: 0; background: none; color: inherit; font: inherit; }
+body:not(.waypost-style-theme) .waypost-layout__content blockquote { padding: 4px 0 4px 16px; border-left: 3px solid var(--waypost-accent); color: var(--waypost-muted); }
+body:not(.waypost-style-theme) .waypost-layout__content table { width: 100%; border-collapse: collapse; font-size: .95em; }
+body:not(.waypost-style-theme) .waypost-layout__content :is(th, td) { padding: 8px 10px; border: 1px solid var(--waypost-border); text-align: left; }
+body:not(.waypost-style-theme) .waypost-layout__content img { max-width: 100%; height: auto; border-radius: var(--waypost-radius); }
+
+/* Narrower screens: the contents column moves to the top of the page, then the sidebar goes above the page. */
+@media (max-width: 1180px) {
+	.waypost-layout--with-toc .waypost-layout__inner { grid-template-columns: var(--waypost-sidebar-width) minmax(0, 1fr); grid-template-areas: "side main"; }
+	.waypost-layout--with-toc.waypost-layout--sidebar-right .waypost-layout__inner { grid-template-columns: minmax(0, 1fr) var(--waypost-sidebar-width); grid-template-areas: "main side"; }
+	.waypost-layout__toc { display: none; }
+	.waypost-layout__toc-inline { display: block; }
+}
+@media (max-width: 900px) {
+	.waypost-layout { padding: 24px 0 48px; }
+	.waypost-layout .waypost-layout__inner { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; gap: 24px; padding: 0 16px; }
+	.waypost-layout__sticky { position: static; max-height: none; overflow: visible; }
+	.waypost-layout .waypost-layout__title { font-size: 1.8em; }
+}
 
 @media (prefers-reduced-motion: reduce) {
 	.waypost-menu__toggle svg, .waypost-menu__list.is-animating, .waypost-pager__link, .waypost-copy { transition: none; }

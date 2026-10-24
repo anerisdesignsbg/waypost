@@ -54,6 +54,7 @@ class Waypost_Help {
 			'assigning'        => __( 'Adding pages to the docs', 'waypost' ),
 			'ordering'         => __( 'Ordering the menu', 'waypost' ),
 			'section-links'    => __( 'Clickable section headings', 'waypost' ),
+			'layout'           => __( 'The docs layout', 'waypost' ),
 			'placing'          => __( 'Placing the menu and search', 'waypost' ),
 			'search'           => __( 'Search', 'waypost' ),
 			'page-features'    => __( 'Contents, previous / next, breadcrumbs', 'waypost' ),
@@ -239,6 +240,20 @@ Troubleshooting</pre>
 						<li><?php esc_html_e( 'If the answer exists, add the reader’s word to that page, for example in a heading. If it does not, that is your next page to write.', 'waypost' ); ?></li>
 					</ol>
 					<p><?php esc_html_e( 'Only the search words, a count and the number of results are stored. No personal data is kept.', 'waypost' ); ?></p>
+				</article>
+
+				<article class="wpst-card wpst-topic" id="layout">
+					<h2><?php esc_html_e( 'The docs layout', 'waypost' ); ?></h2>
+					<p><?php esc_html_e( 'With the Waypost docs layout, you do not need to build anything. Every doc page, your docs home and the search results page get a complete docs layout, between your theme’s own header and footer. Pages that are not docs are never touched.', 'waypost' ); ?></p>
+					<ul class="wpst-list">
+						<li><strong><?php esc_html_e( 'Sidebar', 'waypost' ); ?></strong>: <?php esc_html_e( 'search and the docs menu, on the left or the right. It stays in view as readers scroll and folds into a button on phones.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'The page', 'waypost' ); ?></strong>: <?php esc_html_e( 'breadcrumbs, the title, your content and previous and next links.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'On this page', 'waypost' ); ?></strong>: <?php esc_html_e( 'in a column of its own, opposite the menu, or at the top of the page. On smaller screens the column moves to the top.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Width', 'waypost' ); ?></strong>: <?php esc_html_e( 'within a page width you choose, or the full width of the screen.', 'waypost' ); ?></li>
+					</ul>
+					<p><?php esc_html_e( 'The style you pick (Modern, Classic, Dark and so on) colours the whole docs area, including headings, links and code blocks. With Follow my theme, the page keeps your theme’s fonts and colours.', 'waypost' ); ?></p>
+					<p><?php esc_html_e( 'Choose the layout in Settings, Appearance, or in the setup wizard. Prefer your own design? Pick My theme’s layout and place the blocks, Divi modules or shortcodes yourself (see Placing the menu and search).', 'waypost' ); ?></p>
+					<p class="wpst-note"><?php esc_html_e( 'Page builders keep working inside the layout: Divi, for example, still builds the page content, and its Visual Builder opens as normal. If your docs home was built with the menu on it, remove that menu, because the layout already shows one in the sidebar.', 'waypost' ); ?></p>
 				</article>
 
 				<article class="wpst-card wpst-topic" id="styling">

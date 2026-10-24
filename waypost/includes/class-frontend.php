@@ -68,7 +68,7 @@ class Waypost_Frontend {
 			return false;
 		}
 		$id = (int) get_queried_object_id();
-		return Waypost_Tree::is_doc( $id ) || $id === Waypost_Search::results_page_id();
+		return Waypost_Tree::is_doc( $id ) || $id === Waypost_Search::results_page_id() || Waypost_Layout::applies();
 	}
 
 	public static function register_assets() {
@@ -140,14 +140,16 @@ class Waypost_Frontend {
 		$content = Waypost_Headings::add_ids( $content );
 		$before  = '';
 		$after   = '';
+		// The docs layout places breadcrumbs and previous / next itself, and the contents too when it has a column for them.
+		$layout = Waypost_Layout::rendering();
 
-		if ( Waypost_Settings::get( 'crumbs_auto' ) && false === strpos( $content, 'waypost-crumbs' ) ) {
+		if ( ! $layout && Waypost_Settings::get( 'crumbs_auto' ) && false === strpos( $content, 'waypost-crumbs' ) ) {
 			$before .= Waypost_Render::breadcrumbs( array( 'post_id' => $post_id ) );
 		}
-		if ( Waypost_Settings::get( 'toc_auto' ) && false === strpos( $content, 'waypost-toc' ) ) {
+		if ( ( ! $layout || 'content' === Waypost_Settings::get( 'toc_position' ) ) && Waypost_Settings::get( 'toc_auto' ) && false === strpos( $content, 'waypost-toc' ) ) {
 			$before .= Waypost_Render::toc( array( 'post_id' => $post_id, 'content' => $content ) );
 		}
-		if ( Waypost_Settings::get( 'prevnext_auto' ) && false === strpos( $content, 'waypost-pager' ) ) {
+		if ( ! $layout && Waypost_Settings::get( 'prevnext_auto' ) && false === strpos( $content, 'waypost-pager' ) ) {
 			$after .= Waypost_Render::prev_next( array( 'post_id' => $post_id ) );
 		}
 		return $before . $content . $after;

@@ -306,7 +306,7 @@ update_option( 'waypost_order', $order, false );
 
 $home = $page(
 	'Documentation',
-	"<!-- wp:waypost/search-home /-->\n<!-- wp:waypost/menu {\"title\":\"All documentation\"} /-->"
+	'<!-- wp:waypost/search-home /-->' // The docs layout shows the menu in its sidebar.
 );
 $results = $page( 'Search results', "<!-- wp:shortcode -->\n[waypost_search_results]\n<!-- /wp:shortcode -->" );
 $page(
@@ -325,6 +325,11 @@ Waypost_Settings::update(
 		'style'         => 'theme',
 		'accent'        => '#2563eb',
 		'results_target' => 'home',
+		'layout'        => 'waypost',
+		'sidebar'       => 'left',
+		'width'         => 'contained',
+		'max_width'     => 1280,
+		'toc_position'  => 'side',
 		'home_title'    => 'Search the Magpie docs',
 		'home_intro'    => 'Everything you need to install, configure and run Magpie.',
 		'topics_title'  => 'Popular topics',
