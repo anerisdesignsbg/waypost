@@ -1,0 +1,6 @@
+{
+	"themes": [
+		"https://downloads.wordpress.org/theme/twentysixteen.zip",
+		"./themes/Divi"
+	]
+}

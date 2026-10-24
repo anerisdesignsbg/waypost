@@ -1,0 +1,126 @@
+<?php
+/**
+ * Shortcodes, assets and the automatic page features on doc pages.
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+class Waypost_Frontend {
+
+	private static $enqueued = false;
+
+	public static function init() {
+		add_shortcode( 'waypost_menu', array( __CLASS__, 'sc_menu' ) );
+		add_shortcode( 'waypost_search', array( __CLASS__, 'sc_search' ) );
+		add_shortcode( 'waypost_search_results', array( 'Waypost_Search', 'results_shortcode' ) );
+		add_shortcode( 'waypost_toc', array( __CLASS__, 'sc_toc' ) );
+		add_shortcode( 'waypost_prev_next', array( __CLASS__, 'sc_prev_next' ) );
+		add_shortcode( 'waypost_breadcrumbs', array( __CLASS__, 'sc_breadcrumbs' ) );
+
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
+		add_filter( 'the_content', array( __CLASS__, 'filter_content' ), 20 );
+	}
+
+	public static function sc_menu( $atts ) {
+		$a = shortcode_atts( array( 'title' => '' ), $atts, 'waypost_menu' );
+		return Waypost_Render::menu( $a );
+	}
+
+	public static function sc_search( $atts ) {
+		$a = shortcode_atts( array( 'placeholder' => '', 'button' => 'yes' ), $atts, 'waypost_search' );
+		return Waypost_Render::search_box( $a );
+	}
+
+	public static function sc_toc( $atts ) {
+		$a = shortcode_atts( array( 'title' => '', 'min' => 0 ), $atts, 'waypost_toc' );
+		return Waypost_Render::toc( $a );
+	}
+
+	public static function sc_prev_next() {
+		return Waypost_Render::prev_next();
+	}
+
+	public static function sc_breadcrumbs() {
+		return Waypost_Render::breadcrumbs();
+	}
+
+	/** True on a single doc page or the search results page. */
+	public static function is_docs_context() {
+		if ( ! is_singular() ) {
+			return false;
+		}
+		$id = (int) get_queried_object_id();
+		return Waypost_Tree::is_doc( $id ) || $id === (int) Waypost_Settings::get( 'results_page' );
+	}
+
+	public static function register_assets() {
+		wp_register_style( 'waypost', WAYPOST_URL . 'assets/css/frontend.css', array(), WAYPOST_VERSION );
+		wp_add_inline_style( 'waypost', ':root{--waypost-accent:' . Waypost_Settings::get( 'accent' ) . ';}' );
+
+		wp_register_script( 'waypost', WAYPOST_URL . 'assets/js/frontend.js', array(), WAYPOST_VERSION, true );
+		wp_localize_script(
+			'waypost',
+			'waypostConfig',
+			array(
+				'api'        => esc_url_raw( rest_url( 'waypost/v1/search' ) ),
+				'resultsUrl' => Waypost_Search::results_url(),
+				'shortcut'   => (bool) Waypost_Settings::get( 'shortcut' ),
+				'copyCode'   => (bool) Waypost_Settings::get( 'copy_code' ),
+				'isDoc'      => is_singular() && Waypost_Tree::is_doc( get_queried_object_id() ),
+				'placeholder' => Waypost_Settings::placeholder(),
+				'i18n'       => array(
+					'noResults' => __( 'No results. Try a different word.', 'waypost' ),
+					'searching' => __( 'Searching…', 'waypost' ),
+					'seeAll'    => __( 'See all results', 'waypost' ),
+					'copy'      => __( 'Copy', 'waypost' ),
+					'copied'    => __( 'Copied', 'waypost' ),
+					'close'     => __( 'Close', 'waypost' ),
+					'navHint'   => __( '↑ ↓ to move · Enter to open · Esc to close', 'waypost' ),
+					'results'   => __( 'Search results', 'waypost' ),
+				),
+			)
+		);
+
+		if ( self::is_docs_context() ) {
+			self::enqueue();
+		}
+	}
+
+	public static function enqueue() {
+		if ( self::$enqueued ) {
+			return;
+		}
+		if ( ! wp_style_is( 'waypost', 'registered' ) ) {
+			return; // Called before assets exist, e.g. in the editor; the block editor loads its own copy.
+		}
+		self::$enqueued = true;
+		wp_enqueue_style( 'waypost' );
+		wp_enqueue_script( 'waypost' );
+	}
+
+	/** Adds heading anchors and the automatic features to doc pages. */
+	public static function filter_content( $content ) {
+		if ( is_admin() || ! is_singular() || ! in_the_loop() || ! is_main_query() ) {
+			return $content;
+		}
+		$post_id = (int) get_the_ID();
+		if ( $post_id !== (int) get_queried_object_id() || ! Waypost_Tree::is_doc( $post_id ) ) {
+			return $content;
+		}
+
+		$content = Waypost_Headings::add_ids( $content );
+		$before  = '';
+		$after   = '';
+
+		if ( Waypost_Settings::get( 'crumbs_auto' ) && false === strpos( $content, 'waypost-crumbs' ) ) {
+			$before .= Waypost_Render::breadcrumbs( array( 'post_id' => $post_id ) );
+		}
+		if ( Waypost_Settings::get( 'toc_auto' ) && false === strpos( $content, 'waypost-toc' ) ) {
+			$before .= Waypost_Render::toc( array( 'post_id' => $post_id, 'content' => $content ) );
+		}
+		if ( Waypost_Settings::get( 'prevnext_auto' ) && false === strpos( $content, 'waypost-pager' ) ) {
+			$after .= Waypost_Render::prev_next( array( 'post_id' => $post_id ) );
+		}
+		return $before . $content . $after;
+	}
+}

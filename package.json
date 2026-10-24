@@ -1,0 +1,24 @@
+{
+	"name": "waypost-dev",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Development and test environment for the Waypost WordPress plugin.",
+	"scripts": {
+		"start": "wp-env start",
+		"stop": "wp-env stop",
+		"seed": "wp-env run cli wp eval-file bin/seed.php",
+		"seed:divi": "wp-env run cli wp eval-file bin/seed.php divi",
+		"reset": "wp-env clean all && npm run seed",
+		"wp": "wp-env run cli wp",
+		"logs": "wp-env run cli tail -n 50 wp-content/debug.log",
+		"lint:php": "wp-env run cli bash -c 'find wp-content/plugins/waypost -name \"*.php\" -exec php -l {} \\; | grep -v \"No syntax errors\" || true'",
+		"test": "playwright test",
+		"test:headed": "playwright test --headed",
+		"test:report": "playwright show-report",
+		"zip": "mkdir -p dist && rm -f dist/waypost.zip && zip -qr dist/waypost.zip waypost -x '*.DS_Store' && echo 'dist/waypost.zip ready'"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.63.0",
+		"@wordpress/env": "11.16.0"
+	}
+}
