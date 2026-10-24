@@ -45,17 +45,17 @@ test( 'section links can be saved', async ( { page } ) => {
 
 test( 'settings save and persist', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-settings' );
-	await page.fill( '#wpst-ph', 'Search Acme docs…' );
+	await page.fill( '#wpst-ph', 'Search Magpie docs…' );
 	await page.click( 'button:has-text("Save settings")' );
 	await expect( page.locator( '.notice-success' ) ).toBeVisible();
-	await expect( page.locator( '#wpst-ph' ) ).toHaveValue( 'Search Acme docs…' );
+	await expect( page.locator( '#wpst-ph' ) ).toHaveValue( 'Search Magpie docs…' );
 	await page.fill( '#wpst-ph', '' );
 	await page.click( 'button:has-text("Save settings")' );
 } );
 
 test( 'search insights lists searches with no results', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-insights' );
-	await expect( page.locator( '.wpst-log' ).first() ).toContainText( 'ipv6' );
+	await expect( page.locator( '.wpst-log' ).first() ).toContainText( 'heic' );
 } );
 
 test( 'help page has every topic and the contextual help tab', async ( { page } ) => {
@@ -84,6 +84,6 @@ test( 'setup wizard runs end to end without breaking the site', async ( { page }
 	await page.click( 'button:has-text("Save and continue")' ); // Extras.
 	await expect( page.locator( 'h1' ) ).toContainText( 'Your docs are set up' );
 
-	await page.goto( '/search-results/?dq=bgp' );
+	await page.goto( '/search-results/?dq=album' );
 	await expect( page.locator( '.waypost-result' ).first() ).toBeVisible();
 } );

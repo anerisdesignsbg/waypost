@@ -29,13 +29,13 @@ test.describe( 'Docs menu', () => {
 	test( 'a linked section heading is a link', async ( { page } ) => {
 		await page.goto( '/installing-on-ubuntu/' );
 		const intro = page.locator( '.waypost-menu' ).first().locator( '.waypost-menu__item--top', { hasText: 'Introduction' } ).first();
-		await expect( intro.locator( '> .waypost-menu__row a' ) ).toHaveAttribute( 'href', /welcome-to-acme-monitor/ );
+		await expect( intro.locator( '> .waypost-menu__row a' ) ).toHaveAttribute( 'href', /welcome-to-magpie/ );
 	} );
 
 	test( 'accordion keeps one top-level section open', async ( { page } ) => {
 		await page.goto( '/installing-on-ubuntu/' );
 		const menu = page.locator( '.waypost-menu' ).first();
-		await menu.locator( '.waypost-menu__item--top', { hasText: 'Mitigation' } ).locator( '> .waypost-menu__row .waypost-menu__toggle' ).click();
+		await menu.locator( '.waypost-menu__item--top', { hasText: 'Sharing' } ).locator( '> .waypost-menu__row .waypost-menu__toggle' ).click();
 		const install = menu.locator( '.waypost-menu__item--top', { hasText: 'Installation' } ).locator( '> .waypost-menu__list' );
 		await expect( install ).toBeHidden();
 	} );
@@ -43,7 +43,7 @@ test.describe( 'Docs menu', () => {
 	test( 'collapses behind a button on phones', async ( { browser } ) => {
 		const ctx = await browser.newContext( { viewport: { width: 390, height: 844 } } );
 		const page = await ctx.newPage();
-		await page.goto( '/sflow-v5/' );
+		await page.goto( '/watch-folders/' );
 		const menu = page.locator( '.waypost-menu' ).first();
 		await expect( menu.locator( '.waypost-menu__list--root' ) ).toBeHidden();
 		await menu.locator( '.waypost-menu__mobile' ).click();
@@ -117,7 +117,7 @@ test.describe( 'Search', () => {
 	test( 'arrow keys move through results', async ( { page } ) => {
 		await page.goto( '/installing-on-ubuntu/' );
 		const input = page.locator( '.waypost-search__input' ).first();
-		await input.fill( 'bgp' );
+		await input.fill( 'album' );
 		await expect( page.locator( '.waypost-search__panel .waypost-hit' ).first() ).toBeVisible();
 		await input.press( 'ArrowDown' );
 		await expect( page.locator( '.waypost-search__panel .waypost-hit.is-active' ) ).toHaveCount( 1 );
@@ -136,8 +136,8 @@ test.describe( 'Search', () => {
 		await page.keyboard.press( 'Control+k' );
 		const modal = page.locator( '.waypost-modal' );
 		await expect( modal ).toBeVisible();
-		await page.keyboard.type( 'grafana' );
-		await expect( modal.locator( '.waypost-hit__title', { hasText: 'Grafana integration' } ) ).toBeVisible();
+		await page.keyboard.type( 'lightroom' );
+		await expect( modal.locator( '.waypost-hit__title', { hasText: 'Lightroom integration' } ) ).toBeVisible();
 		await page.keyboard.press( 'Escape' );
 		await expect( modal ).toBeHidden();
 	} );
@@ -154,7 +154,7 @@ test.describe( 'Search', () => {
 	} );
 
 	test( 'results page lists docs and paginates', async ( { page } ) => {
-		await page.goto( '/search-results/?dq=traffic' );
+		await page.goto( '/search-results/?dq=album' );
 		await expect( page.locator( '.waypost-results__count' ) ).toContainText( 'results' );
 		await expect( page.locator( '.waypost-result' ) ).toHaveCount( 10 );
 		await expect( page.locator( '.waypost-results__pages' ) ).toBeVisible();

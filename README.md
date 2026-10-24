@@ -45,6 +45,6 @@ Divi is licensed, so it is never committed.
 
 ## What the dummy content covers
 
-About 150 doc pages for a fictional product, Acme Monitor, in sections up to four levels deep, plus edge cases: an empty section, a drafts-only section, a private page, a page in two sections, a very long page with 78 headings, duplicate and unusual headings, Vietnamese pages, and non-doc pages and blog posts that share keywords so you can check search stays inside the docs. Search insights is pre-filled with sample searches.
+About 150 doc pages for a fictional self-hosted photo library, Magpie, in sections up to four levels deep, plus edge cases: an empty section, a drafts-only section, a private page, a page in two sections, a very long page with 78 headings, duplicate and unusual headings, Vietnamese pages, and non-doc pages and blog posts that share keywords so you can check search stays inside the docs. Search insights is pre-filled with sample searches.
 
 Extra logins: `editor` / `password` (Editor role) for checking permissions.
