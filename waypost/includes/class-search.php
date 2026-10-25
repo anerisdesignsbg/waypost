@@ -108,6 +108,9 @@ class Waypost_Search {
 				self::TEXT_META
 			);
 		}
+		// Attachments count only when they are readable documents, never images.
+		$mimes = "'" . implode( "','", array_map( 'esc_sql', array_keys( Waypost_Documents::types() ) ) ) . "'";
+		$and[] = "( {$wpdb->posts}.post_type <> 'attachment' OR {$wpdb->posts}.post_mime_type IN ( {$mimes} ) )";
 		return ' AND ( ' . implode( ' AND ', $and ) . ' ) ';
 	}
 
@@ -163,10 +166,17 @@ class Waypost_Search {
 		}
 		self::fill_text();
 
+		$types  = Waypost_Settings::post_types();
+		$status = array( 'publish' );
+		if ( Waypost_Documents::enabled() && is_object_in_taxonomy( 'attachment', $tax ) ) {
+			$types[]  = 'attachment'; // Limited to readable documents by where().
+			$status[] = 'inherit';
+		}
+
 		$query = new WP_Query(
 			array(
-				'post_type'           => Waypost_Settings::post_types(),
-				'post_status'         => 'publish',
+				'post_type'           => $types,
+				'post_status'         => $status,
 				's'                   => $q,
 				'posts_per_page'      => $per_page,
 				'paged'               => $page,
@@ -186,8 +196,21 @@ class Waypost_Search {
 		$out['pages'] = (int) $query->max_num_pages;
 
 		foreach ( $query->posts as $post ) {
-			$url  = get_permalink( $post );
 			$text = get_post_meta( $post->ID, self::TEXT_META, true );
+			$file = Waypost_Documents::badge( $post );
+			if ( $file ) {
+				$out['results'][] = array(
+					'id'       => $post->ID,
+					'title'    => html_entity_decode( get_the_title( $post ), ENT_QUOTES, get_bloginfo( 'charset' ) ),
+					'url'      => wp_get_attachment_url( $post->ID ),
+					'section'  => self::section_label( $post->ID ),
+					'excerpt'  => self::excerpt( $text, $q ),
+					'headings' => array(),
+					'file'     => $file,
+				);
+				continue;
+			}
+			$url  = get_permalink( $post );
 			$out['results'][] = array(
 				'id'       => $post->ID,
 				'title'    => html_entity_decode( get_the_title( $post ), ENT_QUOTES, get_bloginfo( 'charset' ) ),
@@ -195,6 +218,7 @@ class Waypost_Search {
 				'section'  => self::section_label( $post->ID ),
 				'excerpt'  => self::excerpt( '' !== $text ? $text : self::plain_text( $post->post_content ), $q ),
 				'headings' => self::matching_headings( Waypost_Render::content_html( $post->post_content ), $q, $url ),
+				'file'     => '',
 			);
 		}
 		return $out;
@@ -203,7 +227,7 @@ class Waypost_Search {
 	private static function section_label( $post_id ) {
 		$i = Waypost_Tree::index_of( $post_id );
 		if ( $i < 0 ) {
-			return '';
+			return self::document_label( $post_id );
 		}
 		$entry = Waypost_Tree::flat()[ $i ];
 		$names = wp_list_pluck( $entry['trail'], 'title' );
@@ -211,6 +235,31 @@ class Waypost_Search {
 		if ( $entry['title'] !== get_the_title( $post_id ) ) {
 			$names[] = $entry['title'];
 		}
+		return implode( ' › ', $names );
+	}
+
+	/** Section path of a document: its place in the menu, or its first section when documents are not listed there. */
+	private static function document_label( $post_id ) {
+		$trail = Waypost_Tree::file_trail( $post_id );
+		if ( null !== $trail ) {
+			return implode( ' › ', wp_list_pluck( $trail, 'title' ) );
+		}
+		if ( 'attachment' !== get_post_type( $post_id ) ) {
+			return '';
+		}
+		$tax   = Waypost_Settings::taxonomy();
+		$terms = wp_get_object_terms( $post_id, $tax );
+		if ( is_wp_error( $terms ) || ! $terms ) {
+			return '';
+		}
+		$names = array();
+		foreach ( array_reverse( get_ancestors( $terms[0]->term_id, $tax, 'taxonomy' ) ) as $id ) {
+			$t = get_term( $id, $tax );
+			if ( $t && ! is_wp_error( $t ) ) {
+				$names[] = $t->name;
+			}
+		}
+		$names[] = $terms[0]->name;
 		return implode( ' › ', $names );
 	}
 

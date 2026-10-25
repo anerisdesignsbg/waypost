@@ -100,6 +100,9 @@ class Waypost_Render {
 		$open       = $is_current || $is_parent;
 
 		$cls = array( 'waypost-menu__item', 'waypost-menu__item--' . $n['type'] );
+		if ( ! empty( $n['file'] ) ) {
+			$cls[] = 'waypost-menu__item--file';
+		}
 		if ( 0 === $depth ) {
 			$cls[] = 'waypost-menu__item--top';
 		}
@@ -115,7 +118,14 @@ class Waypost_Render {
 		$sub_id = $has_kids ? self::uid( 'waypost-sub' ) : '';
 
 		echo '<li class="' . esc_attr( implode( ' ', $cls ) ) . '"><div class="waypost-menu__row">';
-		if ( $n['url'] ) {
+		if ( ! empty( $n['file'] ) ) {
+			printf(
+				'<a class="waypost-menu__link" href="%s">%s %s</a>',
+				esc_url( $n['url'] ),
+				esc_html( $n['title'] ),
+				self::file_badge( $n['file'] ) // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+			);
+		} elseif ( $n['url'] ) {
 			printf(
 				'<a class="waypost-menu__link" href="%s"%s>%s</a>',
 				esc_url( $n['url'] ),
@@ -152,6 +162,11 @@ class Waypost_Render {
 			echo '</ul>';
 		}
 		echo '</li>';
+	}
+
+	/** Small file type label such as PDF, next to a document's title. */
+	public static function file_badge( $type ) {
+		return '<span class="waypost-file">' . esc_html( $type ) . '</span>';
 	}
 
 	private static function contains( array $nodes, $post_id ) {
@@ -368,7 +383,7 @@ class Waypost_Render {
 			if ( $r['section'] ) {
 				$html .= '<p class="waypost-result__section">' . esc_html( $r['section'] ) . '</p>';
 			}
-			$html .= '<h3 class="waypost-result__title"><a href="' . esc_url( $r['url'] ) . '">' . Waypost_Search::highlight( $r['title'], $q ) . '</a></h3>';
+			$html .= '<h3 class="waypost-result__title"><a href="' . esc_url( $r['url'] ) . '">' . Waypost_Search::highlight( $r['title'], $q ) . '</a>' . ( $r['file'] ? ' ' . self::file_badge( $r['file'] ) : '' ) . '</h3>';
 			if ( $r['excerpt'] ) {
 				$html .= '<p class="waypost-result__excerpt">' . Waypost_Search::highlight( $r['excerpt'], $q ) . '</p>';
 			}

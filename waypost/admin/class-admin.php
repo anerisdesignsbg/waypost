@@ -21,6 +21,7 @@ class Waypost_Admin {
 		add_action( 'admin_post_waypost_save_settings', array( __CLASS__, 'save_settings' ) );
 		add_action( 'admin_post_waypost_clear_log', array( __CLASS__, 'clear_log' ) );
 		add_action( 'admin_post_waypost_reset_feedback', array( __CLASS__, 'reset_feedback' ) );
+		add_action( 'admin_post_waypost_read_documents', array( __CLASS__, 'read_documents' ) );
 
 		foreach ( array( 'save_order', 'reset_order', 'flush', 'save_link', 'assign', 'add_section' ) as $a ) {
 			add_action( 'wp_ajax_waypost_' . $a, array( __CLASS__, 'ajax_' . $a ) );
@@ -524,7 +525,12 @@ class Waypost_Admin {
 			'orderby'        => 'title',
 			'order'          => 'ASC',
 		);
-		if ( 'unassigned' === $filter ) {
+		$docs_on = Waypost_Documents::enabled() && is_object_in_taxonomy( 'attachment', $tax );
+		if ( 'documents' === $filter && $docs_on ) {
+			$args['post_type']      = 'attachment';
+			$args['post_status']    = 'inherit';
+			$args['post_mime_type'] = array_keys( Waypost_Documents::types() );
+		} elseif ( 'unassigned' === $filter ) {
 			$args['tax_query'] = array( array( 'taxonomy' => $tax, 'operator' => 'NOT EXISTS' ) );
 		} elseif ( 'assigned' === $filter ) {
 			$args['tax_query'] = array( array( 'taxonomy' => $tax, 'operator' => 'EXISTS' ) );
@@ -542,7 +548,11 @@ class Waypost_Admin {
 
 				<div class="wpst-filter">
 					<?php
-					foreach ( array( 'unassigned' => __( 'Not in docs yet', 'waypost' ), 'assigned' => __( 'Already in docs', 'waypost' ), 'all' => __( 'All', 'waypost' ) ) as $k => $label ) {
+					$views = array( 'unassigned' => __( 'Not in docs yet', 'waypost' ), 'assigned' => __( 'Already in docs', 'waypost' ), 'all' => __( 'All', 'waypost' ) );
+					if ( $docs_on ) {
+						$views['documents'] = __( 'Documents', 'waypost' );
+					}
+					foreach ( $views as $k => $label ) {
 						printf( '<a href="%s" class="%s">%s</a>', esc_url( admin_url( 'admin.php?page=waypost-structure&tab=assign&show=' . $k ) ), $k === $filter ? 'is-current' : '', esc_html( $label ) );
 					}
 					?>
@@ -566,9 +576,9 @@ class Waypost_Admin {
 							?>
 							<tr data-title="<?php echo esc_attr( mb_strtolower( $p->post_title ) ); ?>">
 								<th class="check-column"><input type="checkbox" value="<?php echo (int) $p->ID; ?>" aria-label="<?php echo esc_attr( $p->post_title ); ?>"></th>
-								<td><strong><?php echo esc_html( $p->post_title ? $p->post_title : __( '(no title)', 'waypost' ) ); ?></strong> <span class="wpst-muted"><?php echo esc_html( get_post_type_object( $p->post_type )->labels->singular_name ); ?></span></td>
+								<td><strong><?php echo esc_html( $p->post_title ? $p->post_title : __( '(no title)', 'waypost' ) ); ?></strong> <span class="wpst-muted"><?php echo esc_html( 'attachment' === $p->post_type ? Waypost_Documents::badge( $p ) : get_post_type_object( $p->post_type )->labels->singular_name ); ?></span></td>
 								<td class="wpst-assign__terms"><?php echo $names ? esc_html( implode( ', ', $names ) ) : '<span class="wpst-muted">–</span>'; ?></td>
-								<td><?php echo esc_html( get_post_status_object( $p->post_status )->label ); ?></td>
+								<td><?php echo esc_html( 'attachment' === $p->post_type ? ( $names ? Waypost_Documents::status_text( $p->ID ) : __( 'Not in docs', 'waypost' ) ) : get_post_status_object( $p->post_status )->label ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 						</tbody>
@@ -671,6 +681,11 @@ class Waypost_Admin {
 		if ( isset( $_GET['saved'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved.', 'waypost' ) . '</p></div>';
 		}
+		if ( isset( $_GET['docs_read'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$read = absint( $_GET['docs_read'] ); // phpcs:ignore WordPress.Security.NonceVerification
+			/* translators: %s: number of documents */
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( sprintf( _n( '%s document read.', '%s documents read.', $read, 'waypost' ), number_format_i18n( $read ) ) ) . '</p></div>';
+		}
 		?>
 		<?php
 		// One section at a time, picked from the sidebar (admin.js). Without JavaScript all sections show.
@@ -679,6 +694,7 @@ class Waypost_Admin {
 			'navigation'  => array( __( 'Navigation', 'waypost' ), __( 'Menu and page features', 'waypost' ) ),
 			'search'      => array( __( 'Search', 'waypost' ), __( 'Results and logging', 'waypost' ) ),
 			'search-home' => array( __( 'Search home', 'waypost' ), __( 'Quick searches and topics', 'waypost' ) ),
+			'documents'   => array( __( 'Documents', 'waypost' ), __( 'PDF, Word and other files', 'waypost' ) ),
 			'appearance'  => array( __( 'Appearance', 'waypost' ), __( 'Layout and style', 'waypost' ) ),
 			'advanced'    => array( __( 'Advanced', 'waypost' ), __( 'Uninstall options', 'waypost' ) ),
 		);
@@ -902,6 +918,62 @@ class Waypost_Admin {
 				</table>
 			</section>
 
+			<section class="wpst-card" id="documents">
+				<div class="wpst-card__head"><h2><?php esc_html_e( 'Documents', 'waypost' ); ?></h2><?php echo self::help_link( 'documents' ); // phpcs:ignore ?></div>
+				<p><?php esc_html_e( 'Put PDF, Word, PowerPoint, Excel, OpenDocument and text files from the Media Library into doc sections. Docs search then finds words inside them, and they can be listed in the docs menu.', 'waypost' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Documents', 'waypost' ); ?></th>
+						<td>
+							<label class="wpst-check"><input type="checkbox" name="documents" value="1" <?php checked( $o['documents'] ); ?>> <?php esc_html_e( 'Let documents join doc sections and search inside them', 'waypost' ); ?></label>
+							<label class="wpst-check"><input type="checkbox" name="documents_menu" value="1" <?php checked( $o['documents_menu'] ); ?>> <?php esc_html_e( 'List documents in the docs menu, under their sections', 'waypost' ); ?></label>
+							<p class="description"><?php esc_html_e( 'To add one, open it in Media, tick its sections under Doc sections, or use Structure, Assign pages with the Documents filter.', 'waypost' ); ?></p>
+						</td>
+					</tr>
+					<?php if ( $o['documents'] ) : $stats = Waypost_Documents::stats(); ?>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Reading status', 'waypost' ); ?></th>
+						<td class="wpst-doc-status">
+							<?php if ( ! $stats['total'] ) : ?>
+								<p><?php esc_html_e( 'No documents are in doc sections yet.', 'waypost' ); ?></p>
+							<?php else : ?>
+								<p>
+									<?php
+									echo esc_html(
+										sprintf(
+											/* translators: 1: documents read, 2: documents in sections */
+											__( '%1$s of %2$s documents are searchable.', 'waypost' ),
+											number_format_i18n( $stats['ok'] ),
+											number_format_i18n( $stats['total'] )
+										)
+									);
+									if ( $stats['waiting'] ) {
+										/* translators: %s: number of documents */
+										echo ' ' . esc_html( sprintf( _n( '%s is waiting to be read.', '%s are waiting to be read.', $stats['waiting'], 'waypost' ), number_format_i18n( $stats['waiting'] ) ) );
+									}
+									?>
+								</p>
+								<?php if ( $stats['failed_list'] ) : ?>
+									<ul class="wpst-doc-problems">
+										<?php foreach ( array_slice( $stats['failed_list'], 0, 10, true ) as $doc_id => $doc_status ) : ?>
+											<li><a href="<?php echo esc_url( get_edit_post_link( $doc_id ) ); ?>"><?php echo esc_html( get_the_title( $doc_id ) ); ?></a> <span class="wpst-muted"><?php echo esc_html( Waypost_Documents::status_text( $doc_id, $doc_status ) ); ?></span></li>
+										<?php endforeach; ?>
+									</ul>
+								<?php endif; ?>
+								<p>
+									<?php if ( $stats['waiting'] ) : ?>
+										<button type="submit" class="button" form="wpst-read-docs" name="mode" value="waiting"><?php esc_html_e( 'Read waiting documents now', 'waypost' ); ?></button>
+									<?php endif; ?>
+									<button type="submit" class="button" form="wpst-read-docs" name="mode" value="all"><?php esc_html_e( 'Read all documents again', 'waypost' ); ?></button>
+								</p>
+							<?php endif; ?>
+							<p class="description"><?php esc_html_e( 'Text is read once, when a document is added to a section or changed. Scanned PDFs hold pictures of text, not text, so only their title, caption and description can be found.', 'waypost' ); ?></p>
+						</td>
+					</tr>
+					<?php endif; ?>
+				</table>
+			</section>
+
 			<section class="wpst-card" id="appearance">
 				<div class="wpst-card__head"><h2><?php esc_html_e( 'Appearance', 'waypost' ); ?></h2><?php echo self::help_link( 'layout' ); // phpcs:ignore ?></div>
 				<h3 class="wpst-subhead"><?php esc_html_e( 'Layout', 'waypost' ); ?></h3>
@@ -928,8 +1000,26 @@ class Waypost_Admin {
 			<p class="submit wpst-submit"><button type="submit" class="button button-primary button-hero"><?php esc_html_e( 'Save settings', 'waypost' ); ?></button></p>
 			</div>
 		</form>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="wpst-read-docs" hidden>
+			<input type="hidden" name="action" value="waypost_read_documents">
+			<?php wp_nonce_field( 'waypost_read_documents' ); ?>
+		</form>
 		<?php
 		self::footer();
+	}
+
+	/** Reads waiting documents (or all of them again) now, instead of waiting for WP-Cron. */
+	public static function read_documents() {
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_die( esc_html__( 'You are not allowed to change these settings.', 'waypost' ) );
+		}
+		check_admin_referer( 'waypost_read_documents' );
+		if ( isset( $_POST['mode'] ) && 'all' === $_POST['mode'] ) {
+			Waypost_Documents::forget_all();
+		}
+		$done = Waypost_Documents::read_queue();
+		wp_safe_redirect( admin_url( 'admin.php?page=waypost-settings&docs_read=' . (int) $done ) . '#documents' );
+		exit;
 	}
 
 	public static function save_settings() {
@@ -944,7 +1034,7 @@ class Waypost_Admin {
 			'taxonomy'      => isset( $in['taxonomy'] ) ? $in['taxonomy'] : '',
 			'toc_levels'    => isset( $in['toc_levels'] ) ? (array) $in['toc_levels'] : array( 2 ),
 		);
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'documents', 'documents_menu', 'delete_on_uninstall' ) as $k ) {
 			$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
 		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title', 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'chrome' ) as $k ) {
@@ -1138,7 +1228,8 @@ class Waypost_Admin {
 		}
 		$names = array();
 		foreach ( $ids as $id ) {
-			if ( ! current_user_can( 'edit_post', $id ) || ! in_array( get_post_type( $id ), Waypost_Settings::post_types(), true ) ) {
+			$allowed = in_array( get_post_type( $id ), Waypost_Settings::post_types(), true ) || ( Waypost_Documents::enabled() && Waypost_Documents::is_document( $id ) );
+			if ( ! current_user_can( 'edit_post', $id ) || ! $allowed ) {
 				continue;
 			}
 			if ( 'remove' === $mode ) {

@@ -1,0 +1,7 @@
+Magpie keyboard shortcuts
+
+Space        Play or pause a slideshow
+F            Mark as favourite
+Shift + D    Find duplicates in the selection
+Ctrl + K     Open quick search in the web app
+Alt + R      Rotate the photo clockwise

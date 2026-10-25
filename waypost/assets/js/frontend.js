@@ -197,6 +197,7 @@
 			if (r.section) a.appendChild(el('span', 'waypost-hit__section', r.section));
 			var title = el('span', 'waypost-hit__title');
 			appendHighlighted(title, r.title, q);
+			if (r.file) title.appendChild(el('span', 'waypost-file', r.file));
 			a.appendChild(title);
 			if (r.excerpt) {
 				var ex = el('span', 'waypost-hit__excerpt');
@@ -428,6 +429,10 @@
 			a.href = r.url;
 			appendHighlighted(a, r.title, q);
 			h.appendChild(a);
+			if (r.file) {
+				h.appendChild(document.createTextNode(' '));
+				h.appendChild(el('span', 'waypost-file', r.file));
+			}
 			li.appendChild(h);
 			if (r.excerpt) {
 				var ex = el('p', 'waypost-result__excerpt');

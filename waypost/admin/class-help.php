@@ -57,6 +57,7 @@ class Waypost_Help {
 			'layout'           => __( 'The docs layout', 'waypost' ),
 			'placing'          => __( 'Placing the menu and search', 'waypost' ),
 			'search'           => __( 'Search', 'waypost' ),
+			'documents'        => __( 'Documents (PDF, Word and more)', 'waypost' ),
 			'page-features'    => __( 'Contents, previous / next, breadcrumbs', 'waypost' ),
 			'insights'         => __( 'Search insights', 'waypost' ),
 			'styling'          => __( 'Styling', 'waypost' ),
@@ -217,6 +218,26 @@ Troubleshooting</pre>
 
 					<h3><?php esc_html_e( 'How search finds pages', 'waypost' ); ?></h3>
 					<p><?php esc_html_e( 'Waypost uses WordPress’s own search, limited to your doc pages, so there is no index to build and no extra plugin to install. New and edited pages are searchable as soon as they are published. It matches the words people type in page titles and text; it does not correct spelling or match different word forms, so “installing” will not find a page that only says “install”. Search insights shows which searches find nothing, so you can add those words to the right pages.', 'waypost' ); ?></p>
+				</article>
+
+				<article class="wpst-card wpst-topic" id="documents">
+					<h2><?php esc_html_e( 'Documents (PDF, Word and more)', 'waypost' ); ?></h2>
+					<p><?php esc_html_e( 'Files in your Media Library can join doc sections just like pages. Docs search then finds words inside them, and the docs menu can list them with a small label such as PDF.', 'waypost' ); ?></p>
+					<p><?php esc_html_e( 'Readable types: PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx), OpenDocument (.odt, .odp, .ods), plain text and CSV. Older formats such as .doc cannot be read; save them as PDF or .docx first.', 'waypost' ); ?></p>
+					<h3><?php esc_html_e( 'Add a document', 'waypost' ); ?></h3>
+					<ol class="wpst-tut">
+						<li><?php esc_html_e( 'Upload the file under Media, Add New.', 'waypost' ); ?></li>
+						<li><?php esc_html_e( 'Open it in the Media Library and tick one or more sections under Doc sections. It saves straight away.', 'waypost' ); ?></li>
+						<li><?php esc_html_e( 'Or use Waypost, Structure, Assign pages, choose the Documents filter and add several at once.', 'waypost' ); ?></li>
+					</ol>
+					<h3><?php esc_html_e( 'How the text is read', 'waypost' ); ?></h3>
+					<p><?php esc_html_e( 'Waypost reads the text once, when a document joins a section or is edited, and keeps a plain copy for search. Small files are read at once; larger ones are read in the background within a minute or two. Settings, Documents shows how many are searchable and lists any that could not be read.', 'waypost' ); ?></p>
+					<ul class="wpst-list">
+						<li><strong><?php esc_html_e( 'Scanned PDFs', 'waypost' ); ?></strong>: <?php esc_html_e( 'hold pictures of text, not text, so there is nothing to read. Write a short description of the document in the Media Library and search finds that instead.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Password-protected files', 'waypost' ); ?></strong>: <?php esc_html_e( 'cannot be read. Remove the password and upload the file again.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Very large files', 'waypost' ); ?></strong>: <?php esc_html_e( 'files over 30 MB are skipped, and only the first 500,000 characters of a document are kept.', 'waypost' ); ?></li>
+					</ul>
+					<p><?php esc_html_e( 'Results for a document open the file itself. Documents are not part of previous and next links or breadcrumbs.', 'waypost' ); ?></p>
 				</article>
 
 				<article class="wpst-card wpst-topic" id="page-features">

@@ -9,6 +9,8 @@
  *   title    label
  *   url      link or '' when the node is a plain heading
  *   children child nodes
+ *   file     only on documents (PDF, Word and so on): the badge text, e.g. PDF.
+ *            Documents link to the file and are left out of reading order.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -20,6 +22,8 @@ class Waypost_Tree {
 	const LINK_META    = 'waypost_linked_post';
 
 	private static $flat = null;
+	/** Section trail of each document in the menu: [ attachment_id => trail ]. */
+	private static $files = array();
 
 	public static function init() {
 		add_action( 'save_post', array( __CLASS__, 'maybe_flush_post' ), 10, 2 );
@@ -89,6 +93,7 @@ class Waypost_Tree {
 			'terms'    => $by_id,
 			'children' => $children,
 			'posts'    => self::posts_by_term( array_keys( $by_id ) ),
+			'files'    => Waypost_Settings::get( 'documents_menu' ) ? Waypost_Documents::by_term( array_keys( $by_id ) ) : array(),
 			'order'    => (array) get_option( self::ORDER_OPTION, array() ),
 			'empty'    => $include_empty,
 		);
@@ -128,7 +133,7 @@ class Waypost_Tree {
 			}
 
 			$sub_terms = self::term_nodes( $tid, $ctx );
-			$posts     = self::post_nodes( $tid, $ctx, $linked );
+			$posts     = array_merge( self::post_nodes( $tid, $ctx, $linked ), self::file_nodes( $tid, $ctx ) );
 
 			if ( ! $ctx['empty'] && ! $sub_terms && ! $posts && ! $url ) {
 				continue; // A section with nothing in it would be a dead heading.
@@ -175,6 +180,28 @@ class Waypost_Tree {
 				'title'    => $title,
 				'url'      => get_permalink( $pid ),
 				'children' => array(),
+			);
+		}
+		return $nodes;
+	}
+
+	/** Documents in a section, after its pages unless the order screen says otherwise. */
+	private static function file_nodes( $tid, array &$ctx ) {
+		if ( empty( $ctx['files'][ $tid ] ) ) {
+			return array();
+		}
+		$list = $ctx['files'][ $tid ];
+		uasort( $list, 'strnatcasecmp' );
+		$nodes = array();
+		foreach ( $list as $id => $title ) {
+			$nodes[] = array(
+				'type'     => 'post',
+				'id'       => $id,
+				'post_id'  => $id,
+				'title'    => $title,
+				'url'      => wp_get_attachment_url( $id ),
+				'children' => array(),
+				'file'     => Waypost_Documents::badge( $id ),
 			);
 		}
 		return $nodes;
@@ -269,13 +296,18 @@ class Waypost_Tree {
 		if ( null !== self::$flat ) {
 			return self::$flat;
 		}
-		self::$flat = array();
+		self::$flat  = array();
+		self::$files = array();
 		self::walk( self::get(), array() );
 		return self::$flat;
 	}
 
 	private static function walk( array $nodes, array $trail ) {
 		foreach ( $nodes as $n ) {
+			if ( ! empty( $n['file'] ) ) {
+				self::$files[ $n['post_id'] ] = $trail;
+				continue;
+			}
 			if ( $n['url'] && $n['post_id'] ) {
 				$dupe = false;
 				foreach ( self::$flat as $f ) {
@@ -299,6 +331,12 @@ class Waypost_Tree {
 				self::walk( $n['children'], $next );
 			}
 		}
+	}
+
+	/** Section trail of a document in the menu, or null. */
+	public static function file_trail( $post_id ) {
+		self::flat();
+		return isset( self::$files[ $post_id ] ) ? self::$files[ $post_id ] : null;
 	}
 
 	/** Position of a post in reading order, or -1. */

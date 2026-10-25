@@ -37,6 +37,7 @@ require_once WAYPOST_DIR . 'includes/class-tree.php';
 require_once WAYPOST_DIR . 'includes/class-headings.php';
 require_once WAYPOST_DIR . 'includes/class-render.php';
 require_once WAYPOST_DIR . 'includes/class-search.php';
+require_once WAYPOST_DIR . 'includes/class-documents.php';
 require_once WAYPOST_DIR . 'includes/class-frontend.php';
 require_once WAYPOST_DIR . 'includes/class-layout.php';
 require_once WAYPOST_DIR . 'includes/class-feedback.php';
@@ -57,6 +58,7 @@ function waypost_boot() {
 	Waypost_Taxonomy::init();
 	Waypost_Tree::init();
 	Waypost_Search::init();
+	Waypost_Documents::init();
 	Waypost_Frontend::init();
 	Waypost_Layout::init();
 	Waypost_Feedback::init();
@@ -85,4 +87,5 @@ function waypost_activate() {
 
 function waypost_deactivate() {
 	delete_transient( Waypost_Tree::CACHE_KEY );
+	wp_clear_scheduled_hook( Waypost_Documents::CRON );
 }

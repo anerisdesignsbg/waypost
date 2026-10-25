@@ -135,6 +135,12 @@ button.waypost-menu__label { background: none; border: 0; cursor: pointer; }
 .waypost-hit.is-active, .waypost-hit:hover { background: var(--waypost-active-bg); }
 .waypost-hit__section { display: block; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--waypost-muted); }
 .waypost-hit__title { display: block; font-weight: 600; }
+/* File type label on documents (PDF, DOCX…) in the menu and search results. */
+.waypost-file {
+	display: inline-block; margin-left: 6px; padding: 1px 5px; vertical-align: .12em;
+	font-size: 10px; font-weight: 600; line-height: 1.4; letter-spacing: .04em; font-style: normal; text-decoration: none;
+	color: var(--waypost-muted); border: 1px solid var(--waypost-border); border-radius: 4px;
+}
 .waypost-hit__excerpt {
 	display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
 	font-size: 13px; color: var(--waypost-muted); margin-top: 2px;

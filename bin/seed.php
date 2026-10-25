@@ -294,6 +294,37 @@ for ( $i = 1; $i <= 10; $i++ ) {
 	$page( "Blog: photo tips {$i}", $para( 3 ) . '<p>Shared album and backup tips, plus running Magpie in Docker.</p>', array(), 'publish', 'post' );
 }
 
+// Documents from the Media Library, read for search (bin/seed-documents).
+Waypost_Settings::update( array( 'documents' => 1, 'documents_menu' => 1 ) );
+Waypost_Documents::register();
+$s_files = $section( 'Downloads' );
+$doc     = function ( $file, $title, $terms, $description = '' ) use ( $tax, &$created ) {
+	$path = dirname( __FILE__ ) . '/seed-documents/' . $file;
+	$up   = wp_upload_bits( $file, null, file_get_contents( $path ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	if ( ! empty( $up['error'] ) ) {
+		WP_CLI::warning( "Could not upload {$file}: " . $up['error'] );
+		return 0;
+	}
+	$type = wp_check_filetype( $up['file'] );
+	$id   = wp_insert_attachment(
+		array(
+			'post_title'     => $title,
+			'post_content'   => $description,
+			'post_mime_type' => $type['type'],
+			'post_status'    => 'inherit',
+		),
+		$up['file']
+	);
+	update_post_meta( $id, WAYPOST_SEED_META, 1 );
+	wp_set_object_terms( $id, array_map( 'intval', (array) $terms ), $tax ); // Reads the text straight away.
+	$created++;
+	return $id;
+};
+$ids['Quick start card (PDF)']   = $doc( 'magpie-quick-start-card.pdf', 'Magpie quick start card', $s_files );
+$ids['Keyboard shortcuts (TXT)'] = $doc( 'magpie-keyboard-shortcuts.txt', 'Keyboard shortcuts', $s_files );
+$ids['Warranty card (scan)']     = $doc( 'scanned-warranty-card.pdf', 'Scanned warranty card', $s_files, 'Paper warranty card for the Magpie Home Box, scanned.' );
+$ids['Hardware list (DOCX)']     = $doc( 'magpie-hardware-compatibility.docx', 'Hardware compatibility list', array( $s_install, $s_files ) );
+
 // ── 4. Section links (clickable headings) ───────────────────────────────────
 
 update_term_meta( $s_intro, Waypost_Tree::LINK_META, $ids['Welcome to Magpie'] );
@@ -302,7 +333,7 @@ update_term_meta( $s_albums, Waypost_Tree::LINK_META, $ids['Albums overview'] );
 // ── 5. Custom top-level order ───────────────────────────────────────────────
 
 $order = array();
-foreach ( array( $s_intro, $s_install, $s_config, $s_import, $s_sharing, $s_integr, $s_guides, $s_api, $s_trouble, $s_faq, $s_vi ) as $pos => $tid ) {
+foreach ( array( $s_intro, $s_install, $s_config, $s_import, $s_sharing, $s_integr, $s_guides, $s_api, $s_trouble, $s_faq, $s_files, $s_vi ) as $pos => $tid ) {
 	$order[ 'term_' . $tid ] = $pos;
 }
 update_option( 'waypost_order', $order, false );

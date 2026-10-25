@@ -50,6 +50,8 @@ class Waypost_Settings {
 			'show_reading'    => 0,              // reading time on doc pages
 			'heading_links'   => 1,              // link icons on headings
 			'feedback'        => 1,              // "Was this helpful?" on doc pages
+			'documents'       => 1,              // search inside PDF, Word and other files placed in doc sections
+			'documents_menu'  => 1,              // list those files in the docs menu
 			'style'           => 'theme',        // a key from styles()
 			'accent'          => '#2563eb',
 			'delete_on_uninstall' => 0,
@@ -178,7 +180,7 @@ class Waypost_Settings {
 		foreach ( array( 'home_page', 'results_page' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? absint( $in[ $k ] ) : 0;
 		}
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'documents', 'documents_menu', 'delete_on_uninstall' ) as $k ) {
 			$out[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
 

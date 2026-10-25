@@ -8,10 +8,11 @@ Origin: generalised from a client plugin built for FastNetMon.com (`fnm-docs-men
 
 - `waypost/` the plugin itself. This folder is what ships (`npm run zip`).
   - `waypost.php` bootstrap, constants, activation.
-  - `includes/` front end and shared logic: settings, taxonomy, tree (menu data and cache), headings (anchor IDs), render (all HTML output), search (REST, results page, search log), frontend (shortcodes, assets, auto-insert), blocks, Divi.
+  - `includes/` front end and shared logic: settings, taxonomy, tree (menu data and cache), headings (anchor IDs), render (all HTML output), search (REST, results page, search log), documents (PDF/Word/text files in sections: reading their text for search), frontend (shortcodes, assets, auto-insert), blocks, Divi.
   - `admin/` admin screens (`class-admin.php`), help and tutorials (`class-help.php`), setup wizard (`class-wizard.php`).
+  - `lib/pdfparser/` bundled smalot/pdfparser (LGPL-3.0), namespace renamed to `Waypost\Vendor\PdfParser`. Do not edit; see its README to update.
   - `assets/` CSS and JS. No build step: plain JS, blocks use `wp.element.createElement` and server-side rendering.
-- `bin/seed.php` dummy content (docs for Magpie, a fictional photo library; about 150 doc pages plus edge cases). Idempotent.
+- `bin/seed.php` dummy content (docs for Magpie, a fictional photo library; about 150 doc pages plus edge cases, and sample files from `bin/seed-documents/` in a Downloads section, including a scanned PDF with no text). Idempotent.
 - `tests/e2e/` Playwright tests (front end, admin, wizard).
 - `.wp-env.json` local WordPress in Docker. `.wp-env.override.json` (gitignored) adds Divi from `themes/Divi` (licensed, never commit).
 

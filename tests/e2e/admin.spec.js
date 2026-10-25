@@ -182,7 +182,7 @@ test( 'search insights lists searches with no results', async ( { page } ) => {
 
 test( 'help page has every topic and the contextual help tab', async ( { page } ) => {
 	await page.goto( '/wp-admin/admin.php?page=waypost-help' );
-	await expect( page.locator( '.wpst-topic' ) ).toHaveCount( 13 );
+	await expect( page.locator( '.wpst-topic' ) ).toHaveCount( 14 );
 	await page.goto( '/wp-admin/admin.php?page=waypost-structure' );
 	await page.click( '#contextual-help-link' );
 	await expect( page.locator( '#tab-link-waypost-order' ) ).toBeVisible();
