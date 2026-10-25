@@ -123,6 +123,21 @@ class Waypost_Frontend {
 					'pages'     => __( 'Search results pages', 'waypost' ),
 					'prev'      => __( '← Previous', 'waypost' ),
 					'next'      => __( 'Next →', 'waypost' ),
+					'bestAnswer' => __( 'Best answer', 'waypost' ),
+					'alsoIn'    => __( 'Also covered in', 'waypost' ),
+					'allResults' => __( 'All results', 'waypost' ),
+					'readSection' => __( 'Read this section', 'waypost' ),
+					'openDoc'   => __( 'Open the document', 'waypost' ),
+					'allTopics' => __( 'All topics', 'waypost' ),
+					'topics'    => __( 'Narrow results by topic', 'waypost' ),
+					/* translators: 1: what the reader typed, 2: the corrected search */
+					'corrected' => __( 'Nothing matched “%1$s”, so these are results for %2$s.', 'waypost' ),
+					'partial'   => __( 'No page has all of your words, so these pages match some of them.', 'waypost' ),
+					/* translators: %1$s: corrected search */
+					'showingFor' => __( 'Showing results for %1$s', 'waypost' ),
+					/* translators: %1$s: search words */
+					'highlighted' => __( 'Highlighting “%1$s” on this page', 'waypost' ),
+					'clear'     => __( 'Clear', 'waypost' ),
 				),
 			)
 		);

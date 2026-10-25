@@ -294,6 +294,73 @@ for ( $i = 1; $i <= 10; $i++ ) {
 	$page( "Blog: photo tips {$i}", $para( 3 ) . '<p>Shared album and backup tips, plus running Magpie in Docker.</p>', array(), 'publish', 'post' );
 }
 
+// Real wording on the pages people search for most, so search answers read well in demos.
+$real = array(
+	'Installing with Docker' => '<p>Docker is the quickest way to run Magpie. One container holds the web app, the photo processor and the database, and your photos stay in a folder you choose on the host.</p>
+<h2>Before you start</h2>
+<p>You need Docker Engine 24 or newer and at least 4 GB of free memory. Check your version with <code>docker --version</code>.</p>
+<h2>Start the container</h2>
+<p>Run this command, replacing /srv/photos with the folder that holds your photos:</p>
+<pre><code>docker run -d --name magpie -p 8420:8420 -v /srv/photos:/photos magpie/server:latest</code></pre>
+<p>Open http://your-server:8420 in a browser and create the first administrator account. The first scan of a large library can take a few hours.</p>
+<h2>Keep Magpie up to date</h2>
+<p>Pull the new image and start the container again. Your library, albums and settings are kept because they live in the mounted folder.</p>
+<pre><code>docker pull magpie/server:latest
+docker restart magpie</code></pre>
+<h2>Common problems</h2>
+<p>If the page does not load, make sure port 8420 is free and allowed through the firewall. If photos are missing, check that the folder is mounted at /photos inside the container.</p>',
+	'Shared albums' => '<p>A shared album lets family and friends see, comment on and add photos to an album you choose, using their own Magpie account.</p>
+<h2>Share an album</h2>
+<p>Open the album, press Share and type the names or email addresses of the people to invite. Each person gets an email with a link. They can see the album as soon as they sign in.</p>
+<h2>Choose what people can do</h2>
+<p>Viewers can see photos and leave comments. Contributors can also add their own photos to the album. You can change someone from viewer to contributor at any time under Share, People.</p>
+<h2>Stop sharing</h2>
+<p>Under Share, People, press Remove next to a name. The album disappears from their library straight away. Photos they added stay in the album.</p>
+<h2>Sharing with people who have no account</h2>
+<p>To share with someone who does not use Magpie, create a public link instead. Public links work in any browser and can have an expiry date and a password.</p>',
+	'Public links' => '<p>A public link shares an album or a single photo with anyone who has the link, without a Magpie account.</p>
+<h2>Create a public link</h2>
+<p>Open the album or photo, press Share and choose Create public link. Copy the link and send it however you like.</p>
+<h2>Protect a link</h2>
+<p>Add a password, an expiry date, or both. People who open an expired link see a message instead of your photos. You can turn off downloads so photos can only be viewed.</p>
+<h2>Turn a link off</h2>
+<p>Under Share, Public links, press Delete. Anyone who opens the old link sees that it no longer exists.</p>',
+	'Backups and retention' => '<p>Magpie can back up your whole library every night: originals, albums, faces, comments and settings. Restoring from a backup puts everything back exactly as it was.</p>
+<h2>Turn on nightly backups</h2>
+<p>Go to Settings, Storage, Backups and choose a backup folder on another disk or a network share. Backups run at 2am by default; change the time to suit you.</p>
+<h2>How long backups are kept</h2>
+<p>Magpie keeps the last 7 nightly backups and one backup from each of the last 4 weeks. Older ones are deleted automatically to save space.</p>
+<h2>Restore a backup</h2>
+<p>Stop Magpie, then run the restore command with the date of the backup you want. Restoring replaces the current library, so take a fresh backup first if you are unsure.</p>
+<pre><code>magpie-cli backup restore 2026-10-01</code></pre>
+<h2>Keep a copy away from home</h2>
+<p>A backup on the same server will not survive a fire or theft. Copy the backup folder to cloud storage or a drive you keep somewhere else.</p>',
+	'System requirements' => '<p>Magpie runs on most home servers and network storage devices. These are the minimum and recommended specifications for a library of up to 100,000 photos.</p>
+<h2>Hardware</h2>
+<p>Minimum: 2 CPU cores and 4 GB of memory. Recommended: 4 cores and 8 GB, which makes face detection and video previews much faster.</p>
+<h2>Storage</h2>
+<p>Allow the size of your photos plus about 15 per cent for previews and thumbnails. SSD storage for the database makes browsing noticeably quicker.</p>
+<h2>Operating systems</h2>
+<p>Any 64-bit Linux that runs Docker, plus Ubuntu 22.04 or newer and Debian 12 for native installs. Windows and macOS can run Magpie through Docker Desktop.</p>
+<h2>Browsers and apps</h2>
+<p>The web app works in current versions of Chrome, Firefox, Safari and Edge. The phone apps need iOS 16 or Android 11 or newer.</p>',
+	'User accounts' => '<p>Each person in your household can have their own Magpie account with a private library, their own albums and their own upload settings.</p>
+<h2>Add a person</h2>
+<p>Go to Settings, People and press Add person. Enter their name and email address. They receive an invitation to choose a password.</p>
+<h2>Reset a password</h2>
+<p>If someone forgets their password, they can press Forgot password on the sign-in page. As an administrator you can also go to Settings, People, choose the person and press Reset password.</p>
+<h2>Reset the admin password</h2>
+<p>If you are locked out of the only administrator account, run this on the server and follow the prompts:</p>
+<pre><code>magpie-cli users reset-password admin</code></pre>
+<h2>Storage quotas</h2>
+<p>Set a quota for each person under Settings, People, Quota so one large library cannot fill the disk.</p>',
+);
+foreach ( $real as $t => $html ) {
+	if ( ! empty( $ids[ $t ] ) ) {
+		wp_update_post( array( 'ID' => $ids[ $t ], 'post_content' => $html ) );
+	}
+}
+
 // Documents from the Media Library, read for search (bin/seed-documents).
 Waypost_Settings::update( array( 'documents' => 1, 'documents_menu' => 1 ) );
 Waypost_Documents::register();

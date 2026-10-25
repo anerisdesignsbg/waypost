@@ -145,7 +145,8 @@ test.describe( 'Search', () => {
 	test( 'matching headings link straight to the section', async ( { page } ) => {
 		await page.goto( '/installing-on-ubuntu/' );
 		await page.locator( '.waypost-search__input' ).first().fill( 'heading with its own' );
-		await expect( page.locator( '.waypost-hit--heading' ).first() ).toHaveAttribute( 'href', /#custom-anchor$/ );
+		// Either the best answer or a heading below a result links to the section.
+		await expect( page.locator( '.waypost-search__panel a[href$="#custom-anchor"]' ).first() ).toBeVisible();
 	} );
 
 	test( 'Vietnamese text is searchable', async ( { page } ) => {
@@ -240,7 +241,8 @@ test.describe( 'Search', () => {
 		expect( hit.headings.map( ( h ) => h.text ) ).toContain( 'Ảnh động và Lumière' );
 
 		for ( const layoutWord of [ 'builderVersion', 'innerContent', 'desktop' ] ) {
-			expect( ( await search( layoutWord ) ).total, layoutWord ).toBe( 0 );
+			const found = ( await search( layoutWord ) ).results.map( ( r ) => r.title );
+			expect( found, layoutWord ).not.toContain( 'Edge case: Divi 5 content' );
 		}
 	} );
 

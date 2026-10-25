@@ -358,11 +358,17 @@ class Waypost_Render {
 		if ( mb_strlen( $q ) < 2 ) {
 			return '<p class="waypost-results__hint">' . esc_html__( 'Type at least two characters to search the documentation.', 'waypost' ) . '</p>';
 		}
-		$per  = (int) Waypost_Settings::get( 'per_page' );
-		$data = Waypost_Search::run( $q, $page, $per );
-		if ( 1 === $page ) {
+		$topic = isset( $_GET['topic'] ) ? absint( $_GET['topic'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification
+		$per   = (int) Waypost_Settings::get( 'per_page' );
+		$data  = Waypost_Search::run( $q, $page, $per, $topic );
+		if ( 1 === $page && ! $topic ) {
 			Waypost_Search::log( $q, $data['total'] );
 		}
+		$marks = $data['marks'];
+		$link  = function ( $args ) use ( $q, $base, $data ) {
+			$args = array_merge( array( 'dq' => rawurlencode( $q ), 'topic' => $data['topic'] ? $data['topic'] : false ), $args );
+			return add_query_arg( array_filter( $args ), $base );
+		};
 
 		$html = '<p class="waypost-results__count" role="status">' . esc_html(
 			sprintf(
@@ -373,8 +379,70 @@ class Waypost_Render {
 			)
 		) . '</p>';
 
+		if ( '' !== $data['corrected'] ) {
+			$html .= '<p class="waypost-results__notice">' . sprintf(
+				/* translators: 1: what the reader typed, 2: the corrected search */
+				esc_html__( 'Nothing matched “%1$s”, so these are results for %2$s.', 'waypost' ),
+				esc_html( $q ),
+				'<strong>' . esc_html( $data['corrected'] ) . '</strong>'
+			) . '</p>';
+		} elseif ( $data['partial'] ) {
+			$html .= '<p class="waypost-results__notice">' . esc_html__( 'No page has all of your words, so these pages match some of them.', 'waypost' ) . '</p>';
+		}
+
 		if ( ! $data['results'] ) {
 			return $html . '<div class="waypost-results__none"><p>' . esc_html__( 'Nothing matched. Try a shorter or different word.', 'waypost' ) . '</p></div>';
+		}
+
+		if ( $data['topics'] ) {
+			$html .= '<nav class="waypost-topics" aria-label="' . esc_attr__( 'Narrow results by topic', 'waypost' ) . '">';
+			$html .= sprintf(
+				'<a class="waypost-topic%s" href="%s" data-topic="0"%s>%s</a>',
+				$data['topic'] ? '' : ' is-current',
+				esc_url( $link( array( 'topic' => false ) ) ),
+				$data['topic'] ? '' : ' aria-current="true"',
+				esc_html__( 'All topics', 'waypost' )
+			);
+			foreach ( array_slice( $data['topics'], 0, 6 ) as $t ) {
+				$on    = (int) $t['id'] === (int) $data['topic'];
+				$html .= sprintf(
+					'<a class="waypost-topic%s" href="%s" data-topic="%d"%s>%s <span class="waypost-topic__count">%s</span></a>',
+					$on ? ' is-current' : '',
+					esc_url( $link( array( 'topic' => (int) $t['id'] ) ) ),
+					(int) $t['id'],
+					$on ? ' aria-current="true"' : '',
+					esc_html( $t['name'] ),
+					esc_html( number_format_i18n( $t['count'] ) )
+				);
+			}
+			$html .= '</nav>';
+		}
+
+		if ( $data['answer'] ) {
+			$a     = $data['answer'];
+			$path  = trim( $a['path'] . ( '' !== $a['page'] ? ' › ' . $a['page'] : '' ), ' ›' );
+			$html .= '<section class="waypost-answer" aria-label="' . esc_attr__( 'Best answer', 'waypost' ) . '">';
+			$html .= '<p class="waypost-answer__label">' . self::spark() . esc_html__( 'Best answer', 'waypost' ) . '</p>';
+			if ( '' !== $path ) {
+				$html .= '<p class="waypost-answer__path">' . esc_html( $path ) . '</p>';
+			}
+			$html .= '<h3 class="waypost-answer__title"><a href="' . esc_url( $a['url'] ) . '">' . Waypost_Search::highlight( $a['title'], $marks ) . '</a>' . ( $a['file'] ? ' ' . self::file_badge( $a['file'] ) : '' ) . '</h3>';
+			if ( '' !== $a['text'] ) {
+				$html .= '<p class="waypost-answer__text">' . Waypost_Search::highlight( $a['text'], $marks ) . '</p>';
+			}
+			$html .= '<a class="waypost-answer__more" href="' . esc_url( $a['url'] ) . '">' . esc_html( $a['file'] ? __( 'Open the document', 'waypost' ) : __( 'Read this section', 'waypost' ) ) . ' <span aria-hidden="true">→</span></a>';
+			if ( $data['related'] ) {
+				$html .= '<div class="waypost-answer__related"><p class="waypost-answer__sub">' . esc_html__( 'Also covered in', 'waypost' ) . '</p><ul>';
+				foreach ( $data['related'] as $r ) {
+					$html .= '<li><a href="' . esc_url( $r['url'] ) . '"><span class="waypost-answer__page">' . esc_html( $r['title'] ) . '</span>'
+						. ( '' !== $r['heading'] ? '<span class="waypost-answer__heading"> › ' . esc_html( $r['heading'] ) . '</span>' : '' )
+						. ( $r['file'] ? ' ' . self::file_badge( $r['file'] ) : '' ) . '</a>'
+						. ( '' !== $r['text'] ? '<span class="waypost-answer__snippet">' . Waypost_Search::highlight( $r['text'], $marks ) . '</span>' : '' ) . '</li>';
+				}
+				$html .= '</ul></div>';
+			}
+			$html .= '</section>';
+			$html .= '<h2 class="waypost-results__heading">' . esc_html__( 'All results', 'waypost' ) . '</h2>';
 		}
 
 		$html .= '<ol class="waypost-results__list" start="' . esc_attr( ( $page - 1 ) * $per + 1 ) . '">';
@@ -383,14 +451,15 @@ class Waypost_Render {
 			if ( $r['section'] ) {
 				$html .= '<p class="waypost-result__section">' . esc_html( $r['section'] ) . '</p>';
 			}
-			$html .= '<h3 class="waypost-result__title"><a href="' . esc_url( $r['url'] ) . '">' . Waypost_Search::highlight( $r['title'], $q ) . '</a>' . ( $r['file'] ? ' ' . self::file_badge( $r['file'] ) : '' ) . '</h3>';
+			$html .= '<h3 class="waypost-result__title"><a href="' . esc_url( $r['url'] ) . '">' . Waypost_Search::highlight( $r['title'], $marks ) . '</a>' . ( $r['file'] ? ' ' . self::file_badge( $r['file'] ) : '' ) . '</h3>';
 			if ( $r['excerpt'] ) {
-				$html .= '<p class="waypost-result__excerpt">' . Waypost_Search::highlight( $r['excerpt'], $q ) . '</p>';
+				$html .= '<p class="waypost-result__excerpt">' . Waypost_Search::highlight( $r['excerpt'], $marks ) . '</p>';
 			}
 			if ( $r['headings'] ) {
 				$html .= '<ul class="waypost-result__headings">';
 				foreach ( $r['headings'] as $h ) {
-					$html .= '<li><a href="' . esc_url( $h['url'] ) . '">' . Waypost_Search::highlight( $h['text'], $q ) . '</a></li>';
+					$html .= '<li><a href="' . esc_url( $h['url'] ) . '">' . Waypost_Search::highlight( $h['text'], $marks ) . '</a>'
+						. ( '' !== $h['snippet'] ? '<span class="waypost-result__snippet">' . Waypost_Search::highlight( $h['snippet'], $marks ) . '</span>' : '' ) . '</li>';
 				}
 				$html .= '</ul>';
 			}
@@ -401,7 +470,7 @@ class Waypost_Render {
 		if ( $data['pages'] > 1 ) {
 			$links = paginate_links(
 				array(
-					'base'      => add_query_arg( array( 'dq' => rawurlencode( $q ), 'pg' => '%#%' ), $base ),
+					'base'      => $link( array( 'pg' => '%#%' ) ),
 					'format'    => '',
 					'current'   => $page,
 					'total'     => $data['pages'],
@@ -411,7 +480,12 @@ class Waypost_Render {
 			);
 			$html .= '<nav class="waypost-results__pages" aria-label="' . esc_attr__( 'Search results pages', 'waypost' ) . '">' . $links . '</nav>';
 		}
-		return $html;
+		return '<div class="waypost-results__body" data-marks="' . esc_attr( wp_json_encode( $marks ) ) . '" data-query="' . esc_attr( $q ) . '">' . $html . '</div>';
+	}
+
+	/** Small sparkle icon for the best answer card. */
+	private static function spark() {
+		return '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg>';
 	}
 
 	/** The site logo for the standalone docs bar: the theme's custom logo, or Divi's logo setting. */

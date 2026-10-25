@@ -34,6 +34,9 @@ class Waypost_Settings {
 			'placeholder'     => '',
 			'per_page'        => 10,
 			'log_searches'    => 1,
+			'best_answer'     => 1,              // results: a best answer card with related sections on top
+			'topic_filters'   => 1,              // results: filter by top-level section
+			'synonyms'        => '',             // one set per line, comma separated, e.g. photo, picture, image
 			'hide_extra_search' => 1,            // results page: hide other search boxes, it has its own
 			'home_title'      => '',
 			'home_intro'      => '',
@@ -180,7 +183,7 @@ class Waypost_Settings {
 		foreach ( array( 'home_page', 'results_page' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? absint( $in[ $k ] ) : 0;
 		}
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'documents', 'documents_menu', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'documents', 'documents_menu', 'best_answer', 'topic_filters', 'delete_on_uninstall' ) as $k ) {
 			$out[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
 
@@ -191,6 +194,14 @@ class Waypost_Settings {
 		$out['per_page']   = isset( $in['per_page'] ) ? max( 5, min( 50, absint( $in['per_page'] ) ) ) : $d['per_page'];
 
 		$out['placeholder'] = isset( $in['placeholder'] ) ? sanitize_text_field( $in['placeholder'] ) : '';
+		$lines = array();
+		foreach ( preg_split( '/\r?\n/', isset( $in['synonyms'] ) ? (string) $in['synonyms'] : '' ) as $line ) {
+			$words = array_filter( array_map( 'trim', explode( ',', mb_strtolower( sanitize_text_field( $line ) ) ) ), 'strlen' );
+			if ( count( $words ) > 1 ) {
+				$lines[] = implode( ', ', array_unique( $words ) );
+			}
+		}
+		$out['synonyms'] = implode( "\n", array_slice( $lines, 0, 200 ) );
 		foreach ( array( 'home_title', 'home_intro', 'topics_title' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? sanitize_text_field( $in[ $k ] ) : '';
 		}

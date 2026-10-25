@@ -692,7 +692,7 @@ class Waypost_Admin {
 		$sections = array(
 			'content'     => array( __( 'Content', 'waypost' ), __( 'Where your docs live', 'waypost' ) ),
 			'navigation'  => array( __( 'Navigation', 'waypost' ), __( 'Menu and page features', 'waypost' ) ),
-			'search'      => array( __( 'Search', 'waypost' ), __( 'Results and logging', 'waypost' ) ),
+			'search'      => array( __( 'Search', 'waypost' ), __( 'Results, answers and synonyms', 'waypost' ) ),
 			'search-home' => array( __( 'Search home', 'waypost' ), __( 'Quick searches and topics', 'waypost' ) ),
 			'documents'   => array( __( 'Documents', 'waypost' ), __( 'PDF, Word and other files', 'waypost' ) ),
 			'appearance'  => array( __( 'Appearance', 'waypost' ), __( 'Layout and style', 'waypost' ) ),
@@ -832,6 +832,22 @@ class Waypost_Admin {
 							<label class="wpst-check"><input type="checkbox" name="hide_extra_search" value="1" <?php checked( $o['hide_extra_search'] ); ?>> <?php esc_html_e( 'On the results page, hide other docs search boxes, such as one in a sidebar', 'waypost' ); ?></label>
 							<label class="wpst-check"><input type="checkbox" name="log_searches" value="1" <?php checked( $o['log_searches'] ); ?>> <?php esc_html_e( 'Log search terms for Search insights', 'waypost' ); ?></label>
 							<p class="description"><?php esc_html_e( 'Only the words searched and how many results they found are stored. No IP addresses or user details.', 'waypost' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Smart results', 'waypost' ); ?></th>
+						<td>
+							<label class="wpst-check"><input type="checkbox" name="best_answer" value="1" <?php checked( $o['best_answer'] ); ?>> <?php esc_html_e( 'Show a best answer on top: the section that answers the search, with other pages that cover it', 'waypost' ); ?></label>
+							<label class="wpst-check"><input type="checkbox" name="topic_filters" value="1" <?php checked( $o['topic_filters'] ); ?>> <?php esc_html_e( 'Let readers narrow results by topic (your top-level sections)', 'waypost' ); ?></label>
+							<p class="description"><?php esc_html_e( 'Search always ignores question words such as “how do I”, finds other forms of a word (“installing” finds “install”), fixes small typing mistakes, and highlights the words on the page a reader opens.', 'waypost' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="wpst-synonyms"><?php esc_html_e( 'Synonyms', 'waypost' ); ?></label></th>
+						<td>
+							<textarea id="wpst-synonyms" name="synonyms" rows="5" class="large-text code" placeholder="<?php esc_attr_e( "photo, picture, image
+sign in, log in, login", 'waypost' ); ?>"><?php echo esc_textarea( $o['synonyms'] ); ?></textarea>
+							<p class="description"><?php esc_html_e( 'Words your readers use that mean the same as words in your docs. One group per line, separated by commas. A search for any word in a group finds them all. Search insights shows searches that found nothing, a good source of new synonyms.', 'waypost' ); ?></p>
 						</td>
 					</tr>
 				</table>
@@ -1034,10 +1050,10 @@ class Waypost_Admin {
 			'taxonomy'      => isset( $in['taxonomy'] ) ? $in['taxonomy'] : '',
 			'toc_levels'    => isset( $in['toc_levels'] ) ? (array) $in['toc_levels'] : array( 2 ),
 		);
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'documents', 'documents_menu', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'documents', 'documents_menu', 'best_answer', 'topic_filters', 'delete_on_uninstall' ) as $k ) {
 			$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
-		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title', 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'chrome' ) as $k ) {
+		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title', 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'chrome', 'synonyms' ) as $k ) {
 			if ( isset( $in[ $k ] ) ) {
 				$changes[ $k ] = $in[ $k ];
 			}
@@ -1064,7 +1080,7 @@ class Waypost_Admin {
 		<div class="wpst-grid wpst-grid--two">
 			<section class="wpst-card">
 				<div class="wpst-card__head"><h2><?php esc_html_e( 'Searches with no results', 'waypost' ); ?></h2><?php echo self::help_link( 'insights' ); // phpcs:ignore ?></div>
-				<p class="wpst-muted"><?php esc_html_e( 'Each of these is a question your docs did not answer. Write a page for it, or add the word people used to an existing page.', 'waypost' ); ?></p>
+				<p class="wpst-muted"><?php esc_html_e( 'Each of these is a question your docs did not answer. Write a page for it, or, if your docs use a different word for the same thing, add a synonym.', 'waypost' ); ?> <a href="<?php echo esc_url( admin_url( 'admin.php?page=waypost-settings#search' ) ); ?>"><?php esc_html_e( 'Edit synonyms', 'waypost' ); ?></a></p>
 				<?php self::log_table( $failed, true ); ?>
 			</section>
 			<section class="wpst-card">

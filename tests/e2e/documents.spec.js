@@ -35,7 +35,7 @@ test.describe( 'Documents for readers', () => {
 		await page.goto( '/documentation/?dq=' + encodeURIComponent( 'Zürich' ) ); // Accented text from Word.
 		await expect( page.locator( '.waypost-result', { hasText: 'Hardware compatibility list' } ) ).toBeVisible();
 
-		await page.goto( '/documentation/?dq=duplicates' );
+		await page.goto( '/documentation/?dq=' + encodeURIComponent( 'keyboard shortcuts' ) );
 		await expect( page.locator( '.waypost-result', { hasText: 'Keyboard shortcuts' } ).locator( '.waypost-file' ) ).toHaveText( 'TXT' );
 	} );
 

@@ -216,8 +216,18 @@ Troubleshooting</pre>
 					</ol>
 					<p><?php esc_html_e( 'Quick searches also appear in the Ctrl+K search window before anything is typed.', 'waypost' ); ?></p>
 
-					<h3><?php esc_html_e( 'How search finds pages', 'waypost' ); ?></h3>
-					<p><?php esc_html_e( 'Waypost uses WordPress’s own search, limited to your doc pages, so there is no index to build and no extra plugin to install. New and edited pages are searchable as soon as they are published. It matches the words people type in page titles and text; it does not correct spelling or match different word forms, so “installing” will not find a page that only says “install”. Search insights shows which searches find nothing, so you can add those words to the right pages.', 'waypost' ); ?></p>
+					<h3><?php esc_html_e( 'How search understands readers', 'waypost' ); ?></h3>
+					<p><?php esc_html_e( 'Waypost reads every doc page section by section, so it can point readers to the exact part of a page that answers them. There is no index to build and no extra plugin to install: new and edited pages are searchable as soon as they are published.', 'waypost' ); ?></p>
+					<ul class="wpst-list">
+						<li><strong><?php esc_html_e( 'Questions work', 'waypost' ); ?></strong>: <?php esc_html_e( 'words like “how do I” are ignored, so “How do I share an album?” searches for share and album.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Other forms of a word', 'waypost' ); ?></strong>: <?php esc_html_e( '“installing”, “installed” and “installation” all find “install”.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Typing mistakes', 'waypost' ); ?></strong>: <?php esc_html_e( 'when nothing matches, Waypost tries the closest words from your page titles and headings, so “dokcer” finds “docker”, and says so above the results.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Best answer', 'waypost' ); ?></strong>: <?php esc_html_e( 'the section that answers the search best is shown on top with a short summary and a link straight to it, followed by other pages that cover the same thing.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Matching sections', 'waypost' ); ?></strong>: <?php esc_html_e( 'each result lists up to three headings that hold the search, each with a line of text, linking to that part of the page.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Topics', 'waypost' ); ?></strong>: <?php esc_html_e( 'buttons above the results narrow them to one of your top-level sections, with a count for each.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Highlights on the page', 'waypost' ); ?></strong>: <?php esc_html_e( 'when a reader opens a result, the words they searched for are highlighted and the section briefly lights up. A Clear button removes the highlights.', 'waypost' ); ?></li>
+						<li><strong><?php esc_html_e( 'Synonyms', 'waypost' ); ?></strong>: <?php esc_html_e( 'add your readers’ own words in Settings, Search, for example “pic” for “photo”. Search insights shows which searches find nothing, so you know what to add.', 'waypost' ); ?></li>
+					</ul>
 				</article>
 
 				<article class="wpst-card wpst-topic" id="documents">

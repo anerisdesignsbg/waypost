@@ -36,6 +36,7 @@ require_once WAYPOST_DIR . 'includes/class-taxonomy.php';
 require_once WAYPOST_DIR . 'includes/class-tree.php';
 require_once WAYPOST_DIR . 'includes/class-headings.php';
 require_once WAYPOST_DIR . 'includes/class-render.php';
+require_once WAYPOST_DIR . 'includes/class-match.php';
 require_once WAYPOST_DIR . 'includes/class-search.php';
 require_once WAYPOST_DIR . 'includes/class-documents.php';
 require_once WAYPOST_DIR . 'includes/class-frontend.php';

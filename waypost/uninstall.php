@@ -10,6 +10,8 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 delete_metadata( 'post', 0, '_waypost_text', '', true );
 delete_option( 'waypost_text_ready' );
 delete_metadata( 'post', 0, '_waypost_doc_status', '', true );
+delete_metadata( 'post', 0, '_waypost_passages', '', true );
+delete_transient( 'waypost_vocab' );
 wp_clear_scheduled_hook( 'waypost_read_documents' );
 
 $waypost_settings = get_option( 'waypost_settings', array() );

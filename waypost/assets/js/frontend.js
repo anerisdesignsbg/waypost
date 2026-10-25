@@ -83,15 +83,42 @@
 		return q.toLowerCase().split(/\s+/).filter(function (w) { return w.length > 1; });
 	}
 
-	function appendHighlighted(node, text, q) {
-		var ws = words(q).map(function (w) { return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
-		if (!ws.length) { node.appendChild(document.createTextNode(text)); return; }
-		var parts = text.split(new RegExp('(' + ws.join('|') + ')', 'ig'));
-		parts.forEach(function (p, i) {
+	// Marks are the words the server matched (other forms and synonyms included), or the typed search.
+	// A match grows to the end of its word, so "install" marks all of "installing".
+	function markPattern(marks) {
+		var ws = (Array.isArray(marks) ? marks : words(String(marks || ''))).filter(Boolean)
+			.map(function (w) { return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+		if (!ws.length) return null;
+		try {
+			return new RegExp('((?:' + ws.join('|') + ')[\\p{L}\\p{N}]*)', 'giu');
+		} catch (e) {
+			return new RegExp('((?:' + ws.join('|') + ')\\w*)', 'gi');
+		}
+	}
+
+	function appendHighlighted(node, text, marks) {
+		var re = markPattern(marks);
+		if (!re) { node.appendChild(document.createTextNode(text)); return; }
+		String(text).split(re).forEach(function (p, i) {
 			if (!p) return;
 			node.appendChild(i % 2 ? el('mark', '', p) : document.createTextNode(p));
 		});
 	}
+
+	// Remember what was searched when a result is opened, so the page can highlight it (initArrival).
+	document.addEventListener('click', function (e) {
+		var a = e.target.closest && e.target.closest('a[href]');
+		var box = a && a.closest('[data-marks]');
+		if (!box) return;
+		try {
+			sessionStorage.setItem('waypost-arrival', JSON.stringify({
+				marks: JSON.parse(box.getAttribute('data-marks') || '[]'),
+				q: box.getAttribute('data-query') || '',
+				url: a.href.split('#')[0],
+				time: Date.now()
+			}));
+		} catch (err) { /* private mode: no highlight */ }
+	}, true);
 
 	function logSearch(q) {
 		if (!cfg.api || !q) return;
@@ -179,39 +206,77 @@
 	SearchUI.prototype.render = function (data, q) {
 		var self = this;
 		var results = (data && data.results) || [];
+		var marks = data && data.marks && data.marks.length ? data.marks : q;
 		this.panel.innerHTML = '';
 		this.active = -1;
+		this.panel.setAttribute('data-marks', JSON.stringify(Array.isArray(marks) ? marks : words(q)));
+		this.panel.setAttribute('data-query', q);
 
 		if (!results.length) {
 			this.status(t.noResults || 'No results');
 			this.logTimer = setTimeout(function () { logSearch(q); }, 1500);
 			return;
 		}
+		if (data.corrected) {
+			this.panel.appendChild(el('div', 'waypost-search__status waypost-search__fix', fill(t.showingFor, data.corrected)));
+		}
 
 		var idx = 0;
-		results.forEach(function (r) {
-			var a = el('a', 'waypost-hit');
-			a.href = r.url;
-			a.id = self.panel.id + '-o' + (idx++);
-			a.setAttribute('role', 'option');
-			if (r.section) a.appendChild(el('span', 'waypost-hit__section', r.section));
-			var title = el('span', 'waypost-hit__title');
-			appendHighlighted(title, r.title, q);
-			if (r.file) title.appendChild(el('span', 'waypost-file', r.file));
-			a.appendChild(title);
-			if (r.excerpt) {
-				var ex = el('span', 'waypost-hit__excerpt');
-				appendHighlighted(ex, r.excerpt, q);
-				a.appendChild(ex);
+		var answer = data.answer;
+		if (answer) {
+			var aa = el('a', 'waypost-hit waypost-hit--answer');
+			aa.href = answer.url;
+			aa.id = self.panel.id + '-o' + (idx++);
+			aa.setAttribute('role', 'option');
+			aa.appendChild(el('span', 'waypost-hit__label', t.bestAnswer || 'Best answer'));
+			var apath = [answer.path, answer.page].filter(Boolean).join(' › ');
+			if (apath) aa.appendChild(el('span', 'waypost-hit__section', apath));
+			var at = el('span', 'waypost-hit__title');
+			appendHighlighted(at, answer.title, marks);
+			if (answer.file) at.appendChild(el('span', 'waypost-file', answer.file));
+			aa.appendChild(at);
+			if (answer.text) {
+				var ax = el('span', 'waypost-hit__excerpt');
+				appendHighlighted(ax, answer.text, marks);
+				aa.appendChild(ax);
 			}
-			self.panel.appendChild(a);
+			self.panel.appendChild(aa);
+		}
+		results.forEach(function (r) {
+			// The answer's page is already on top: list only its other matching headings.
+			var isAnswer = answer && r.id === answer.id;
+			if (!isAnswer) {
+				var a = el('a', 'waypost-hit');
+				a.href = r.url;
+				a.id = self.panel.id + '-o' + (idx++);
+				a.setAttribute('role', 'option');
+				if (r.section) a.appendChild(el('span', 'waypost-hit__section', r.section));
+				var title = el('span', 'waypost-hit__title');
+				appendHighlighted(title, r.title, marks);
+				if (r.file) title.appendChild(el('span', 'waypost-file', r.file));
+				a.appendChild(title);
+				if (r.excerpt) {
+					var ex = el('span', 'waypost-hit__excerpt');
+					appendHighlighted(ex, r.excerpt, marks);
+					a.appendChild(ex);
+				}
+				self.panel.appendChild(a);
+			}
 
 			(r.headings || []).forEach(function (h) {
+				if (isAnswer && h.url === answer.url) return;
 				var ha = el('a', 'waypost-hit waypost-hit--heading');
 				ha.href = h.url;
 				ha.id = self.panel.id + '-o' + (idx++);
 				ha.setAttribute('role', 'option');
-				appendHighlighted(ha, h.text, q);
+				var ht = el('span', 'waypost-hit__heading');
+				appendHighlighted(ht, h.text, marks);
+				ha.appendChild(ht);
+				if (h.snippet) {
+					var hs = el('span', 'waypost-hit__snippet');
+					appendHighlighted(hs, h.snippet, marks);
+					ha.appendChild(hs);
+				}
 				self.panel.appendChild(ha);
 			});
 		});
@@ -404,21 +469,114 @@
 	function fill(str, a, b) { return String(str || '').replace('%1$s', a).replace('%2$s', b); }
 
 	// Same markup as Waypost_Render::results(), built with textContent only.
+	// Mirrors Waypost_Render::results(). urlFor(q, page, topic) builds links that also work without JavaScript.
 	function renderResults(list, data, q, pg, urlFor) {
 		var per = cfg.perPage || 10;
 		var total = (data && data.total) || 0;
 		var results = (data && data.results) || [];
+		var marks = data && data.marks && data.marks.length ? data.marks : words(q);
+		var topic = (data && data.topic) || 0;
 		list.textContent = '';
+		var body = el('div', 'waypost-results__body');
+		body.setAttribute('data-marks', JSON.stringify(marks));
+		body.setAttribute('data-query', q);
+		list.appendChild(body);
 		// Two plural forms only; enough for the count line.
 		var count = el('p', 'waypost-results__count', fill(total === 1 ? t.oneResult : t.manyResults, total.toLocaleString(), q));
 		count.setAttribute('role', 'status');
-		list.appendChild(count);
+		body.appendChild(count);
+
+		if (data && data.corrected) {
+			var fix = el('p', 'waypost-results__notice');
+			var parts = String(t.corrected || '').replace('%1$s', q).split('%2$s');
+			fix.appendChild(document.createTextNode(parts[0] || ''));
+			fix.appendChild(el('strong', '', data.corrected));
+			fix.appendChild(document.createTextNode(parts[1] || ''));
+			body.appendChild(fix);
+		} else if (data && data.partial) {
+			body.appendChild(el('p', 'waypost-results__notice', t.partial || ''));
+		}
+
 		if (!results.length) {
 			var none = el('div', 'waypost-results__none');
 			none.appendChild(el('p', '', t.noMatch || ''));
-			list.appendChild(none);
+			body.appendChild(none);
 			return;
 		}
+
+		if (data.topics && data.topics.length) {
+			var nav = el('nav', 'waypost-topics');
+			nav.setAttribute('aria-label', t.topics || '');
+			var chip = function (id, name, n) {
+				var a = el('a', 'waypost-topic' + (id === topic ? ' is-current' : ''), name);
+				a.href = urlFor(q, 1, id);
+				a.setAttribute('data-topic', String(id));
+				if (id === topic) a.setAttribute('aria-current', 'true');
+				if (n != null) {
+					a.appendChild(document.createTextNode(' '));
+					a.appendChild(el('span', 'waypost-topic__count', n.toLocaleString()));
+				}
+				nav.appendChild(a);
+			};
+			chip(0, t.allTopics || 'All topics', null);
+			data.topics.slice(0, 6).forEach(function (tp) { chip(tp.id, tp.name, tp.count); });
+			body.appendChild(nav);
+		}
+
+		var answer = data.answer;
+		if (answer) {
+			var card = el('section', 'waypost-answer');
+			card.setAttribute('aria-label', t.bestAnswer || '');
+			var label = el('p', 'waypost-answer__label');
+			label.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg>'; // Static icon, no data.
+			label.appendChild(document.createTextNode(t.bestAnswer || ''));
+			card.appendChild(label);
+			var path = [answer.path, answer.page].filter(Boolean).join(' › ');
+			if (path) card.appendChild(el('p', 'waypost-answer__path', path));
+			var ah = el('h3', 'waypost-answer__title');
+			var aa = el('a');
+			aa.href = answer.url;
+			appendHighlighted(aa, answer.title, marks);
+			ah.appendChild(aa);
+			if (answer.file) { ah.appendChild(document.createTextNode(' ')); ah.appendChild(el('span', 'waypost-file', answer.file)); }
+			card.appendChild(ah);
+			if (answer.text) {
+				var at = el('p', 'waypost-answer__text');
+				appendHighlighted(at, answer.text, marks);
+				card.appendChild(at);
+			}
+			var more = el('a', 'waypost-answer__more', (answer.file ? t.openDoc : t.readSection) + ' ');
+			more.href = answer.url;
+			var arrow = el('span', '', '→');
+			arrow.setAttribute('aria-hidden', 'true');
+			more.appendChild(arrow);
+			card.appendChild(more);
+			if (data.related && data.related.length) {
+				var rel = el('div', 'waypost-answer__related');
+				rel.appendChild(el('p', 'waypost-answer__sub', t.alsoIn || ''));
+				var rul = el('ul');
+				data.related.forEach(function (r) {
+					var li = el('li');
+					var ra = el('a');
+					ra.href = r.url;
+					ra.appendChild(el('span', 'waypost-answer__page', r.title));
+					if (r.heading) ra.appendChild(el('span', 'waypost-answer__heading', ' › ' + r.heading));
+					if (r.file) { ra.appendChild(document.createTextNode(' ')); ra.appendChild(el('span', 'waypost-file', r.file)); }
+					li.appendChild(ra);
+					if (r.text) {
+						var rs = el('span', 'waypost-answer__snippet');
+						appendHighlighted(rs, r.text, marks);
+						li.appendChild(rs);
+					}
+					rul.appendChild(li);
+				});
+				rel.appendChild(rul);
+				card.appendChild(rel);
+			}
+			body.appendChild(card);
+			body.appendChild(el('h2', 'waypost-results__heading', t.allResults || ''));
+		}
+
 		var ol = el('ol', 'waypost-results__list');
 		ol.start = (pg - 1) * per + 1;
 		results.forEach(function (r) {
@@ -427,7 +585,7 @@
 			var h = el('h3', 'waypost-result__title');
 			var a = el('a');
 			a.href = r.url;
-			appendHighlighted(a, r.title, q);
+			appendHighlighted(a, r.title, marks);
 			h.appendChild(a);
 			if (r.file) {
 				h.appendChild(document.createTextNode(' '));
@@ -436,7 +594,7 @@
 			li.appendChild(h);
 			if (r.excerpt) {
 				var ex = el('p', 'waypost-result__excerpt');
-				appendHighlighted(ex, r.excerpt, q);
+				appendHighlighted(ex, r.excerpt, marks);
 				li.appendChild(ex);
 			}
 			if (r.headings && r.headings.length) {
@@ -445,23 +603,28 @@
 					var hli = el('li');
 					var ha = el('a');
 					ha.href = hd.url;
-					appendHighlighted(ha, hd.text, q);
+					appendHighlighted(ha, hd.text, marks);
 					hli.appendChild(ha);
+					if (hd.snippet) {
+						var hs = el('span', 'waypost-result__snippet');
+						appendHighlighted(hs, hd.snippet, marks);
+						hli.appendChild(hs);
+					}
 					ul.appendChild(hli);
 				});
 				li.appendChild(ul);
 			}
 			ol.appendChild(li);
 		});
-		list.appendChild(ol);
+		body.appendChild(ol);
 
 		if (data.pages > 1) {
-			var nav = el('nav', 'waypost-results__pages');
-			nav.setAttribute('aria-label', t.pages || '');
+			var pnav = el('nav', 'waypost-results__pages');
+			pnav.setAttribute('aria-label', t.pages || '');
 			var link = function (n, text, cls) {
 				var l = el('a', 'page-numbers' + (cls ? ' ' + cls : ''), text);
-				l.href = urlFor(q, n);
-				nav.appendChild(l);
+				l.href = urlFor(q, n, topic);
+				pnav.appendChild(l);
 			};
 			if (pg > 1) link(pg - 1, t.prev || '‹', 'prev');
 			var gap = false;
@@ -471,17 +634,17 @@
 					if (n === pg) {
 						var cur = el('span', 'page-numbers current', String(n));
 						cur.setAttribute('aria-current', 'page');
-						nav.appendChild(cur);
+						pnav.appendChild(cur);
 					} else {
 						link(n, String(n));
 					}
 				} else if (!gap) {
 					gap = true;
-					nav.appendChild(el('span', 'page-numbers dots', '…'));
+					pnav.appendChild(el('span', 'page-numbers dots', '…'));
 				}
 			}
 			if (pg < data.pages) link(pg + 1, t.next || '›', 'next');
-			list.appendChild(nav);
+			body.appendChild(pnav);
 		}
 	}
 
@@ -493,12 +656,13 @@
 		var box = home.querySelector('.waypost-home__results');
 		var list = home.querySelector('.waypost-home__list');
 		var back = home.querySelector('.waypost-home__back a');
-		var ctrl = null, current = '';
+		var ctrl = null, current = '', topic = parseInt(new URLSearchParams(location.search).get('topic') || '0', 10) || 0;
 		if (!box || !list || !cfg.api) return;
 
-		function urlFor(q, pg) {
+		function urlFor(q, pg, tp) {
 			var u = new URL(base, location.href);
 			if (q) u.searchParams.set('dq', q);
+			if (tp) u.searchParams.set('topic', String(tp));
 			if (pg > 1) u.searchParams.set('pg', String(pg));
 			return u.toString();
 		}
@@ -506,20 +670,21 @@
 			home.classList.toggle('is-searching', on);
 			box.hidden = !on;
 		}
-		function load(q, pg, push, scroll) {
+		function load(q, pg, push, scroll, tp) {
 			current = q;
+			topic = tp || 0;
 			ui.cancel();
 			if (ctrl) ctrl.abort();
 			ctrl = window.AbortController ? new AbortController() : null;
 			show(true);
 			list.setAttribute('aria-busy', 'true');
-			var url = cfg.api + (cfg.api.indexOf('?') > -1 ? '&' : '?') + 'q=' + encodeURIComponent(q) + '&page=' + pg + '&per=' + (cfg.perPage || 10) + (pg === 1 ? '&log=1' : '');
+			var url = cfg.api + (cfg.api.indexOf('?') > -1 ? '&' : '?') + 'q=' + encodeURIComponent(q) + '&page=' + pg + '&per=' + (cfg.perPage || 10) + (topic ? '&topic=' + topic : '') + (pg === 1 && !topic ? '&log=1' : '');
 			fetch(url, { signal: ctrl ? ctrl.signal : undefined, credentials: 'same-origin' })
 				.then(function (r) { return r.json(); })
 				.then(function (data) {
 					renderResults(list, data, q, pg, urlFor);
 					list.removeAttribute('aria-busy');
-					if (push) history.pushState({ waypostHome: true }, '', urlFor(q, pg));
+					if (push) history.pushState({ waypostHome: true }, '', urlFor(q, pg, topic));
 					if (scroll) box.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
 				})
 				.catch(function (err) { if (err && err.name !== 'AbortError') list.removeAttribute('aria-busy'); });
@@ -540,18 +705,24 @@
 		});
 		if (back) back.addEventListener('click', function (e) { e.preventDefault(); clear(true); input.focus(); });
 		list.addEventListener('click', function (e) {
+			var tp = e.target.closest('a.waypost-topic');
+			if (tp) {
+				e.preventDefault();
+				load(current || input.value.trim(), 1, true, false, parseInt(tp.getAttribute('data-topic') || '0', 10));
+				return;
+			}
 			var a = e.target.closest('.waypost-results__pages a.page-numbers');
 			if (!a) return;
 			e.preventDefault();
 			var pg = parseInt(new URL(a.href, location.href).searchParams.get('pg') || '1', 10);
-			load(current || input.value.trim(), pg, true, true);
+			load(current || input.value.trim(), pg, true, true, topic);
 		});
 		window.addEventListener('popstate', function () {
 			var p = new URLSearchParams(location.search);
 			var q = (p.get('dq') || '').trim();
 			if (q.length >= 2) {
 				input.value = q;
-				load(q, parseInt(p.get('pg') || '1', 10), false, false);
+				load(q, parseInt(p.get('pg') || '1', 10), false, false, parseInt(p.get('topic') || '0', 10));
 			} else {
 				clear(false);
 			}
@@ -729,6 +900,75 @@
 		});
 	}
 
+	/* ── Arriving from a search result ────────────────── */
+
+	// The reader opened a result: highlight the words they searched for on this page, flash the
+	// section the result pointed to, and offer a button to clear the highlights.
+	function initArrival() {
+		var data = null;
+		try {
+			data = JSON.parse(sessionStorage.getItem('waypost-arrival') || 'null');
+			sessionStorage.removeItem('waypost-arrival');
+		} catch (e) { return; }
+		if (!data || !data.marks || !data.marks.length || Date.now() - data.time > 120000) return;
+		if (data.url.replace(/\/$/, '') !== location.href.split('#')[0].replace(/\/$/, '')) return;
+		var root = document.querySelector('.waypost-layout__content, .entry-content, .et_pb_post_content, .wp-block-post-content');
+		var re = markPattern(data.marks);
+		if (!root || !re) return;
+
+		var skip = 'script, style, mark, textarea, .waypost-menu, .waypost-toc, .waypost-search, .waypost-pager, .waypost-crumbs, .waypost-feedback';
+		var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+			acceptNode: function (n) {
+				if (!n.nodeValue.trim() || (n.parentElement && n.parentElement.closest(skip))) return NodeFilter.FILTER_REJECT;
+				return NodeFilter.FILTER_ACCEPT;
+			}
+		});
+		var nodes = [];
+		while (walker.nextNode()) nodes.push(walker.currentNode);
+		var found = [];
+		nodes.forEach(function (n) {
+			if (found.length >= 80) return;
+			re.lastIndex = 0;
+			if (!re.test(n.nodeValue)) return;
+			var frag = document.createDocumentFragment();
+			n.nodeValue.split(re).forEach(function (p, i) {
+				if (!p) return;
+				if (i % 2) {
+					var m = el('mark', 'waypost-found', p);
+					found.push(m);
+					frag.appendChild(m);
+				} else {
+					frag.appendChild(document.createTextNode(p));
+				}
+			});
+			n.parentNode.replaceChild(frag, n);
+		});
+
+		var target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+		if (target) {
+			target.classList.add('waypost-target');
+			setTimeout(function () { target.classList.remove('waypost-target'); }, 2600);
+		} else if (found.length && found[0].getBoundingClientRect().top > window.innerHeight * 0.8) {
+			found[0].scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+		}
+		if (!found.length) return;
+
+		var bar = el('div', 'waypost-found-bar');
+		bar.setAttribute('role', 'status');
+		bar.appendChild(el('span', '', fill(t.highlighted, data.q || data.marks.join(' '))));
+		var clear = el('button', 'waypost-found-bar__clear', t.clear || 'Clear');
+		clear.type = 'button';
+		clear.addEventListener('click', function () {
+			found.forEach(function (m) {
+				if (m.parentNode) m.parentNode.replaceChild(document.createTextNode(m.textContent), m);
+			});
+			root.normalize();
+			bar.remove();
+		});
+		bar.appendChild(clear);
+		document.body.appendChild(bar);
+	}
+
 	/* ── Boot ─────────────────────────────────────────── */
 
 	function boot() {
@@ -747,6 +987,7 @@
 		initQuickSearches();
 		if (cfg.shortcut && (cfg.isDoc || boxes.length)) initShortcut();
 		if (cfg.copyCode && cfg.isDoc) initCopy();
+		initArrival();
 	}
 
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

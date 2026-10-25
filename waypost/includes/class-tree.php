@@ -38,6 +38,7 @@ class Waypost_Tree {
 
 	public static function flush() {
 		delete_transient( self::CACHE_KEY );
+		delete_transient( 'waypost_vocab' ); // Spelling suggestions come from titles and headings.
 		self::$flat = null;
 	}
 
