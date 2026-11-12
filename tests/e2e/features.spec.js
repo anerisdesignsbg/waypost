@@ -16,8 +16,10 @@ async function settings( page, values ) {
 		const box = page.locator( `input[type=checkbox][name=${ name }]` );
 		if ( 'boolean' === typeof value ) {
 			await box.setChecked( value );
-		} else {
+		} else if ( await page.locator( `input[type=radio][name=${ name }]` ).count() ) {
 			await page.locator( `input[name=${ name }][value=${ value }]` ).check( { force: true } );
+		} else {
+			await page.locator( `input[name=${ name }]` ).fill( value ); // Text and address fields.
 		}
 	}
 	await page.click( 'button:has-text("Save settings")' );
@@ -39,6 +41,13 @@ test.describe( 'Phase 3 features', () => {
 		await expect( page.locator( '.waypost-topbar form[data-waypost-search]' ) ).toBeVisible();
 		await expect( page.locator( '.waypost-layout__sidebar form[data-waypost-search]' ) ).toHaveCount( 0 ); // Search lives in the bar.
 		await expect( page.locator( '.waypost-topbar__back' ) ).toHaveAttribute( 'href', /localhost:\d+\/$/ );
+		await settings( page, { chrome: 'waypost', back_url: 'https://example.com/main', back_label: 'Back to Example' } );
+		await page.goto( '/installing-on-ubuntu/' );
+		await expect( page.locator( '.waypost-topbar__back' ) ).toHaveAttribute( 'href', 'https://example.com/main' );
+		await expect( page.locator( '.waypost-topbar__back' ) ).toHaveText( 'Back to Example' );
+		await expect( page.locator( '.waypost-docs-footer a' ) ).toHaveText( 'Back to Example' );
+		await settings( page, { back_url: '', back_label: '' } );
+		await page.goto( '/installing-on-ubuntu/' );
 		await expect( page.locator( '.waypost-docs-footer' ) ).toBeVisible();
 		await expect( page.locator( 'meta[name=viewport]' ) ).toHaveCount( 1 );
 

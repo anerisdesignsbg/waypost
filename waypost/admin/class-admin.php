@@ -923,6 +923,17 @@ class Waypost_Admin {
 				<div class="wpst-card__head"><h2><?php esc_html_e( 'Appearance', 'waypost' ); ?></h2><?php echo self::help_link( 'layout' ); // phpcs:ignore ?></div>
 				<h3 class="wpst-subhead"><?php esc_html_e( 'Layout', 'waypost' ); ?></h3>
 				<?php self::layout_picker( $o ); ?>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="wpst-back-url"><?php esc_html_e( 'Back link', 'waypost' ); ?></label></th>
+						<td>
+							<input type="url" id="wpst-back-url" name="back_url" class="regular-text" value="<?php echo esc_attr( $o['back_url'] ); ?>" placeholder="<?php echo esc_attr( home_url( '/' ) ); ?>">
+							<label class="screen-reader-text" for="wpst-back-label"><?php esc_html_e( 'Back link text', 'waypost' ); ?></label>
+							<input type="text" id="wpst-back-label" name="back_label" class="regular-text" value="<?php echo esc_attr( $o['back_label'] ); ?>" placeholder="<?php echo esc_attr( sprintf( /* translators: %s: site name */ __( 'Back to %s', 'waypost' ), get_bloginfo( 'name' ) ) ); ?>">
+							<p class="description"><?php esc_html_e( 'Where the Waypost docs bar and footer link back to, and the link text. Leave empty for your home page. Useful when your docs have a site of their own, for example on a subdomain.', 'waypost' ); ?></p>
+						</td>
+					</tr>
+				</table>
 				<h3 class="wpst-subhead"><?php esc_html_e( 'Style', 'waypost' ); ?> <?php echo self::help_link( 'styling' ); // phpcs:ignore ?></h3>
 				<table class="form-table" role="presentation">
 					<tr>
@@ -965,7 +976,7 @@ class Waypost_Admin {
 		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'best_answer', 'delete_on_uninstall' ) as $k ) {
 			$changes[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
-		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title', 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'chrome' ) as $k ) {
+		foreach ( array( 'home_page', 'results_page', 'results_target', 'toc_min', 'per_page', 'placeholder', 'style', 'accent', 'home_title', 'home_intro', 'topics_title', 'layout', 'sidebar', 'width', 'max_width', 'toc_position', 'chrome', 'back_url', 'back_label' ) as $k ) {
 			if ( isset( $in[ $k ] ) ) {
 				$changes[ $k ] = $in[ $k ];
 			}

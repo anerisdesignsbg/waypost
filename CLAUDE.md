@@ -16,6 +16,7 @@ Origin: generalised from a client plugin built for FastNetMon.com (`fnm-docs-men
   - `includes/class-documents.php` (`Waypost_Pro_Documents`) reads PDF/Word/text files placed in sections for search and the menu.
   - `lib/pdfparser/` bundled smalot/pdfparser (LGPL-3.0), namespace renamed to `Waypost\Vendor\PdfParser`. Do not edit; see its README to update.
   - `includes/freemius.php` licensing and updates through the bundled Freemius SDK (`freemius/`, do not edit). Product ID 44694 and its public key are in the code; `.wp-env.json` defines both as empty so the local sites run Pro without a licence. Elsewhere Pro features run only with an active licence or trial. Freemius forbids `uninstall.php`; clean-up uses its `after_uninstall` action. See `marketing/freemius/SETUP.md`.
+- `demo/` the tutorials docs site (separate wp-env on port 8890, `npm run demo:start`). `demo/waypost-demo-content/` is a helper plugin that builds sections and pages from `marketing/tutorials/*.md` and the screenshots (`npm run demo:build`, `npm run demo:zip` for a live site at anerisdesigns.co/waypost-plugin). See `demo/README.md`.
 - `bin/seed.php` dummy content (docs for Magpie, a fictional photo library; about 150 doc pages plus edge cases, and sample files from `bin/seed-documents/` in a Downloads section, including a scanned PDF with no text). Idempotent.
 - `tests/e2e/` Playwright tests (front end, admin, wizard).
 - `.wp-env.json` local WordPress in Docker. `.wp-env.override.json` (gitignored) adds Divi from `themes/Divi` (licensed, never commit).

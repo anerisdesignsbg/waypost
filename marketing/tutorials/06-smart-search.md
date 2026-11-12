@@ -12,6 +12,10 @@ Waypost search only looks at your docs, never blog posts or shop pages, and it i
 - **Ctrl+K or Cmd+K** (or the / key) opens a search window on any doc page.
 - **Highlights on arrival.** The page a reader opens highlights the words they searched for and briefly lights up the matching section. A **Clear** button removes the highlights.
 
+![The best answer on top of the results](../screenshots/03-best-answer.png)
+![Instant results in the Ctrl+K search window](../screenshots/04-instant-search.png)
+![Search words highlighted on the page a reader opens](../screenshots/05-highlights.png)
+
 ## How it understands readers
 
 - **Questions:** words like "how", "do", "I" and "the" are ignored, so "How do I share an album?" searches for share and album.

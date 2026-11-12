@@ -2,6 +2,8 @@
 
 Your readers tell you what is missing from your docs every time they search. **Waypost, Search insights** collects it in one place.
 
+![Search insights](../screenshots/13-search-insights.png)
+
 ## Searches with no results
 
 The most useful list. Each line is a question your docs did not answer. For each one, either:

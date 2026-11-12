@@ -22,3 +22,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+
+# Demo content copied in by npm run demo:content
+demo/waypost-demo-content/content/

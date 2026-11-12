@@ -2,6 +2,8 @@
 
 The search home is the front door of your docs: a heading, a large search box, quick search buttons and topic cards. Readers who press Enter see full results right there, below the box.
 
+![A docs home page with quick searches and topic cards](../screenshots/02-search-home.png)
+
 ## Add it
 
 The setup wizard can create a "Documentation" page with the search home on it. To add it yourself, put one of these on any page:

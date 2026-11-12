@@ -47,6 +47,8 @@ class Waypost_Settings {
 			'max_width'       => 1280,           // px, when contained
 			'toc_position'    => 'side',         // side: a column of its own | content: at the top of the page
 			'chrome'          => 'theme',        // header and footer on docs pages: theme | waypost (a standalone docs bar)
+			'back_url'        => '',             // docs bar "Back to" link; empty: the site's home page
+			'back_label'      => '',             // its text; empty: "Back to {site name}"
 			'show_updated'    => 1,              // "Last updated" date on doc pages
 			'show_reading'    => 0,              // reading time on doc pages
 			'heading_links'   => 1,              // link icons on headings
@@ -192,6 +194,8 @@ class Waypost_Settings {
 		$out['per_page']   = isset( $in['per_page'] ) ? max( 5, min( 50, absint( $in['per_page'] ) ) ) : $d['per_page'];
 
 		$out['placeholder'] = isset( $in['placeholder'] ) ? sanitize_text_field( $in['placeholder'] ) : '';
+		$out['back_url']   = isset( $in['back_url'] ) ? esc_url_raw( trim( (string) $in['back_url'] ) ) : '';
+		$out['back_label'] = isset( $in['back_label'] ) ? sanitize_text_field( $in['back_label'] ) : '';
 		foreach ( array( 'home_title', 'home_intro', 'topics_title' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? sanitize_text_field( $in[ $k ] ) : '';
 		}

@@ -1,6 +1,6 @@
 # Waypost tutorials
 
-Step-by-step guides for site owners. They are written to be published as-is on the Waypost website or used as the product's own documentation (ideally built with Waypost itself). Screenshots referred to are in `../screenshots/`.
+Step-by-step guides for site owners. They are published as the Waypost docs site by the demo plugin (see `demo/README.md`), so keep the file names: they become the pages and links. Images use `![caption](../screenshots/name.png)`.
 
 | # | Tutorial | For |
 |---|---|---|

@@ -2,6 +2,8 @@
 
 Manuals, spec sheets and guides often live in files rather than pages. With the Waypost Pro add-on installed, Waypost can put them in your docs: they appear in the menu with a file type label, and docs search finds words inside them.
 
+![A PDF found by docs search, and documents in the menu](../screenshots/06-documents.png)
+
 ## Readable file types
 
 PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx), OpenDocument (.odt, .odp, .ods), plain text (.txt) and CSV.
@@ -13,6 +15,8 @@ Older Office formats (.doc, .xls, .ppt) cannot be read. Open them and save as PD
 1. Upload the file under **Media, Add New**, as usual.
 2. Open it in the **Media Library**.
 3. Under **Doc sections**, tick one or more sections. It saves straight away.
+
+![Doc sections in the Media Library](../screenshots/14-media-sections.png)
 
 To add several files at once, go to **Waypost, Structure, Assign pages**, choose the **Documents** filter, tick the files, choose a section and press **Add to section**.
 

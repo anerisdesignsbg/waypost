@@ -6,6 +6,8 @@ Out of the box, sections and pages are listed alphabetically. To put them in the
 2. Drag rows by the handle on their left. Items move within their own group, so a page stays inside its section.
 3. Press **Save order**.
 
+![Dragging sections and pages into order](../screenshots/11-menu-order.png)
+
 Pages and sub-sections share one list inside a section, so you can put a sub-section between two pages.
 
 The order also decides **previous and next** links: they follow the menu from top to bottom.

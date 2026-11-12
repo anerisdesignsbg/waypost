@@ -43,6 +43,8 @@ Every page is listed with a section menu beside it. Choose a section for each pa
 
 ## 5. Choose how your docs look
 
+![The Look step of the setup wizard](../screenshots/10-setup-wizard.png)
+
 - **Layout:** pick **Waypost docs layout** for a complete docs page (sidebar menu, contents column, breadcrumbs and previous and next links) inside your theme's header and footer. Pick **My theme's layout** if you would rather place everything yourself with blocks, Divi modules or shortcodes.
 - **Header and footer:** keep your theme's, or use the **Waypost docs bar**, a slim header with your site name, docs search and a link back to your site.
 - **Sidebar, Width, On this page contents:** one click each. The preview updates as you choose.

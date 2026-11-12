@@ -18,6 +18,8 @@ With the docs layout you can also choose:
 
 The preview beside the options shows the result.
 
+![A doc page in the Waypost docs layout](../screenshots/01-docs-page.png)
+
 ## Styles
 
 A style sets fonts, colours, corners and spacing for everything Waypost shows: the menu, search, results, contents and the docs layout.
@@ -33,6 +35,9 @@ A style sets fonts, colours, corners and spacing for everything Waypost shows: t
 | Auto light and dark | Light or dark to match each reader's device, with a switch they can use |
 
 Picking a style also picks a matching **Accent colour**. Change it to your brand colour afterwards; Waypost chooses readable text on top of it automatically.
+
+![Choosing a style in Settings](../screenshots/12-appearance.png)
+![The Dark style](../screenshots/07-dark-style.png)
 
 ## Page extras
 

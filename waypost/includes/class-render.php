@@ -545,7 +545,7 @@ class Waypost_Render {
 				</div>
 				<div class="waypost-topbar__links">
 					<?php echo self::scheme_toggle(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
-					<a class="waypost-topbar__back" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( sprintf( /* translators: %s: site name */ __( 'Back to %s', 'waypost' ), $name ) ); ?></a>
+					<a class="waypost-topbar__back" href="<?php echo esc_url( self::back_url() ); ?>"><?php echo esc_html( '' !== $o['back_label'] ? $o['back_label'] : sprintf( /* translators: %s: site name */ __( 'Back to %s', 'waypost' ), $name ) ); ?></a>
 				</div>
 			</div>
 		</header>
@@ -553,12 +553,18 @@ class Waypost_Render {
 		return ob_get_clean();
 	}
 
+	/** Where the docs bar and footer link back to: Settings, Appearance, Back link, or the home page. */
+	private static function back_url() {
+		$url = (string) Waypost_Settings::get( 'back_url' );
+		return '' !== $url ? $url : home_url( '/' );
+	}
+
 	/** Footer for the standalone docs bar. */
 	public static function docs_footer() {
 		$o = Waypost_Settings::all();
 		return '<footer class="waypost-docs-footer waypost-topbar--' . esc_attr( $o['width'] ) . '" style="--waypost-max-width: ' . (int) $o['max_width'] . 'px"><div class="waypost-topbar__inner">'
 			. '<span>&copy; ' . esc_html( wp_date( 'Y' ) . ' ' . get_bloginfo( 'name' ) ) . '</span>'
-			. '<a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'Back to the main site', 'waypost' ) . '</a>'
+			. '<a href="' . esc_url( self::back_url() ) . '">' . esc_html( '' !== $o['back_label'] ? $o['back_label'] : __( 'Back to the main site', 'waypost' ) ) . '</a>'
 			. '</div></footer>';
 	}
 

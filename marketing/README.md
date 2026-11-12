@@ -7,6 +7,7 @@ Everything needed to list and sell Waypost. Not part of the plugin zip.
 | Listing copy and FAQs | `../waypost/readme.txt` | WordPress.org format. The Description, FAQ and Screenshots sections can be reused on any marketplace or the product website. |
 | Screenshots | `screenshots/` | 14 PNGs at 2x (2880 × 1800; the phone shot is 1170 × 2532). Captions in `screenshots/captions.txt`, in the same order as the readme. |
 | Tutorials | `tutorials/` | 11 step-by-step guides for the product website or docs. |
+| Docs demo site | `../demo/` | The tutorials as a live Waypost docs site; `demo/README.md` explains putting it live at anerisdesigns.co/waypost-plugin. |
 | Brand | `brand/` | `icon.svg` and `banner.html`, the sources for the banner and icon. |
 | WordPress.org | `wordpress-org/` | `assets/` is ready to copy into SVN; `SETUP.md` covers the account, submission and releases. |
 | Freemius | `freemius/SETUP.md` | Selling Waypost Pro: product, plans, keys, sandbox testing, deployment and updates. |
