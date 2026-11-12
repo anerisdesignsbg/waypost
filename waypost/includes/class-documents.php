@@ -114,14 +114,14 @@ class Waypost_Documents {
 			foreach ( $terms as $t ) {
 				$kids[ $t->parent ][] = $t;
 			}
-			$html .= '<ul class="wpst-doc-sections" style="margin:0;max-height:12em;overflow:auto">';
+			$html .= '<ul class="wpst-doc-sections" style="margin:0;padding:6px 8px;max-height:15em;overflow:auto;background:#fff;border:1px solid #dcdcde;border-radius:4px">';
 			$walk  = function ( $parent, $depth ) use ( &$walk, &$html, $kids, $have, $name ) {
 				if ( empty( $kids[ $parent ] ) ) {
 					return;
 				}
 				usort( $kids[ $parent ], function ( $a, $b ) { return strnatcasecmp( $a->name, $b->name ); } );
 				foreach ( $kids[ $parent ] as $t ) {
-					$html .= '<li style="margin:0 0 2px ' . ( $depth * 14 ) . 'px"><label><input type="checkbox" name="' . esc_attr( $name . '[' . $t->term_id . ']' ) . '" value="1"' . checked( in_array( (int) $t->term_id, $have, true ), true, false ) . '> ' . esc_html( $t->name ) . '</label></li>';
+					$html .= '<li style="margin:0 0 4px ' . ( $depth * 18 ) . 'px"><label style="display:flex;align-items:center;gap:6px"><input type="checkbox" style="margin:0" name="' . esc_attr( $name . '[' . $t->term_id . ']' ) . '" value="1"' . checked( in_array( (int) $t->term_id, $have, true ), true, false ) . '> ' . esc_html( $t->name ) . '</label></li>';
 					$walk( $t->term_id, $depth + 1 );
 				}
 			};

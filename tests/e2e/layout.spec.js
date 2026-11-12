@@ -16,7 +16,10 @@ async function settings( page, values ) {
 		if ( 'max_width' === name ) {
 			await page.fill( 'input[name=max_width]', String( value ) );
 		} else {
-			await page.locator( `input[name=${ name }][value=${ value }]` ).check( { force: true } );
+			const radio = page.locator( `input[name=${ name }][value=${ value }]` );
+			// Bring it to the middle of the screen, clear of the sticky Save settings bar.
+			await radio.evaluate( ( el ) => el.closest( 'label' ).scrollIntoView( { block: 'center' } ) );
+			await radio.check( { force: true } );
 		}
 	}
 	await page.click( 'button:has-text("Save settings")' );

@@ -190,7 +190,9 @@ body .waypost-chip:hover, body .waypost-chip:focus-visible, body .waypost-chip.i
 .waypost-home .waypost-search { max-width: 720px; margin: 22px auto 0; text-align: left; }
 .waypost-home .waypost-search .waypost-search__input { height: 54px; font-size: 1.05em; }
 .waypost-home .waypost-search__submit { height: 54px; padding: 0 22px; }
-.waypost-home .waypost-home__subtitle { margin: 2.4em 0 1em; padding: 0; font-family: var(--waypost-font); font-size: 1.3em; color: var(--waypost-text); }
+/* Spacing sits on the wrapper: themes often zero the top margin of a first heading. */
+.waypost-home .waypost-home__topics { padding-top: 2.4em; }
+.waypost-home .waypost-home__subtitle { margin: 0 0 1em; padding: 0; font-family: var(--waypost-font); font-size: 1.3em; color: var(--waypost-text); }
 .waypost-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; text-align: left; }
 .waypost-card {
 	display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; align-content: start; padding: 18px 20px;
@@ -461,6 +463,8 @@ body .waypost-results a.waypost-answer__more:hover span { transform: translateX(
 /* ── Docs layout (Settings, Appearance, Layout) ────────── */
 /* Spans the window between the theme's header and footer, whatever container the theme puts it in.
    --waypost-sbw (scrollbar width) and --waypost-sticky-top (fixed headers) are measured by frontend.js. */
+/* Themes indent .entry-content on small screens (Twenty Sixteen does); the layout has its own spacing. */
+.waypost-layout .waypost-layout__content.entry-content { margin-left: 0; margin-right: 0; }
 .waypost-layout {
 	--waypost-sidebar-width: 272px;
 	--waypost-toc-width: 220px;
@@ -542,7 +546,9 @@ body:not(.waypost-style-theme) .waypost-layout__content img:not(:where(.waypost-
 }
 
 /* ── Standalone docs bar and footer ────────────────── */
-body.waypost-standalone { margin: 0; }
+body.waypost-standalone { margin: 0; background: var(--waypost-surface, #fff); }
+/* The theme's header and footer are gone, so are its decorations: Twenty Sixteen's page frame, for example. */
+body.waypost-standalone::before, body.waypost-standalone::after { content: none !important; display: none !important; }
 .waypost-topbar, .waypost-docs-footer { box-sizing: border-box; font-family: var(--waypost-font); color: var(--waypost-surface-text); background: var(--waypost-surface); }
 .waypost-topbar *, .waypost-docs-footer * { box-sizing: border-box; }
 .waypost-topbar { position: sticky; top: 0; z-index: 9990; border-bottom: 1px solid var(--waypost-border); }

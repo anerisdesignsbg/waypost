@@ -25,6 +25,7 @@ Origin: generalised from a client plugin built for FastNetMon.com (`fnm-docs-men
 - `npm run logs` tail `debug.log`. `npm run lint:php` syntax-check every PHP file.
 - `npm run wp -- <command>` any WP-CLI command, e.g. `npm run wp -- option get waypost_settings`.
 - `npm run zip` build `dist/waypost.zip` for installing elsewhere.
+- `npm run screenshots` retake the listing screenshots in `marketing/screenshots/` (uses the test site at :8889, reseeds before and after). Listing copy is `waypost/readme.txt`; tutorials are in `marketing/tutorials/`.
 
 After changing PHP, JS or CSS: reload the page (wp-env mounts the folder live). Run `npm test` before committing.
 

@@ -344,6 +344,27 @@ docker restart magpie</code></pre>
 <p>Any 64-bit Linux that runs Docker, plus Ubuntu 22.04 or newer and Debian 12 for native installs. Windows and macOS can run Magpie through Docker Desktop.</p>
 <h2>Browsers and apps</h2>
 <p>The web app works in current versions of Chrome, Firefox, Safari and Edge. The phone apps need iOS 16 or Android 11 or newer.</p>',
+	'Albums overview' => '<p>Albums group photos and videos however you like: a holiday, a person, a project. A photo can be in as many albums as you want without taking up extra space.</p>
+<h2>Create an album</h2>
+<p>Select photos in your library, press Add to album and choose New album. Give it a name and, if you like, a cover photo.</p>
+<h2>Smart albums</h2>
+<p>A smart album fills itself using rules, such as every photo of a person, from a place or taken in a date range. New photos that match are added automatically.</p>
+<h2>Share an album</h2>
+<p>Any album can be shared with family and friends, or through a public link for people without an account.</p>',
+	'Album permissions' => '<p>Permissions decide what each person can do in a shared album.</p>
+<h2>Roles</h2>
+<p>Viewers can see photos and comment. Contributors can also add photos. Editors can add and remove photos, change the cover and invite more people.</p>
+<h2>Change someone’s role</h2>
+<p>Open the album, press Share, then People, and choose a new role next to their name. The change applies straight away.</p>
+<h2>Downloads</h2>
+<p>Turn off downloads for a shared album to let people view photos in full screen without saving the originals.</p>',
+	'Collaborative albums' => '<p>A collaborative album is a shared album where everyone you invite can add their own photos. It is the easiest way to collect photos from a wedding, a trip or a family event in one place.</p>
+<h2>Start a collaborative album</h2>
+<p>Create an album, press Share, invite people and set them as contributors. Each person sees the album in their library and can add photos from their phone or computer.</p>
+<h2>Who added what</h2>
+<p>Every photo shows the name of the person who added it. Contributors can remove their own photos; only the owner and editors can remove anyone’s.</p>
+<h2>Duplicates</h2>
+<p>When two people add the same photo, Magpie keeps one copy and tells you it skipped the duplicate.</p>',
 	'User accounts' => '<p>Each person in your household can have their own Magpie account with a private library, their own albums and their own upload settings.</p>
 <h2>Add a person</h2>
 <p>Go to Settings, People and press Add person. Enter their name and email address. They receive an invitation to choose a password.</p>
@@ -464,11 +485,20 @@ update_option(
 		'backup'               => array( 'count' => 18, 'hits' => 12, 'first' => time() - 7 * DAY_IN_SECONDS, 'last' => time() - 86400 ),
 		'heic'                 => array( 'count' => 14, 'hits' => 0, 'first' => time() - 6 * DAY_IN_SECONDS, 'last' => time() - 5400 ),
 		'live photos'          => array( 'count' => 9, 'hits' => 0, 'first' => time() - 5 * DAY_IN_SECONDS, 'last' => time() - 2 * DAY_IN_SECONDS ),
-		'reset admin password' => array( 'count' => 7, 'hits' => 0, 'first' => time() - 4 * DAY_IN_SECONDS, 'last' => time() - 3 * DAY_IN_SECONDS ),
+		'raspberry pi'         => array( 'count' => 7, 'hits' => 0, 'first' => time() - 4 * DAY_IN_SECONDS, 'last' => time() - 3 * DAY_IN_SECONDS ),
+		'reset admin password' => array( 'count' => 5, 'hits' => 1, 'first' => time() - 4 * DAY_IN_SECONDS, 'last' => time() - 2 * DAY_IN_SECONDS ),
 		'lightroom'            => array( 'count' => 6, 'hits' => 1, 'first' => time() - 3 * DAY_IN_SECONDS, 'last' => time() - 900 ),
 	),
 	false
 );
+
+// "Was this helpful?" sample answers, so Search insights has something to show.
+foreach ( array( 'Uploads are stuck' => array( 4, 9 ), 'Storage locations' => array( 3, 5 ), 'Installing with Docker' => array( 31, 3 ), 'Shared albums' => array( 24, 2 ), 'Backups and retention' => array( 12, 1 ) ) as $t => $votes ) {
+	if ( ! empty( $ids[ $t ] ) ) {
+		update_post_meta( $ids[ $t ], '_waypost_helpful_yes', $votes[0] );
+		update_post_meta( $ids[ $t ], '_waypost_helpful_no', $votes[1] );
+	}
+}
 
 // ── 8. Theme, sidebar and an editor account ─────────────────────────────────
 

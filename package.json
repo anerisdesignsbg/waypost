@@ -15,6 +15,7 @@
 		"test": "playwright test",
 		"test:headed": "playwright test --headed",
 		"test:report": "playwright show-report",
+		"screenshots": "node bin/screenshots.js",
 		"zip": "mkdir -p dist && rm -f dist/waypost.zip && zip -qr dist/waypost.zip waypost -x '*.DS_Store' && echo 'dist/waypost.zip ready'"
 	},
 	"devDependencies": {

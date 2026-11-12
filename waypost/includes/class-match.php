@@ -379,6 +379,9 @@ class Waypost_Match {
 	 * sentence or word boundary so it reads like a short summary.
 	 */
 	public static function snippet( $text, array $marks, $len = 170 ) {
+		// A line that ends without punctuation and is followed by a capital (a heading in a document)
+		// becomes a sentence, so it does not run on. Other line breaks are just wrapped lines.
+		$text = preg_replace( '/([^\s.!?:;,])[ \t]*\n+(?=[\p{Lu}\p{N}])/u', '$1. ', (string) $text );
 		$text = trim( preg_replace( '/\s+/u', ' ', (string) $text ) );
 		if ( '' === $text ) {
 			return '';

@@ -266,7 +266,8 @@
 .wpst-layout__choice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 6px; padding: 0; border: 0; }
 @media (max-width: 782px) { .wpst-layout__choice { grid-template-columns: minmax(0, 1fr); } }
 .wpst-layout__body { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px 28px; transition: opacity .2s; }
-.wpst-layout__options { flex: 1 1 420px; width: auto; margin: 0; }
+/* Wide enough for the option buttons; the preview moves below when there is no room beside it. */
+.wpst-layout__options { flex: 1 1 540px; width: auto; margin: 0; }
 .wpst-layout.is-theme .wpst-layout__body { opacity: .45; }
 .wpst-layout__max { margin: 8px 0 0; }
 .wpst-segs { display: inline-flex; margin: 0; padding: 0; border: 1px solid var(--wpst-line); border-radius: 6px; overflow: hidden; }
