@@ -2,18 +2,19 @@
 /**
  * Licensing and updates through Freemius (SDK bundled in freemius/).
  *
- * To switch licensing on, paste the product ID and public key from the Freemius
- * dashboard (Waypost Pro, Settings, Keys) into the two constants below. Until then
- * Pro runs without a licence, which is how the local development sites use it.
+ * The product ID and public key come from the Freemius dashboard (Waypost Pro,
+ * Settings, Keys); both are public by design. Never put the secret key here.
+ * Defining either constant as '' (as .wp-env.json does for the local sites)
+ * switches licensing off, so Pro runs without a licence.
  */
 
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'WAYPOST_PRO_FS_ID' ) ) {
-	define( 'WAYPOST_PRO_FS_ID', '' );         // For example '12345'.
+	define( 'WAYPOST_PRO_FS_ID', '44694' );
 }
 if ( ! defined( 'WAYPOST_PRO_FS_PUBLIC_KEY' ) ) {
-	define( 'WAYPOST_PRO_FS_PUBLIC_KEY', '' ); // For example 'pk_1a2b3c…'.
+	define( 'WAYPOST_PRO_FS_PUBLIC_KEY', 'pk_362ee06213c60c9b26fc1d136f782' );
 }
 
 /** Is Freemius set up for this copy? */

@@ -9,7 +9,9 @@
 		"WP_DEBUG": true,
 		"WP_DEBUG_LOG": true,
 		"WP_DEBUG_DISPLAY": false,
-		"SCRIPT_DEBUG": true
+		"SCRIPT_DEBUG": true,
+		"WAYPOST_PRO_FS_ID": "",
+		"WAYPOST_PRO_FS_PUBLIC_KEY": ""
 	},
 	"mappings": {
 		"bin": "./bin"

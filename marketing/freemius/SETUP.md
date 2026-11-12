@@ -7,7 +7,7 @@ Checked against the Freemius documentation on 12 November 2026.
 ## What is already done in the code
 
 - The Freemius WordPress SDK 2.13.5 is bundled in `waypost-pro/freemius/`.
-- `waypost-pro/includes/freemius.php` starts the SDK as a paid-only plugin. It stays switched off until the product ID and public key are filled in, so the local test sites work without an account.
+- `waypost-pro/includes/freemius.php` starts the SDK as a paid-only plugin with product ID 44694 and its public key (both public by design). The local test sites set both to empty in `.wp-env.json`, which switches licensing off there so Pro runs without a licence.
 - Without an active licence (or trial), Pro's features pause and the free plugin carries on as normal. Freemius shows an "activate your licence" notice and page.
 - Licence activation and the Freemius Account page sit under **Waypost, Waypost Pro**, so the free plugin's own screens are never blocked.
 - `waypost-pro/readme.txt` is in place and there is no `uninstall.php`, both required by Freemius. Clean-up on deletion runs through Freemius instead.
@@ -35,7 +35,7 @@ Checked against the Freemius documentation on 12 November 2026.
 
 The prices are yours to set; check competitors such as BetterDocs and Heroic KB first.
 
-## 4. Copy the keys into the plugin
+## 4. Copy the keys into the plugin (done: ID 44694)
 
 1. In the product, open **Settings, Keys**.
 2. Copy the **Product ID** and the **Public Key** (it starts with `pk_`).
