@@ -27,7 +27,7 @@ There are four ways, so use whichever suits the moment.
 
 **From the Pages list:** use **Quick Edit** on one page, or tick several pages and choose **Bulk actions, Edit** to add them to a section in one go.
 
-**Documents:** PDF and Word files join sections from the Media Library. See [Search inside PDF and Word files](07-documents.md).
+**Documents (Waypost Pro):** PDF and Word files join sections from the Media Library. See [Search inside PDF and Word files](07-documents.md).
 
 ## Make a section heading clickable
 

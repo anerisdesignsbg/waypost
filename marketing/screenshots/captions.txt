@@ -1,9 +1,9 @@
 01-docs-page.png: Your pages become a documentation site: sidebar menu, table of contents, breadcrumbs, reading time and previous and next links.
 02-search-home.png: A search home for your docs with quick searches and topic cards.
-03-best-answer.png: Smart search answers questions: the best section on top with a short summary, other pages that cover it, and topic filters.
+03-best-answer.png: Smart search answers questions: the best section on top with a short summary and other pages that cover it. Topic filters above the results are part of Waypost Pro.
 04-instant-search.png: Instant results as you type, from anywhere with Ctrl+K or Cmd+K. It ignores question words and fixes typing mistakes.
 05-highlights.png: Readers land on the exact section, with their search words highlighted.
-06-documents.png: Search inside PDF, Word, PowerPoint and Excel files. Documents sit in your sections with a file type label.
+06-documents.png: Waypost Pro: search inside PDF, Word, PowerPoint and Excel files. Documents sit in your sections with a file type label.
 07-dark-style.png: Seven ready-made styles, including Dark and Auto light and dark with a reader switch.
 08-classic-style.png: Classic, Minimalist, Light or your own theme’s look, with any accent colour.
 09-mobile.png: Works on phones: the menu folds away and search stays one tap away.
@@ -11,4 +11,4 @@
 11-menu-order.png: Drag and drop to order the menu. Sections can nest four levels deep.
 12-appearance.png: Pick a ready-made style and accent colour in Settings. Layout, sidebar side and width are one click each.
 13-search-insights.png: Search insights show what readers look for and which searches found nothing.
-14-media-sections.png: Add a PDF or Word file to the docs by ticking its sections in the Media Library.
+14-media-sections.png: Waypost Pro: add a PDF or Word file to the docs by ticking its sections in the Media Library.

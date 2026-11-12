@@ -130,9 +130,8 @@ class Waypost_Search {
 			$clauses[] = '( ' . implode( ' OR ', $or ) . ' )';
 		}
 		$join = $query->get( 'waypost_any' ) ? ' OR ' : ' AND ';
-		// Attachments count only when they are readable documents, never images.
-		$mimes = "'" . implode( "','", array_map( 'esc_sql', array_keys( Waypost_Documents::types() ) ) ) . "'";
-		return ' AND ( ' . implode( $join, $clauses ) . " ) AND ( {$wpdb->posts}.post_type <> 'attachment' OR {$wpdb->posts}.post_mime_type IN ( {$mimes} ) ) ";
+		/** Add-ons that search other items (Waypost Pro: documents) can narrow the clause. */
+		return apply_filters( 'waypost_search_where', ' AND ( ' . implode( $join, $clauses ) . ' ) ', $query );
 	}
 
 	public static function routes() {
@@ -245,7 +244,8 @@ class Waypost_Search {
 			$passages = Waypost_Match::stored_passages( $post->ID, '' !== $text ? $text : self::plain_text( $post->post_content ) );
 			$title    = html_entity_decode( get_the_title( $post ), ENT_QUOTES, get_bloginfo( 'charset' ) );
 			$s        = Waypost_Match::score( $title, $passages, $groups, $phrase );
-			$file     = Waypost_Documents::badge( $post );
+			/** A file type label such as PDF for results that are files (Waypost Pro), or ''. */
+			$file     = (string) apply_filters( 'waypost_result_file', '', $post );
 			$score    = $s['score'] * ( $file ? 0.9 : 1 );
 			// Every word somewhere on the page beats a higher count of a single word.
 			$score   += 4 * $s['matched'];
@@ -303,17 +303,19 @@ class Waypost_Search {
 
 	/** Published docs matching every group (or any group), limited to pages in doc sections. */
 	private static function candidates( array $groups, $any ) {
-		$tax    = Waypost_Settings::taxonomy();
-		$types  = Waypost_Settings::post_types();
-		$status = array( 'publish' );
-		if ( Waypost_Documents::enabled() && is_object_in_taxonomy( 'attachment', $tax ) ) {
-			$types[]  = 'attachment'; // Limited to readable documents by where().
-			$status[] = 'inherit';
-		}
+		$tax   = Waypost_Settings::taxonomy();
+		/** Add-ons can search more post types and statuses (Waypost Pro: documents). */
+		$args  = apply_filters(
+			'waypost_search_query_args',
+			array(
+				'post_type'   => Waypost_Settings::post_types(),
+				'post_status' => array( 'publish' ),
+			)
+		);
 		$query = new WP_Query(
 			array(
-				'post_type'           => $types,
-				'post_status'         => $status,
+				'post_type'           => $args['post_type'],
+				'post_status'         => $args['post_status'],
 				'posts_per_page'      => self::CANDIDATES,
 				'ignore_sticky_posts' => true,
 				'no_found_rows'       => true,
@@ -446,7 +448,8 @@ class Waypost_Search {
 
 	/** [ term_id => { id, name, count } ], largest first. */
 	private static function topic_counts( array $ranked, array $tops ) {
-		if ( ! Waypost_Settings::get( 'topic_filters' ) ) {
+		/** Topic filters are part of Waypost Pro. */
+		if ( ! apply_filters( 'waypost_topic_filters', false ) ) {
 			return array();
 		}
 		$counts = array();

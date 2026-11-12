@@ -1,6 +1,6 @@
-# Search inside PDF and Word files
+# Search inside PDF and Word files (Waypost Pro)
 
-Manuals, spec sheets and guides often live in files rather than pages. Waypost can put them in your docs: they appear in the menu with a file type label, and docs search finds words inside them.
+Manuals, spec sheets and guides often live in files rather than pages. With the Waypost Pro add-on installed, Waypost can put them in your docs: they appear in the menu with a file type label, and docs search finds words inside them.
 
 ## Readable file types
 

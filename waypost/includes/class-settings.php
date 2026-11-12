@@ -15,7 +15,7 @@ class Waypost_Settings {
 	private static $cache = null;
 
 	public static function defaults() {
-		return array(
+		$defaults = array(
 			'setup_done'      => 0,
 			'taxonomy_mode'   => 'own',          // own | existing
 			'taxonomy'        => WAYPOST_OWN_TAXONOMY,
@@ -35,8 +35,6 @@ class Waypost_Settings {
 			'per_page'        => 10,
 			'log_searches'    => 1,
 			'best_answer'     => 1,              // results: a best answer card with related sections on top
-			'topic_filters'   => 1,              // results: filter by top-level section
-			'synonyms'        => '',             // one set per line, comma separated, e.g. photo, picture, image
 			'hide_extra_search' => 1,            // results page: hide other search boxes, it has its own
 			'home_title'      => '',
 			'home_intro'      => '',
@@ -53,12 +51,12 @@ class Waypost_Settings {
 			'show_reading'    => 0,              // reading time on doc pages
 			'heading_links'   => 1,              // link icons on headings
 			'feedback'        => 1,              // "Was this helpful?" on doc pages
-			'documents'       => 1,              // search inside PDF, Word and other files placed in doc sections
-			'documents_menu'  => 1,              // list those files in the docs menu
 			'style'           => 'theme',        // a key from styles()
 			'accent'          => '#2563eb',
 			'delete_on_uninstall' => 0,
 		);
+		/** Add-ons such as Waypost Pro add their own keys; clean them on waypost_settings_sanitize. */
+		return apply_filters( 'waypost_settings_defaults', $defaults );
 	}
 
 	/** Ready-made looks. Each has a matching .waypost-style-{key} block in frontend.css. */
@@ -183,7 +181,7 @@ class Waypost_Settings {
 		foreach ( array( 'home_page', 'results_page' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? absint( $in[ $k ] ) : 0;
 		}
-		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'documents', 'documents_menu', 'best_answer', 'topic_filters', 'delete_on_uninstall' ) as $k ) {
+		foreach ( array( 'accordion', 'toc_auto', 'prevnext_auto', 'crumbs_auto', 'copy_code', 'shortcut', 'log_searches', 'hide_extra_search', 'show_updated', 'show_reading', 'heading_links', 'feedback', 'best_answer', 'delete_on_uninstall' ) as $k ) {
 			$out[ $k ] = empty( $in[ $k ] ) ? 0 : 1;
 		}
 
@@ -194,14 +192,6 @@ class Waypost_Settings {
 		$out['per_page']   = isset( $in['per_page'] ) ? max( 5, min( 50, absint( $in['per_page'] ) ) ) : $d['per_page'];
 
 		$out['placeholder'] = isset( $in['placeholder'] ) ? sanitize_text_field( $in['placeholder'] ) : '';
-		$lines = array();
-		foreach ( preg_split( '/\r?\n/', isset( $in['synonyms'] ) ? (string) $in['synonyms'] : '' ) as $line ) {
-			$words = array_filter( array_map( 'trim', explode( ',', mb_strtolower( sanitize_text_field( $line ) ) ) ), 'strlen' );
-			if ( count( $words ) > 1 ) {
-				$lines[] = implode( ', ', array_unique( $words ) );
-			}
-		}
-		$out['synonyms'] = implode( "\n", array_slice( $lines, 0, 200 ) );
 		foreach ( array( 'home_title', 'home_intro', 'topics_title' ) as $k ) {
 			$out[ $k ] = isset( $in[ $k ] ) ? sanitize_text_field( $in[ $k ] ) : '';
 		}
@@ -238,6 +228,6 @@ class Waypost_Settings {
 		$out['accent']      = $accent ? $accent : $d['accent'];
 		$out['style']       = ( isset( $in['style'] ) && is_string( $in['style'] ) && array_key_exists( $in['style'], self::styles() ) ) ? $in['style'] : $d['style'];
 
-		return $out;
+		return apply_filters( 'waypost_settings_sanitize', $out, $in );
 	}
 }

@@ -7,7 +7,7 @@ Your readers tell you what is missing from your docs every time they search. **W
 The most useful list. Each line is a question your docs did not answer. For each one, either:
 
 - **write the page** that answers it, or
-- if your docs cover it in other words, **add a synonym** (the **Edit synonyms** link takes you there). For example, if readers search "pic" and your docs say "photo", add `photo, pic`.
+- if your docs cover it in other words, add that word to the page, or with Waypost Pro **add a synonym** (the **Edit synonyms** link takes you there). For example, if readers search "pic" and your docs say "photo", add `photo, pic`.
 
 ## Most searched
 

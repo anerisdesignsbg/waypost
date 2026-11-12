@@ -48,7 +48,7 @@ const shots = [
 	},
 	{
 		name: '03-best-answer',
-		caption: 'Smart search answers questions: the best section on top with a short summary, other pages that cover it, and topic filters.',
+		caption: 'Smart search answers questions: the best section on top with a short summary and other pages that cover it. Topic filters above the results are part of Waypost Pro.',
 		async run( page ) {
 			await page.goto( '/documentation/?dq=' + encodeURIComponent( 'How do I share an album?' ) );
 			await scrollTo( page, '.waypost-home__results', 70 );
@@ -77,7 +77,7 @@ const shots = [
 	},
 	{
 		name: '06-documents',
-		caption: 'Search inside PDF, Word, PowerPoint and Excel files. Documents sit in your sections with a file type label.',
+		caption: 'Waypost Pro: search inside PDF, Word, PowerPoint and Excel files. Documents sit in your sections with a file type label.',
 		async run( page ) {
 			await page.goto( '/documentation/?dq=pebblecast' );
 			const toggle = page.locator( '.waypost-menu__item--top', { hasText: 'Downloads' } ).locator( '.waypost-menu__toggle' ).first();
@@ -145,7 +145,7 @@ const shots = [
 	},
 	{
 		name: '14-media-sections',
-		caption: 'Add a PDF or Word file to the docs by ticking its sections in the Media Library.',
+		caption: 'Waypost Pro: add a PDF or Word file to the docs by ticking its sections in the Media Library.',
 		admin: true,
 		async run( page ) {
 			await page.goto( '/wp-admin/admin.php?page=waypost-structure&tab=assign&show=documents' );

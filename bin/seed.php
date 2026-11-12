@@ -382,9 +382,11 @@ foreach ( $real as $t => $html ) {
 	}
 }
 
-// Documents from the Media Library, read for search (bin/seed-documents).
-Waypost_Settings::update( array( 'documents' => 1, 'documents_menu' => 1 ) );
-Waypost_Documents::register();
+// Documents from the Media Library, read for search (bin/seed-documents). Needs Waypost Pro.
+$s_files = 0;
+if ( class_exists( 'Waypost_Pro_Documents' ) ) :
+Waypost_Settings::update( array( 'documents' => 1, 'documents_menu' => 1, 'topic_filters' => 1, 'synonyms' => '' ) );
+Waypost_Pro_Documents::register();
 $s_files = $section( 'Downloads' );
 $doc     = function ( $file, $title, $terms, $description = '' ) use ( $tax, &$created ) {
 	$path = dirname( __FILE__ ) . '/seed-documents/' . $file;
@@ -412,6 +414,7 @@ $ids['Quick start card (PDF)']   = $doc( 'magpie-quick-start-card.pdf', 'Magpie 
 $ids['Keyboard shortcuts (TXT)'] = $doc( 'magpie-keyboard-shortcuts.txt', 'Keyboard shortcuts', $s_files );
 $ids['Warranty card (scan)']     = $doc( 'scanned-warranty-card.pdf', 'Scanned warranty card', $s_files, 'Paper warranty card for the Magpie Home Box, scanned.' );
 $ids['Hardware list (DOCX)']     = $doc( 'magpie-hardware-compatibility.docx', 'Hardware compatibility list', array( $s_install, $s_files ) );
+endif;
 
 // ── 4. Section links (clickable headings) ───────────────────────────────────
 

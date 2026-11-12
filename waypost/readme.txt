@@ -1,4 +1,4 @@
-=== Waypost: Documentation Site and Smart Search for Your Existing Pages ===
+=== Waypost ===
 Contributors: anerisdesigns
 Tags: documentation, knowledge base, docs, search, table of contents
 Requires at least: 6.0
@@ -32,16 +32,10 @@ Waypost search reads your docs section by section, so it can point readers to th
 * **Understands questions:** "How do I share an album?" searches for share and album.
 * **Other forms of a word:** "installing" finds "install" and "installation".
 * **Fixes typing mistakes:** "dokcer" finds "docker", and says so.
-* **Synonyms:** add your readers' own words, for example "pic" for "photo".
-* **Topic filters:** narrow results to one section, with a count for each.
 * **Instant results** as readers type, from anywhere with Ctrl+K or Cmd+K.
 * **Highlights on arrival:** the page a reader opens highlights their search words and the matching section.
 * Only your docs are searched, never blog posts or shop pages.
 * Runs entirely on your site: no index to build, no outside service, nothing to set up.
-
-= Search inside documents =
-
-Put PDF, Word, PowerPoint, Excel, OpenDocument and text files from the Media Library into your doc sections. Docs search finds words inside them, and the menu lists them with a file type label.
 
 = Learn what readers need =
 
@@ -55,6 +49,16 @@ Put PDF, Word, PowerPoint, Excel, OpenDocument and text files from the Media Lib
 * Use pages, posts or any custom post type, and Waypost's own sections or a taxonomy you already have.
 * Page builder content, including Divi 5, is read as text for search and the table of contents.
 * Built-in tutorials on every screen.
+
+= Waypost Pro =
+
+Waypost Pro is a separate add-on for teams whose docs go beyond web pages. It keeps everything in the free plugin and adds:
+
+* **Search inside documents:** put PDF, Word, PowerPoint, Excel, OpenDocument and text files from the Media Library into your doc sections. Docs search finds words inside them, and the menu lists them with a file type label.
+* **Synonyms:** teach search your readers' own words, for example "pic" for "photo".
+* **Topic filters:** readers narrow results to one section, with a count for each.
+
+More is on the way: multiple docs sets, private docs for chosen roles, a fuller Search insights with exports, and native Divi 5 modules. Waypost Pro is coming soon.
 
 == Installation ==
 
@@ -97,11 +101,11 @@ No extra plugin or index. Waypost keeps a plain-text copy of each doc page, spli
 
 = Can it search inside PDF and Word files? =
 
-Yes. Upload the file to the Media Library and tick its doc sections. Waypost reads the text once and adds it to search. It reads PDF, DOCX, PPTX, XLSX, ODT, ODP, ODS, TXT and CSV. Scanned PDFs contain pictures of text rather than text, so add a description to the file and search will find that instead. Older formats such as .doc need saving as PDF or .docx first.
+Yes, with Waypost Pro. Upload the file to the Media Library and tick its doc sections. Waypost reads the text once and adds it to search. It reads PDF, DOCX, PPTX, XLSX, ODT, ODP, ODS, TXT and CSV. Scanned PDFs contain pictures of text rather than text, so add a description to the file and search will find that instead. Older formats such as .doc need saving as PDF or .docx first.
 
 = Why does a search find nothing? =
 
-Waypost already ignores question words, matches other forms of a word and fixes small typing mistakes. If readers use a word your docs do not, add it as a synonym in Settings, Search. Search insights lists every search that found nothing, so you can see what to add or write.
+Waypost already ignores question words, matches other forms of a word and fixes small typing mistakes. Search insights lists every search that found nothing, so you can see which words to add to your pages or which pages to write. With Waypost Pro you can also add synonyms in Settings, Search.
 
 = Is any personal data stored? =
 
@@ -127,10 +131,10 @@ Your pages are never deleted. Waypost's sections, menu order and settings are re
 
 1. Your pages become a documentation site: sidebar menu, table of contents, breadcrumbs, reading time and previous and next links.
 2. A search home for your docs with quick searches and topic cards.
-3. Smart search answers questions: the best section on top with a short summary, other pages that cover it, and topic filters.
+3. Smart search answers questions: the best section on top with a short summary and other pages that cover it. Topic filters above the results are part of Waypost Pro.
 4. Instant results as you type, from anywhere with Ctrl+K or Cmd+K.
 5. Readers land on the exact section, with their search words highlighted.
-6. Search inside PDF, Word, PowerPoint and Excel files. Documents sit in your sections with a file type label.
+6. Waypost Pro: search inside PDF, Word, PowerPoint and Excel files. Documents sit in your sections with a file type label.
 7. Seven ready-made styles, including Dark and Auto light and dark with a reader switch.
 8. Classic, Minimalist, Light or your own theme's look, with any accent colour.
 9. Works on phones: the menu folds away and search stays one tap away.
@@ -138,13 +142,9 @@ Your pages are never deleted. Waypost's sections, menu order and settings are re
 11. Drag and drop to order the menu. Sections can nest four levels deep.
 12. Pick a ready-made style and accent colour in Settings.
 13. Search insights show what readers look for and which searches found nothing.
-14. Add a PDF or Word file to the docs by ticking its sections in the Media Library.
+14. Waypost Pro: add a PDF or Word file to the docs by ticking its sections in the Media Library.
 
 == Changelog ==
 
 = 1.0.0 =
 * First release.
-
-== Credits ==
-
-PDF reading uses PdfParser by Sébastien Malot, licensed under the LGPL 3.0, bundled in lib/pdfparser.

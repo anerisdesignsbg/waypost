@@ -7,7 +7,7 @@ Waypost search only looks at your docs, never blog posts or shop pages, and it i
 - **Best answer.** The section that answers the search best is shown on top: where it sits, the heading, a short summary and a **Read this section** link straight to it.
 - **Also covered in.** Up to three other pages that cover the same thing, each linking to its best section.
 - **Matching sections.** Under every result, up to three headings that hold the search, each with a line of text.
-- **Topics.** Buttons above the results narrow them to one of your top-level sections, with a count on each.
+- **Topics (Waypost Pro).** Buttons above the results narrow them to one of your top-level sections, with a count on each.
 - **Instant results** under the search box as readers type, with the best answer first.
 - **Ctrl+K or Cmd+K** (or the / key) opens a search window on any doc page.
 - **Highlights on arrival.** The page a reader opens highlights the words they searched for and briefly lights up the matching section. A **Clear** button removes the highlights.
@@ -21,9 +21,9 @@ Waypost search only looks at your docs, never blog posts or shop pages, and it i
 
 Waypost reads every doc page section by section and keeps a plain-text copy, updated each time a page is saved. Page builder content, including Divi 5, is read as text, so layout settings never turn up in results.
 
-## Add synonyms
+## Add synonyms (Waypost Pro)
 
-Readers do not always use your words. Teach search theirs:
+Readers do not always use your words. With Waypost Pro, teach search theirs:
 
 1. Go to **Waypost, Settings, Search**.
 2. In **Synonyms**, type one group per line, with words separated by commas:
@@ -48,8 +48,9 @@ In **Waypost, Settings, Search**:
 | Placeholder text | The hint inside every search box |
 | Results per page | 5 to 50 |
 | Extras | Ctrl+K shortcut; hide other search boxes on the results page; log searches for Search insights |
-| Smart results | Best answer on top; topic filters |
-| Synonyms | Your readers' words, as above |
+| Smart results | Best answer on top |
+| Topic filters (Pro) | Buttons that narrow results to one section |
+| Synonyms (Pro) | Your readers' words, as above |
 
 ## Search boxes elsewhere on your site
 

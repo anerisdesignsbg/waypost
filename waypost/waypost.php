@@ -11,7 +11,6 @@
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       waypost
- * Domain Path:       /languages
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -38,7 +37,6 @@ require_once WAYPOST_DIR . 'includes/class-headings.php';
 require_once WAYPOST_DIR . 'includes/class-render.php';
 require_once WAYPOST_DIR . 'includes/class-match.php';
 require_once WAYPOST_DIR . 'includes/class-search.php';
-require_once WAYPOST_DIR . 'includes/class-documents.php';
 require_once WAYPOST_DIR . 'includes/class-frontend.php';
 require_once WAYPOST_DIR . 'includes/class-layout.php';
 require_once WAYPOST_DIR . 'includes/class-feedback.php';
@@ -54,12 +52,9 @@ if ( is_admin() ) {
 add_action( 'plugins_loaded', 'waypost_boot' );
 
 function waypost_boot() {
-	load_plugin_textdomain( 'waypost', false, dirname( plugin_basename( WAYPOST_FILE ) ) . '/languages' );
-
 	Waypost_Taxonomy::init();
 	Waypost_Tree::init();
 	Waypost_Search::init();
-	Waypost_Documents::init();
 	Waypost_Frontend::init();
 	Waypost_Layout::init();
 	Waypost_Feedback::init();
@@ -88,5 +83,4 @@ function waypost_activate() {
 
 function waypost_deactivate() {
 	delete_transient( Waypost_Tree::CACHE_KEY );
-	wp_clear_scheduled_hook( Waypost_Documents::CRON );
 }

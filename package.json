@@ -11,12 +11,15 @@
 		"reset": "wp-env clean all && npm run seed",
 		"wp": "wp-env run cli wp",
 		"logs": "wp-env run cli tail -n 50 wp-content/debug.log",
-		"lint:php": "wp-env run cli bash -c 'find wp-content/plugins/waypost -name \"*.php\" -exec php -l {} \\; | grep -v \"No syntax errors\" || true'",
+		"lint:php": "wp-env run cli bash -c 'find wp-content/plugins/waypost wp-content/plugins/waypost-pro -name \"*.php\" -exec php -l {} \\; | grep -v \"No syntax errors\" || true'",
 		"test": "playwright test",
 		"test:headed": "playwright test --headed",
 		"test:report": "playwright show-report",
 		"screenshots": "node bin/screenshots.js",
-		"zip": "mkdir -p dist && rm -f dist/waypost.zip && zip -qr dist/waypost.zip waypost -x '*.DS_Store' && echo 'dist/waypost.zip ready'"
+		"wporg-assets": "node bin/wporg-assets.js",
+		"plugin-check": "wp-env run tests-cli bash -c 'wp plugin is-installed plugin-check || wp plugin install plugin-check; wp plugin activate plugin-check --quiet; wp plugin check waypost; status=$?; wp plugin deactivate plugin-check --quiet; exit $status'",
+		"zip": "mkdir -p dist && rm -f dist/waypost.zip && zip -qr dist/waypost.zip waypost -x '*.DS_Store' && echo 'dist/waypost.zip ready'",
+		"zip:pro": "mkdir -p dist && rm -f dist/waypost-pro.zip && zip -qr dist/waypost-pro.zip waypost-pro -x '*.DS_Store' && echo 'dist/waypost-pro.zip ready'"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.63.0",

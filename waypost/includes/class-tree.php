@@ -94,7 +94,8 @@ class Waypost_Tree {
 			'terms'    => $by_id,
 			'children' => $children,
 			'posts'    => self::posts_by_term( array_keys( $by_id ) ),
-			'files'    => Waypost_Settings::get( 'documents_menu' ) ? Waypost_Documents::by_term( array_keys( $by_id ) ) : array(),
+			/** Files listed in the menu (Waypost Pro: documents): [ term_id => [ id => [ title, url, badge ] ] ]. */
+			'files'    => (array) apply_filters( 'waypost_menu_files', array(), array_keys( $by_id ) ),
 			'order'    => (array) get_option( self::ORDER_OPTION, array() ),
 			'empty'    => $include_empty,
 		);
@@ -192,17 +193,17 @@ class Waypost_Tree {
 			return array();
 		}
 		$list = $ctx['files'][ $tid ];
-		uasort( $list, 'strnatcasecmp' );
+		uasort( $list, function ( $a, $b ) { return strnatcasecmp( $a['title'], $b['title'] ); } );
 		$nodes = array();
-		foreach ( $list as $id => $title ) {
+		foreach ( $list as $id => $f ) {
 			$nodes[] = array(
 				'type'     => 'post',
 				'id'       => $id,
 				'post_id'  => $id,
-				'title'    => $title,
-				'url'      => wp_get_attachment_url( $id ),
+				'title'    => $f['title'],
+				'url'      => $f['url'],
 				'children' => array(),
-				'file'     => Waypost_Documents::badge( $id ),
+				'file'     => $f['badge'],
 			);
 		}
 		return $nodes;

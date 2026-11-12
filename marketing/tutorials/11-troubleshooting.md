@@ -14,7 +14,7 @@ Sections with no published pages are hidden on purpose, so readers never open an
 ## Search does not find a page
 
 - Search only covers pages in sections. Check the page is in the docs.
-- If readers use a different word, add a **synonym** in **Waypost, Settings, Search**.
+- If readers use a different word, add it to the page, or with Waypost Pro add a **synonym** in **Waypost, Settings, Search**.
 - Search reads the text readers see. Text inside images cannot be found.
 
 ## The menu or search appears twice
@@ -35,7 +35,7 @@ Choose a **Docs home page** in **Waypost, Settings, Navigation**, or set **Full 
 
 Clear your caching plugin and any CDN cache. Waypost changes its file versions when they change, so browsers fetch new styles on their own.
 
-## A document is not searchable
+## A document is not searchable (Waypost Pro)
 
 Open **Waypost, Settings, Documents**. Documents that could not be read are listed with the reason:
 

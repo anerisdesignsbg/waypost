@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
 	"phpVersion": "8.2",
-	"plugins": [ "./waypost" ],
+	"plugins": [ "./waypost", "./waypost-pro" ],
 	"themes": [ "https://downloads.wordpress.org/theme/twentysixteen.zip" ],
 	"port": 8888,
 	"testsPort": 8889,

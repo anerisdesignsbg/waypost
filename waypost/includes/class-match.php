@@ -126,12 +126,13 @@ class Waypost_Match {
 		return $w;
 	}
 
-	/** Synonym sets from Settings, Search: one line each, words separated by commas. */
+	/** Synonym sets, from the waypost_synonyms filter. */
 	public static function synonyms() {
 		static $sets = null;
 		if ( null === $sets ) {
 			$sets = array();
-			foreach ( preg_split( '/\r?\n/', (string) Waypost_Settings::get( 'synonyms' ) ) as $line ) {
+			// Waypost Pro supplies the site's synonyms: one set per line, words separated by commas.
+			foreach ( preg_split( '/\r?\n/', (string) apply_filters( 'waypost_synonyms', '' ) ) as $line ) {
 				$set = array_values( array_filter( array_map( function ( $s ) { return mb_strtolower( trim( $s ) ); }, explode( ',', $line ) ) ) );
 				if ( count( $set ) > 1 ) {
 					$sets[] = $set;

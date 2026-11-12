@@ -1,6 +1,6 @@
 # Waypost
 
-WordPress plugin that turns existing pages into a documentation site: sidebar menu, docs-only search with Ctrl/Cmd+K, table of contents, previous/next links, breadcrumbs, search insights, setup wizard and in-admin tutorials. Commercial product by Aneris Designs (free version planned for WordPress.org, Pro later).
+WordPress plugin that turns existing pages into a documentation site: sidebar menu, docs-only smart search with Ctrl/Cmd+K, table of contents, previous/next links, breadcrumbs, search insights, setup wizard and in-admin tutorials. Commercial product by Aneris Designs: the free plugin (`waypost/`) goes on WordPress.org, and Waypost Pro (`waypost-pro/`) is a separate add-on sold elsewhere.
 
 Origin: generalised from a client plugin built for FastNetMon.com (`fnm-docs-menu` + `doc-search-pro`). Do not copy FastNetMon branding or code back in.
 
@@ -8,10 +8,14 @@ Origin: generalised from a client plugin built for FastNetMon.com (`fnm-docs-men
 
 - `waypost/` the plugin itself. This folder is what ships (`npm run zip`).
   - `waypost.php` bootstrap, constants, activation.
-  - `includes/` front end and shared logic: settings, taxonomy, tree (menu data and cache), headings (anchor IDs), render (all HTML output), search (REST, results page, search log), documents (PDF/Word/text files in sections: reading their text for search), frontend (shortcodes, assets, auto-insert), blocks, Divi.
+  - `includes/` front end and shared logic: settings, taxonomy, tree (menu data and cache), headings (anchor IDs), render (all HTML output), search (REST, results page, search log), match (word forms, typo suggestions, scoring), frontend (shortcodes, assets, auto-insert), blocks, Divi.
   - `admin/` admin screens (`class-admin.php`), help and tutorials (`class-help.php`), setup wizard (`class-wizard.php`).
-  - `lib/pdfparser/` bundled smalot/pdfparser (LGPL-3.0), namespace renamed to `Waypost\Vendor\PdfParser`. Do not edit; see its README to update.
   - `assets/` CSS and JS. No build step: plain JS, blocks use `wp.element.createElement` and server-side rendering.
+- `waypost-pro/` the paid add-on (`npm run zip:pro`). Never shipped to WordPress.org.
+  - `includes/class-pro.php` hooks Pro features into the free plugin: synonyms, topic filters, the Documents settings section, Assign pages documents view, help articles.
+  - `includes/class-documents.php` (`Waypost_Pro_Documents`) reads PDF/Word/text files placed in sections for search and the menu.
+  - `lib/pdfparser/` bundled smalot/pdfparser (LGPL-3.0), namespace renamed to `Waypost\Vendor\PdfParser`. Do not edit; see its README to update.
+  - `includes/freemius.php` licensing and updates through the bundled Freemius SDK (`freemius/`, do not edit). Off until `WAYPOST_PRO_FS_ID` and `WAYPOST_PRO_FS_PUBLIC_KEY` are set; then Pro features run only with an active licence or trial. Freemius forbids `uninstall.php`; clean-up uses its `after_uninstall` action. See `marketing/freemius/SETUP.md`.
 - `bin/seed.php` dummy content (docs for Magpie, a fictional photo library; about 150 doc pages plus edge cases, and sample files from `bin/seed-documents/` in a Downloads section, including a scanned PDF with no text). Idempotent.
 - `tests/e2e/` Playwright tests (front end, admin, wizard).
 - `.wp-env.json` local WordPress in Docker. `.wp-env.override.json` (gitignored) adds Divi from `themes/Divi` (licensed, never commit).
@@ -25,12 +29,14 @@ Origin: generalised from a client plugin built for FastNetMon.com (`fnm-docs-men
 - `npm run logs` tail `debug.log`. `npm run lint:php` syntax-check every PHP file.
 - `npm run wp -- <command>` any WP-CLI command, e.g. `npm run wp -- option get waypost_settings`.
 - `npm run zip` build `dist/waypost.zip` for installing elsewhere.
+- `npm run plugin-check` run WordPress.org's Plugin Check on the test site (must show no errors before a release). `npm run wporg-assets` rebuild the WordPress.org banners, icons and numbered screenshots in `marketing/wordpress-org/assets/`; `marketing/wordpress-org/SETUP.md` is the submission and release guide.
 - `npm run screenshots` retake the listing screenshots in `marketing/screenshots/` (uses the test site at :8889, reseeds before and after). Listing copy is `waypost/readme.txt`; tutorials are in `marketing/tutorials/`.
 
 After changing PHP, JS or CSS: reload the page (wp-env mounts the folder live). Run `npm test` before committing.
 
 ## Conventions
 
+- Free and Pro: the free plugin must never reference Pro classes or contain locked features (WordPress.org guideline 5). Pro plugs in through filters and actions named `waypost_*` (settings defaults, sanitize and changes, settings sections, panels and search rows, search query args and where clause, result file badge, menu files, synonyms, topic filters, Assign pages views, help topics and articles). Add a hook to free rather than special-casing Pro. Pro boots on `plugins_loaded` priority 5 because it loads before the free plugin. Pro's text domain is `waypost-pro`.
 - Prefixes: PHP classes `Waypost_`, functions/options/meta `waypost_`, front-end CSS `.waypost-*`, admin CSS `.wpst-*` (never `wp-*`, that collides with core), text domain `waypost`.
 - One source of HTML: shortcodes, blocks and Divi modules all call `Waypost_Render`. Change output there only.
 - Heading anchors: `Waypost_Headings` is the single slug algorithm used by the TOC, the IDs added to content and search deep links. Keep them in sync by never generating anchors elsewhere.
@@ -53,6 +59,6 @@ After changing PHP, JS or CSS: reload the page (wp-env mounts the folder live). 
 ## Known gaps / roadmap
 
 1. No native Divi 5 modules yet (Waypost modules are missing from the Divi 5 module list). Divi 4 itself not yet tested with the current modules.
-2. Free / Pro split and licensing (Freemius planned). Candidate Pro features: search insights, Ctrl+K, multiple docs sets, Divi 5 module.
+2. Pro is wired to Freemius but the Freemius product (ID, public key, plans) is not created yet. Planned Pro features: multiple docs sets, private docs by role, full insights with exports, native Divi 5 modules, AI answers.
 3. "Was this helpful?" feedback, multiple docs sets, import/export of menu order.
 4. FastNetMon's old `fnm_menu_order_v2` order is not migrated.

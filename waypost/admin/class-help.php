@@ -57,13 +57,14 @@ class Waypost_Help {
 			'layout'           => __( 'The docs layout', 'waypost' ),
 			'placing'          => __( 'Placing the menu and search', 'waypost' ),
 			'search'           => __( 'Search', 'waypost' ),
-			'documents'        => __( 'Documents (PDF, Word and more)', 'waypost' ),
 			'page-features'    => __( 'Contents, previous / next, breadcrumbs', 'waypost' ),
 			'insights'         => __( 'Search insights', 'waypost' ),
 			'styling'          => __( 'Styling', 'waypost' ),
 			'existing'         => __( 'Using a taxonomy you already have', 'waypost' ),
 			'troubleshooting'  => __( 'Troubleshooting', 'waypost' ),
 		);
+		/** Add-ons add topics (id => label) and print their articles on waypost_help_articles. */
+		$topics = apply_filters( 'waypost_help_topics', $topics );
 
 		Waypost_Admin::header( __( 'Help and tutorials', 'waypost' ), __( 'Short guides for everything Waypost does.', 'waypost' ) );
 		?>
@@ -224,31 +225,11 @@ Troubleshooting</pre>
 						<li><strong><?php esc_html_e( 'Typing mistakes', 'waypost' ); ?></strong>: <?php esc_html_e( 'when nothing matches, Waypost tries the closest words from your page titles and headings, so “dokcer” finds “docker”, and says so above the results.', 'waypost' ); ?></li>
 						<li><strong><?php esc_html_e( 'Best answer', 'waypost' ); ?></strong>: <?php esc_html_e( 'the section that answers the search best is shown on top with a short summary and a link straight to it, followed by other pages that cover the same thing.', 'waypost' ); ?></li>
 						<li><strong><?php esc_html_e( 'Matching sections', 'waypost' ); ?></strong>: <?php esc_html_e( 'each result lists up to three headings that hold the search, each with a line of text, linking to that part of the page.', 'waypost' ); ?></li>
-						<li><strong><?php esc_html_e( 'Topics', 'waypost' ); ?></strong>: <?php esc_html_e( 'buttons above the results narrow them to one of your top-level sections, with a count for each.', 'waypost' ); ?></li>
 						<li><strong><?php esc_html_e( 'Highlights on the page', 'waypost' ); ?></strong>: <?php esc_html_e( 'when a reader opens a result, the words they searched for are highlighted and the section briefly lights up. A Clear button removes the highlights.', 'waypost' ); ?></li>
-						<li><strong><?php esc_html_e( 'Synonyms', 'waypost' ); ?></strong>: <?php esc_html_e( 'add your readers’ own words in Settings, Search, for example “pic” for “photo”. Search insights shows which searches find nothing, so you know what to add.', 'waypost' ); ?></li>
 					</ul>
 				</article>
 
-				<article class="wpst-card wpst-topic" id="documents">
-					<h2><?php esc_html_e( 'Documents (PDF, Word and more)', 'waypost' ); ?></h2>
-					<p><?php esc_html_e( 'Files in your Media Library can join doc sections just like pages. Docs search then finds words inside them, and the docs menu can list them with a small label such as PDF.', 'waypost' ); ?></p>
-					<p><?php esc_html_e( 'Readable types: PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx), OpenDocument (.odt, .odp, .ods), plain text and CSV. Older formats such as .doc cannot be read; save them as PDF or .docx first.', 'waypost' ); ?></p>
-					<h3><?php esc_html_e( 'Add a document', 'waypost' ); ?></h3>
-					<ol class="wpst-tut">
-						<li><?php esc_html_e( 'Upload the file under Media, Add New.', 'waypost' ); ?></li>
-						<li><?php esc_html_e( 'Open it in the Media Library and tick one or more sections under Doc sections. It saves straight away.', 'waypost' ); ?></li>
-						<li><?php esc_html_e( 'Or use Waypost, Structure, Assign pages, choose the Documents filter and add several at once.', 'waypost' ); ?></li>
-					</ol>
-					<h3><?php esc_html_e( 'How the text is read', 'waypost' ); ?></h3>
-					<p><?php esc_html_e( 'Waypost reads the text once, when a document joins a section or is edited, and keeps a plain copy for search. Small files are read at once; larger ones are read in the background within a minute or two. Settings, Documents shows how many are searchable and lists any that could not be read.', 'waypost' ); ?></p>
-					<ul class="wpst-list">
-						<li><strong><?php esc_html_e( 'Scanned PDFs', 'waypost' ); ?></strong>: <?php esc_html_e( 'hold pictures of text, not text, so there is nothing to read. Write a short description of the document in the Media Library and search finds that instead.', 'waypost' ); ?></li>
-						<li><strong><?php esc_html_e( 'Password-protected files', 'waypost' ); ?></strong>: <?php esc_html_e( 'cannot be read. Remove the password and upload the file again.', 'waypost' ); ?></li>
-						<li><strong><?php esc_html_e( 'Very large files', 'waypost' ); ?></strong>: <?php esc_html_e( 'files over 30 MB are skipped, and only the first 500,000 characters of a document are kept.', 'waypost' ); ?></li>
-					</ul>
-					<p><?php esc_html_e( 'Results for a document open the file itself. Documents are not part of previous and next links or breadcrumbs.', 'waypost' ); ?></p>
-				</article>
+				<?php do_action( 'waypost_help_articles' ); ?>
 
 				<article class="wpst-card wpst-topic" id="page-features">
 					<h2><?php esc_html_e( 'Contents, previous / next, breadcrumbs', 'waypost' ); ?></h2>
