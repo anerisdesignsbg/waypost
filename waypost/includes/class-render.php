@@ -345,7 +345,7 @@ class Waypost_Render {
 			$schema['itemListElement'][] = $el;
 		}
 		echo '</ol></nav>';
-		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>';
+		wp_print_inline_script_tag( wp_json_encode( $schema ), array( 'type' => 'application/ld+json' ) );
 		return ob_get_clean();
 	}
 

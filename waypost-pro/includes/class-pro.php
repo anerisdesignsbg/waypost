@@ -250,7 +250,7 @@ sign in, log in, login", 'waypost-pro' ); ?>"><?php echo esc_textarea( $o['synon
 			wp_die( esc_html__( 'You are not allowed to change these settings.', 'waypost-pro' ) );
 		}
 		check_admin_referer( 'waypost_read_documents' );
-		if ( isset( $_POST['mode'] ) && 'all' === $_POST['mode'] ) {
+		if ( isset( $_POST['mode'] ) && 'all' === sanitize_key( wp_unslash( $_POST['mode'] ) ) ) {
 			Waypost_Pro_Documents::forget_all();
 		}
 		$done = Waypost_Pro_Documents::read_queue();

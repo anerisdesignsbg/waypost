@@ -441,7 +441,7 @@ class Waypost_Wizard {
 			wp_die( esc_html__( 'You are not allowed to run the setup.', 'waypost' ) );
 		}
 		check_admin_referer( 'waypost_wizard' );
-		$in   = wp_unslash( $_POST );
+		$in   = Waypost_Admin::posted();
 		$step = isset( $in['step'] ) ? sanitize_key( $in['step'] ) : '';
 		$msg  = '';
 

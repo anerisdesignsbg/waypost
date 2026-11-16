@@ -21,18 +21,6 @@ class Waypost_Frontend {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
 		add_filter( 'the_content', array( __CLASS__, 'filter_content' ), 20 );
 		add_filter( 'body_class', array( __CLASS__, 'body_class' ) );
-		add_action( 'wp_head', array( __CLASS__, 'scheme_script' ), 1 );
-	}
-
-	/**
-	 * Auto light and dark: apply the reader's saved choice before the page is drawn,
-	 * so a reader who chose dark never sees a flash of light.
-	 */
-	public static function scheme_script() {
-		if ( 'auto' !== Waypost_Settings::get( 'style' ) ) {
-			return;
-		}
-		echo "<script>try{var w=localStorage.getItem('waypost-scheme');if(w==='dark'||w==='light')document.documentElement.classList.add('waypost-scheme-'+w)}catch(e){}</script>\n";
 	}
 
 	/** The chosen style is a body class, so it reaches every component and the Ctrl+K window. */
@@ -141,6 +129,14 @@ class Waypost_Frontend {
 				),
 			)
 		);
+
+		// Auto light and dark: apply the reader's saved choice in the head, before the page is drawn,
+		// so a reader who chose dark never sees a flash of light.
+		if ( 'auto' === Waypost_Settings::get( 'style' ) ) {
+			wp_register_script( 'waypost-scheme', false, array(), WAYPOST_VERSION, false );
+			wp_enqueue_script( 'waypost-scheme' );
+			wp_add_inline_script( 'waypost-scheme', "try{var w=localStorage.getItem('waypost-scheme');if(w==='dark'||w==='light')document.documentElement.classList.add('waypost-scheme-'+w)}catch(e){}" );
+		}
 
 		if ( self::is_docs_context() ) {
 			self::enqueue();

@@ -961,12 +961,21 @@ class Waypost_Admin {
 		self::footer();
 	}
 
+	/**
+	 * The submitted form, unslashed and sanitised as plain text (line breaks kept for
+	 * multi-line fields). Each value is then cleaned for its own type by
+	 * Waypost_Settings::sanitize(). Callers check the nonce and capability first.
+	 */
+	public static function posted() {
+		return map_deep( wp_unslash( $_POST ), 'sanitize_textarea_field' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- callers run check_admin_referer() first.
+	}
+
 	public static function save_settings() {
 		if ( ! current_user_can( self::CAP ) ) {
 			wp_die( esc_html__( 'You are not allowed to change these settings.', 'waypost' ) );
 		}
 		check_admin_referer( 'waypost_settings' );
-		$in = wp_unslash( $_POST );
+		$in = self::posted();
 		$changes = array(
 			'post_types'    => isset( $in['post_types'] ) ? (array) $in['post_types'] : array( 'page' ),
 			'taxonomy_mode' => isset( $in['taxonomy_mode'] ) ? $in['taxonomy_mode'] : 'own',
@@ -983,7 +992,7 @@ class Waypost_Admin {
 		}
 		$changes['quick_searches'] = isset( $in['quick_searches'] ) ? (array) $in['quick_searches'] : array();
 		$changes['topics']         = isset( $in['topics'] ) ? (array) $in['topics'] : array();
-		/** Add-ons add their own fields from the posted form ($in is unslashed). Values are cleaned by waypost_settings_sanitize. */
+		/** Add-ons add their own fields from the posted form ($in is already sanitised as text). Values are cleaned again by waypost_settings_sanitize. */
 		$changes = apply_filters( 'waypost_settings_changes', $changes, $in );
 		Waypost_Settings::update( $changes );
 		// Back to the section that was open.
@@ -1100,16 +1109,14 @@ class Waypost_Admin {
 
 	// ── AJAX ────────────────────────────────────────────────────────────────
 
-	private static function guard() {
+	public static function ajax_save_order() {
 		check_ajax_referer( 'waypost_admin', 'nonce' );
 		if ( ! current_user_can( self::CAP ) ) {
 			wp_send_json_error( __( 'You are not allowed to do this.', 'waypost' ), 403 );
 		}
-	}
-
-	public static function ajax_save_order() {
-		self::guard();
-		$data = json_decode( wp_unslash( isset( $_POST['order'] ) ? $_POST['order'] : '' ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput, WordPress.Security.NonceVerification.Missing -- nonce checked in guard().
+		// A JSON list of { key, position }: sanitised as text, decoded, then every key and position is checked below.
+		$raw  = isset( $_POST['order'] ) ? sanitize_text_field( wp_unslash( $_POST['order'] ) ) : '';
+		$data = json_decode( $raw, true );
 		if ( ! is_array( $data ) ) {
 			wp_send_json_error( __( 'The order could not be read.', 'waypost' ) );
 		}
@@ -1117,7 +1124,7 @@ class Waypost_Admin {
 		foreach ( $data as $row ) {
 			$key = isset( $row['key'] ) ? sanitize_key( $row['key'] ) : '';
 			if ( $key && preg_match( '/^(term_\d+|child_\d+_(term|post)\d+)$/', $key ) ) {
-				$map[ $key ] = (int) $row['position'];
+				$map[ $key ] = isset( $row['position'] ) ? absint( $row['position'] ) : 0;
 			}
 		}
 		// Keep page-level keys from before, merge the new ones.
@@ -1127,22 +1134,31 @@ class Waypost_Admin {
 	}
 
 	public static function ajax_reset_order() {
-		self::guard();
+		check_ajax_referer( 'waypost_admin', 'nonce' );
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_send_json_error( __( 'You are not allowed to do this.', 'waypost' ), 403 );
+		}
 		delete_option( Waypost_Tree::ORDER_OPTION );
 		Waypost_Tree::flush();
 		wp_send_json_success();
 	}
 
 	public static function ajax_flush() {
-		self::guard();
+		check_ajax_referer( 'waypost_admin', 'nonce' );
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_send_json_error( __( 'You are not allowed to do this.', 'waypost' ), 403 );
+		}
 		Waypost_Tree::flush();
 		wp_send_json_success();
 	}
 
 	public static function ajax_save_link() {
-		self::guard();
-		$term = isset( $_POST['term'] ) ? absint( $_POST['term'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in guard().
-		$post = isset( $_POST['post'] ) ? absint( $_POST['post'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in guard().
+		check_ajax_referer( 'waypost_admin', 'nonce' );
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_send_json_error( __( 'You are not allowed to do this.', 'waypost' ), 403 );
+		}
+		$term = isset( $_POST['term'] ) ? absint( $_POST['term'] ) : 0;
+		$post = isset( $_POST['post'] ) ? absint( $_POST['post'] ) : 0;
 		if ( ! $term || ! get_term( $term, Waypost_Settings::taxonomy() ) ) {
 			wp_send_json_error( __( 'That section no longer exists.', 'waypost' ) );
 		}
@@ -1156,11 +1172,14 @@ class Waypost_Admin {
 	}
 
 	public static function ajax_assign() {
-		self::guard();
+		check_ajax_referer( 'waypost_admin', 'nonce' );
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_send_json_error( __( 'You are not allowed to do this.', 'waypost' ), 403 );
+		}
 		$tax  = Waypost_Settings::taxonomy();
-		$mode = isset( $_POST['mode'] ) ? sanitize_key( $_POST['mode'] ) : 'add'; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in guard().
-		$term = isset( $_POST['term'] ) ? absint( $_POST['term'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in guard().
-		$ids  = isset( $_POST['ids'] ) ? array_filter( array_map( 'absint', (array) $_POST['ids'] ) ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in guard().
+		$mode = isset( $_POST['mode'] ) ? sanitize_key( $_POST['mode'] ) : 'add';
+		$term = isset( $_POST['term'] ) ? absint( $_POST['term'] ) : 0;
+		$ids  = isset( $_POST['ids'] ) ? array_filter( array_map( 'absint', (array) $_POST['ids'] ) ) : array();
 		if ( ! $ids ) {
 			wp_send_json_error( __( 'Tick at least one page first.', 'waypost' ) );
 		}
@@ -1187,9 +1206,12 @@ class Waypost_Admin {
 	}
 
 	public static function ajax_add_section() {
-		self::guard();
-		$name   = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in guard().
-		$parent = isset( $_POST['parent'] ) ? absint( $_POST['parent'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in guard().
+		check_ajax_referer( 'waypost_admin', 'nonce' );
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_send_json_error( __( 'You are not allowed to do this.', 'waypost' ), 403 );
+		}
+		$name   = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+		$parent = isset( $_POST['parent'] ) ? absint( $_POST['parent'] ) : 0;
 		if ( '' === $name ) {
 			wp_send_json_error( __( 'Give the section a name.', 'waypost' ) );
 		}
