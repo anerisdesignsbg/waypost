@@ -365,6 +365,13 @@ docker restart magpie</code></pre>
 <p>Every photo shows the name of the person who added it. Contributors can remove their own photos; only the owner and editors can remove anyone’s.</p>
 <h2>Duplicates</h2>
 <p>When two people add the same photo, Magpie keeps one copy and tells you it skipped the duplicate.</p>',
+	'Child accounts' => '<p>A child account lets younger family members browse and add photos safely, with you in control of what they can see and share.</p>
+<h2>Create a child account</h2>
+<p>Go to Settings, People, Add person and tick Child account. Choose which albums the child can see; everything else stays private.</p>
+<h2>Sharing for children</h2>
+<p>Children cannot share albums or create public links. They can add photos to a shared album you invite them to, and you approve each photo before others see it.</p>
+<h2>When they grow up</h2>
+<p>Untick Child account in their profile to turn it into a normal account. Their photos and albums stay as they are.</p>',
 	'User accounts' => '<p>Each person in your household can have their own Magpie account with a private library, their own albums and their own upload settings.</p>
 <h2>Add a person</h2>
 <p>Go to Settings, People and press Add person. Enter their name and email address. They receive an invitation to choose a password.</p>

@@ -17,6 +17,7 @@
 		"test:report": "playwright show-report",
 		"screenshots": "node bin/screenshots.js",
 		"wporg-assets": "node bin/wporg-assets.js",
+		"website-assets": "node bin/website-assets.js",
 		"plugin-check": "wp-env run tests-cli bash -c 'wp plugin is-installed plugin-check || wp plugin install plugin-check; wp plugin activate plugin-check --quiet; wp plugin check waypost; status=$?; wp plugin deactivate plugin-check --quiet; exit $status'",
 		"zip": "mkdir -p dist && rm -f dist/waypost.zip && zip -qr dist/waypost.zip waypost -x '*.DS_Store' && echo 'dist/waypost.zip ready'",
 		"demo:content": "node bin/demo-content.js",

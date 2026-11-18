@@ -36,7 +36,7 @@ const shots = [
 		name: '01-docs-page',
 		caption: 'Your pages become a documentation site: sidebar menu, table of contents, breadcrumbs, reading time and previous and next links.',
 		async run( page ) {
-			await page.goto( '/installing-with-docker/' );
+			await page.goto( '/shared-albums/' );
 		},
 	},
 	{
