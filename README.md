@@ -1,6 +1,6 @@
-# Waypost
+# Aneris Docsway
 
-Documentation menu, search and page navigation for the pages you already have. This repository holds the plugin (`waypost/`) and a local test environment with dummy content and browser tests.
+Documentation menu, search and page navigation for the pages you already have. This repository holds the plugin (`aneris-docsway/`) and a local test environment with dummy content and browser tests.
 
 ## First-time setup (Mac)
 
@@ -30,9 +30,9 @@ Documentation menu, search and page navigation for the pages you already have. T
 | `npm test` | Run all browser tests |
 | `npm run test:headed` | Run tests in a visible browser |
 | `npm run logs` | Show the latest PHP errors |
-| `npm run zip` | Build `dist/waypost.zip` to install on another site |
+| `npm run zip` | Build `dist/aneris-docsway.zip` to install on another site |
 
-Edits to files in `waypost/` show up straight away; just reload the page.
+Edits to files in `aneris-docsway/` show up straight away; just reload the page.
 
 ## Testing with Divi
 
@@ -41,7 +41,7 @@ Divi is licensed, so it is never committed.
 1. Download Divi from your Elegant Themes account and unzip it into `themes/Divi`.
 2. Copy `.wp-env.override.example.json` to `.wp-env.override.json`.
 3. Run `npm run stop`, `npm run start`, then `npm run seed:divi`.
-4. In wp-admin, go to Divi, Theme Builder and create a template for the doc pages with a sidebar holding the Waypost Docs Search and Waypost Docs Menu modules (step-by-step in Waypost, Help, Placing the menu).
+4. In wp-admin, go to Divi, Theme Builder and create a template for the doc pages with a sidebar holding the Docsway Docs Search and Docsway Docs Menu modules (step-by-step in Docsway, Help, Placing the menu).
 
 ## What the dummy content covers
 

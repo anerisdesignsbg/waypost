@@ -1,0 +1,618 @@
+/* Docsway front end. Every colour and size is a custom property so themes can override it. */
+:root {
+	--docsway-accent: #2563eb;
+	--docsway-text: inherit;
+	--docsway-muted: #64708a;
+	--docsway-border: #e2e6ee;
+	--docsway-surface: #ffffff;
+	--docsway-soft: #f4f6fa;
+	--docsway-active-bg: color-mix(in srgb, var(--docsway-accent) 9%, transparent);
+	--docsway-radius: 8px;
+	--docsway-indent: 14px;
+	--docsway-speed: 200ms;
+	--docsway-font-size: 15px;
+	--docsway-font: inherit;
+	--docsway-surface-text: #1d2333;
+	--docsway-on-accent: #ffffff;
+	--docsway-panel: transparent;
+	--docsway-shadow: 0 12px 32px rgba(20, 30, 60, .14);
+	--docsway-overlay: rgba(15, 20, 35, .45);
+	--docsway-code-button: rgba(30, 36, 50, .75);
+	/* Docs layout page colours. Follow my theme leaves the page to the theme. */
+	--docsway-page-bg: transparent;
+	--docsway-page-text: inherit;
+	--docsway-heading: inherit;
+	--docsway-code-bg: #f6f8fa;
+	--docsway-code-text: inherit;
+}
+
+.docsway-menu, .docsway-search, .docsway-toc, .docsway-pager, .docsway-crumbs, .docsway-results, .docsway-modal, .docsway-home {
+	box-sizing: border-box;
+	font-size: var(--docsway-font-size);
+	font-family: var(--docsway-font);
+	color: var(--docsway-text);
+	line-height: 1.45;
+}
+.docsway-menu *, .docsway-search *, .docsway-toc *, .docsway-pager *, .docsway-results *, .docsway-modal *, .docsway-home * { box-sizing: border-box; }
+/* !important because themes style lists with ID selectors, e.g. Divi's #left-area ul. */
+.docsway-menu ul, .docsway-menu ol, .docsway-toc ol, .docsway-crumbs ol, .docsway-results ol, .docsway-results ul, .docsway-modal ul {
+	list-style: none !important; margin: 0 !important; padding: 0 !important;
+}
+.docsway-menu li, .docsway-toc li, .docsway-crumbs li { margin: 0; padding: 0; border: 0; }
+
+/* Neutralise common theme styles on links and buttons inside components.
+   Underline borders are only removed from plain text links; boxed links keep theirs. */
+body :is(.docsway-menu, .docsway-search, .docsway-toc, .docsway-pager, .docsway-crumbs, .docsway-results, .docsway-modal, .docsway-home) a {
+	box-shadow: none; text-decoration: none; background-image: none;
+}
+body :is(.docsway-menu, .docsway-toc, .docsway-crumbs, .docsway-result__title) a, body a.docsway-chip { border-bottom: 0; }
+body :is(.docsway-menu, .docsway-search, .docsway-modal) button {
+	text-transform: none; letter-spacing: normal; line-height: inherit; font-family: inherit; font-weight: inherit;
+	box-shadow: none; text-shadow: none; min-height: 0; margin: 0;
+}
+:is(.docsway-menu, .docsway-search, .docsway-modal) button:hover, :is(.docsway-menu, .docsway-search, .docsway-modal) button:focus { background-color: transparent; color: inherit; }
+.docsway-search .docsway-search__submit:hover, .docsway-search .docsway-search__submit:focus { background: var(--docsway-accent); color: var(--docsway-on-accent); filter: brightness(1.08); }
+.docsway-menu li::before, .docsway-toc li::before { content: none; }
+.screen-reader-text {
+	border: 0; clip: rect(1px,1px,1px,1px); clip-path: inset(50%); height: 1px; margin: -1px;
+	overflow: hidden; padding: 0; position: absolute; width: 1px; word-wrap: normal !important;
+}
+.docsway-empty { padding: 10px 12px; border: 1px dashed var(--docsway-border); border-radius: var(--docsway-radius); color: var(--docsway-muted); font-size: 13px; }
+.docsway-divi-placeholder { padding: 12px; background: var(--docsway-soft); border: 1px dashed #b8c0cf; font-size: 13px; color: #556; }
+
+/* ── Menu ──────────────────────────────────────────────── */
+.docsway-menu { background: var(--docsway-panel); }
+.docsway-menu__title { margin: 0 0 8px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--docsway-muted); }
+.docsway-menu__mobile { display: none; }
+.docsway-menu__row { display: flex; align-items: center; gap: 2px; border-radius: 6px; }
+.docsway-menu__row:hover { background: var(--docsway-soft); }
+.docsway-menu__link, .docsway-menu__label {
+	flex: 1; min-width: 0; display: block; padding: 6px 10px; color: var(--docsway-text);
+	text-decoration: none; border-radius: 6px; font: inherit; text-align: left;
+}
+button.docsway-menu__label { background: none; border: 0; cursor: pointer; }
+.docsway-menu__item--top > .docsway-menu__row .docsway-menu__link,
+.docsway-menu__item--top > .docsway-menu__row .docsway-menu__label { font-weight: 600; }
+.docsway-menu__link:hover { color: var(--docsway-accent); }
+.docsway-menu .is-current > .docsway-menu__row { background: var(--docsway-active-bg); }
+.docsway-menu .is-current > .docsway-menu__row .docsway-menu__link { color: var(--docsway-accent); font-weight: 600; }
+.docsway-menu__toggle {
+	flex: none; width: 30px; height: 30px; display: grid; place-items: center; padding: 0;
+	background: none; border: 0; border-radius: 6px; color: var(--docsway-muted); cursor: pointer;
+}
+.docsway-menu__toggle svg { transition: transform var(--docsway-speed) ease; }
+.docsway-menu__toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
+.docsway-menu__toggle:hover { color: var(--docsway-text); background: var(--docsway-border); }
+.docsway-menu__list .docsway-menu__list { margin-left: var(--docsway-indent) !important; padding-left: 6px !important; border-left: 1px solid var(--docsway-border); }
+.docsway-menu__list[hidden] { display: none; }
+.docsway-menu__list.is-animating { overflow: hidden; transition: height var(--docsway-speed) ease; }
+.docsway-menu :focus-visible, .docsway-search :focus-visible, .docsway-toc :focus-visible, .docsway-pager :focus-visible, .docsway-modal :focus-visible {
+	outline: 2px solid var(--docsway-accent); outline-offset: 1px;
+}
+
+@media (max-width: 780px) {
+	.docsway-menu .docsway-menu__mobile {
+		display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px;
+		padding: 10px 12px; font: inherit; font-weight: 600; color: var(--docsway-text);
+		background: var(--docsway-soft); border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius); cursor: pointer;
+	}
+	.docsway-menu.is-collapsible .docsway-menu__list--root { display: none; margin-top: 8px !important; }
+	.docsway-menu.is-collapsible.is-open .docsway-menu__list--root { display: block; }
+	.docsway-menu__title { display: none; }
+}
+
+/* ── Search box ────────────────────────────────────────── */
+/* The button drops below the field in narrow columns, such as a Divi 1/4 column. */
+.docsway-search { position: relative; display: flex; flex-wrap: wrap; gap: 8px; max-width: 640px; }
+.docsway-search__field { position: relative; flex: 1 1 160px; min-width: 0; }
+.docsway-search__icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--docsway-muted); pointer-events: none; }
+/* Doubled class beats theme rules such as input[type=search]:focus. */
+.docsway-search .docsway-search__input {
+	width: 100%; height: 42px; padding: 0 52px 0 36px !important; margin: 0;
+	font: inherit; color: var(--docsway-surface-text); background: var(--docsway-surface);
+	border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius);
+	-webkit-appearance: none; appearance: none;
+}
+.docsway-search__input::placeholder { color: var(--docsway-muted); opacity: 1; }
+.docsway-search .docsway-search__input:focus { background: var(--docsway-surface); color: var(--docsway-surface-text); border-color: var(--docsway-accent); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--docsway-accent) 20%, transparent); }
+.docsway-search__kbd {
+	position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+	font: 600 11px/1 ui-sans-serif, system-ui, sans-serif; color: var(--docsway-muted);
+	padding: 4px 6px; border: 1px solid var(--docsway-border); border-radius: 4px; background: var(--docsway-soft);
+}
+.docsway-search__submit {
+	height: 42px; padding: 0 16px; font: inherit; font-weight: 600; color: var(--docsway-on-accent);
+	background: var(--docsway-accent); border: 0; border-radius: var(--docsway-radius); cursor: pointer;
+}
+.docsway-search__panel {
+	position: absolute; z-index: 9999; top: calc(100% + 6px); left: 0; right: 0;
+	max-height: min(70vh, 460px); overflow-y: auto; background: var(--docsway-surface); color: var(--docsway-surface-text);
+	border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius);
+	box-shadow: var(--docsway-shadow);
+}
+.docsway-hit { display: block; padding: 10px 14px; color: inherit; text-decoration: none; border-bottom: 1px solid var(--docsway-border); }
+.docsway-hit:last-child { border-bottom: 0; }
+.docsway-hit.is-active, .docsway-hit:hover { background: var(--docsway-active-bg); }
+.docsway-hit__section { display: block; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--docsway-muted); }
+.docsway-hit__title { display: block; font-weight: 600; }
+/* File type label on documents (PDF, DOCX…) in the menu and search results. */
+.docsway-file {
+	display: inline-block; margin-left: 6px; padding: 1px 5px; vertical-align: .12em;
+	font-size: 10px; font-weight: 600; line-height: 1.4; letter-spacing: .04em; font-style: normal; text-decoration: none;
+	color: var(--docsway-muted); border: 1px solid var(--docsway-border); border-radius: 4px;
+}
+.docsway-hit__excerpt {
+	display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+	font-size: 13px; color: var(--docsway-muted); margin-top: 2px;
+}
+.docsway-hit--heading { padding-left: 30px; position: relative; font-size: 14px; }
+.docsway-hit__heading { display: block; }
+.docsway-hit__snippet { display: block; font-size: 12px; color: var(--docsway-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.docsway-hit--answer { background: color-mix(in srgb, var(--docsway-accent) 6%, transparent); border-left: 3px solid var(--docsway-accent); }
+.docsway-hit__label { display: block; margin-bottom: 2px; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--docsway-accent); }
+.docsway-hit--answer .docsway-hit__excerpt { -webkit-line-clamp: 3; color: inherit; opacity: .85; }
+.docsway-search__fix { font-size: 13px; }
+
+/* Arriving from a search result: the searched words and the section are highlighted. */
+mark.docsway-found { background: color-mix(in srgb, #facc15 45%, transparent); color: inherit; padding: 0 1px; border-radius: 2px; }
+.docsway-target { animation: docsway-flash 2.4s ease-out; border-radius: 4px; }
+@keyframes docsway-flash { 0%, 30% { background: color-mix(in srgb, var(--docsway-accent) 18%, transparent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--docsway-accent) 18%, transparent); } 100% { background: transparent; box-shadow: 0 0 0 6px transparent; } }
+@media (prefers-reduced-motion: reduce) { .docsway-target { animation: none; outline: 2px solid var(--docsway-accent); outline-offset: 4px; } }
+.docsway-found-bar {
+	position: fixed; z-index: 99990; left: 50%; bottom: 20px; transform: translateX(-50%);
+	display: flex; align-items: center; gap: 12px; max-width: calc(100vw - 32px); padding: 8px 8px 8px 16px;
+	font: 14px/1.3 var(--docsway-font, system-ui, sans-serif); color: #fff; background: #1f2937; border-radius: 999px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+}
+.docsway-found-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.docsway-found-bar__clear { flex: none; padding: 5px 12px; font: inherit; font-weight: 600; color: #1f2937; background: #fff; border: 0; border-radius: 999px; cursor: pointer; }
+.docsway-hit--heading::before { content: "#"; position: absolute; left: 14px; color: var(--docsway-muted); }
+.docsway-hit mark, .docsway-results mark { background: color-mix(in srgb, var(--docsway-accent) 18%, transparent); color: inherit; padding: 0 1px; border-radius: 2px; }
+.docsway-search__status { padding: 12px 14px; color: var(--docsway-muted); font-size: 14px; }
+.docsway-search__all { display: block; padding: 10px 14px; font-weight: 600; color: var(--docsway-accent); text-decoration: none; background: var(--docsway-soft); }
+
+/* ── Quick searches and search home ───────────────────── */
+.docsway-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 18px 0 0; }
+body .docsway-chip {
+	display: inline-block; margin: 0; padding: 9px 16px; font: inherit; font-size: 14px; line-height: 1.3; text-decoration: none;
+	color: var(--docsway-text); background: var(--docsway-soft); border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius); cursor: pointer;
+	transition: border-color var(--docsway-speed), color var(--docsway-speed);
+}
+body .docsway-chip:hover, body .docsway-chip:focus-visible, body .docsway-chip.is-active { color: var(--docsway-accent); background: var(--docsway-soft); border-color: var(--docsway-accent); }
+.docsway-search__suggest { padding: 14px; }
+.docsway-search__suggest-title { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--docsway-muted); }
+.docsway-search__suggest .docsway-chips { justify-content: flex-start; margin-top: 10px; gap: 8px; }
+.docsway-search__suggest .docsway-chip { padding: 6px 12px; font-size: 13px; color: var(--docsway-surface-text); }
+
+.docsway-home { max-width: 980px; margin: 0 auto 2em; text-align: center; }
+.docsway-home .docsway-home__title { margin: 0 0 .35em; padding: 0; font-family: var(--docsway-font); font-size: 1.9em; line-height: 1.2; color: var(--docsway-text); }
+.docsway-home__intro { margin: 0 auto; max-width: 620px; color: var(--docsway-muted); }
+.docsway-home .docsway-search { max-width: 720px; margin: 22px auto 0; text-align: left; }
+.docsway-home .docsway-search .docsway-search__input { height: 54px; font-size: 1.05em; }
+.docsway-home .docsway-search__submit { height: 54px; padding: 0 22px; }
+/* Spacing sits on the wrapper: themes often zero the top margin of a first heading. */
+.docsway-home .docsway-home__topics { padding-top: 2.4em; }
+.docsway-home .docsway-home__subtitle { margin: 0 0 1em; padding: 0; font-family: var(--docsway-font); font-size: 1.3em; color: var(--docsway-text); }
+.docsway-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; text-align: left; }
+.docsway-card {
+	display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; align-content: start; padding: 18px 20px;
+	color: var(--docsway-text); background: var(--docsway-panel); border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius);
+	transition: border-color var(--docsway-speed), transform var(--docsway-speed);
+}
+body .docsway-home a.docsway-card { border-bottom: 1px solid var(--docsway-border); }
+body .docsway-home a.docsway-card:hover { border-color: var(--docsway-accent); transform: translateY(-2px); }
+.docsway-card__icon { grid-row: span 2; display: grid; place-items: center; width: 44px; height: 44px; color: var(--docsway-accent); background: color-mix(in srgb, var(--docsway-accent) 10%, transparent); border-radius: var(--docsway-radius); }
+.docsway-card__title { font-weight: 600; font-size: 1.05em; }
+.docsway-card__text { font-size: 14px; color: var(--docsway-muted); }
+.docsway-results__hint { margin-top: 1em; color: var(--docsway-muted); }
+
+/* Full results listed inside the search home. Topic cards step aside while searching. */
+.docsway-home.is-searching .docsway-home__topics { display: none; }
+.docsway-home .docsway-home__results { margin: 26px auto 0; max-width: 820px; padding: 0; text-align: left; background: none; border: 0; }
+.docsway-home__back { margin: 0 0 4px !important; font-size: 14px; }
+body .docsway-home .docsway-home__back a { color: var(--docsway-accent); }
+.docsway-home__list[aria-busy="true"] { opacity: .5; transition: opacity var(--docsway-speed); }
+
+/* ── Ctrl/Cmd + K modal ───────────────────────────────── */
+.docsway-modal { position: fixed; inset: 0; z-index: 100000; display: flex; justify-content: center; align-items: flex-start; padding: 10vh 16px 16px; background: var(--docsway-overlay); }
+.docsway-modal[hidden] { display: none; }
+.docsway-modal__box { width: 100%; max-width: 640px; background: var(--docsway-surface); color: var(--docsway-surface-text); border-radius: 12px; box-shadow: 0 24px 60px rgba(10, 15, 30, .35); overflow: hidden; }
+.docsway-modal .docsway-search { max-width: none; display: block; }
+.docsway-modal .docsway-search__field { border-bottom: 1px solid var(--docsway-border); }
+.docsway-modal .docsway-search__input { height: 56px; border: 0; border-radius: 0; font-size: 17px; box-shadow: none !important; padding-left: 42px !important; }
+.docsway-modal .docsway-search__icon { left: 16px; }
+.docsway-modal .docsway-search__panel { position: static; border: 0; border-radius: 0; box-shadow: none; max-height: 60vh; }
+.docsway-modal__foot { padding: 8px 14px; font-size: 12px; color: var(--docsway-muted); border-top: 1px solid var(--docsway-border); background: var(--docsway-soft); }
+body.docsway-modal-open { overflow: hidden; }
+
+/* ── Table of contents ────────────────────────────────── */
+.docsway-toc { margin: 0 0 1.6em; padding: 14px 16px; border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius); background: var(--docsway-soft); }
+.docsway-toc__title { margin: 0 0 6px !important; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--docsway-muted); }
+.docsway-toc__list a { display: block; padding: 3px 0 3px 10px; color: inherit; text-decoration: none; border-left: 2px solid transparent; font-size: 14px; }
+.docsway-toc__list a:hover { color: var(--docsway-accent); }
+.docsway-toc__list a.is-active { color: var(--docsway-accent); border-left-color: var(--docsway-accent); font-weight: 600; }
+.docsway-toc__item--l1 a { padding-left: 24px; }
+.docsway-toc__item--l2 a { padding-left: 38px; }
+
+/* ── Previous / next ──────────────────────────────────── */
+.docsway-pager { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 2.4em 0 1em; }
+.docsway-pager__link { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; color: inherit; text-decoration: none; border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius); transition: border-color var(--docsway-speed); }
+.docsway-pager__link:hover { border-color: var(--docsway-accent); }
+.docsway-pager__link--next { grid-column: 2; text-align: right; }
+.docsway-pager__dir { font-size: 12px; color: var(--docsway-muted); }
+.docsway-pager__link--prev .docsway-pager__dir::before { content: "← "; }
+.docsway-pager__link--next .docsway-pager__dir::after { content: " →"; }
+.docsway-pager__title { font-weight: 600; color: var(--docsway-accent); }
+@media (max-width: 560px) { .docsway-pager { grid-template-columns: 1fr; } .docsway-pager__link--next { grid-column: 1; } }
+
+/* ── Breadcrumbs ──────────────────────────────────────── */
+.docsway-crumbs { margin: 0 0 1em; font-size: 14px; color: var(--docsway-muted); }
+.docsway-crumbs ol { display: flex; flex-wrap: wrap; gap: 4px; }
+.docsway-crumbs li + li::before { content: "/"; margin-right: 4px; opacity: .6; }
+.docsway-crumbs a { color: inherit; text-decoration: none; }
+.docsway-crumbs a:hover { color: var(--docsway-accent); text-decoration: underline; }
+
+/* ── Results page ─────────────────────────────────────── */
+.docsway-results__count { margin: 1.2em 0 .6em; color: var(--docsway-muted); }
+.docsway-results .docsway-result { margin: 0; padding: 16px 0; border-bottom: 1px solid var(--docsway-border); }
+.docsway-results__list { margin: 0 !important; padding: 0 !important; list-style: none !important; }
+.docsway-result__section { margin: 0 0 2px !important; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--docsway-muted); }
+.docsway-results .docsway-result__title { margin: 0 0 4px !important; font-size: 1.15em; line-height: 1.3; padding: 0; }
+.docsway-result__title a { text-decoration: none; color: var(--docsway-accent); }
+.docsway-result__excerpt { margin: 0 !important; color: var(--docsway-muted); }
+.docsway-result__headings { margin: 10px 0 0 !important; padding: 2px 0 2px 14px !important; border-left: 2px solid var(--docsway-border); display: grid; gap: 8px; }
+.docsway-result__headings li { margin: 0; line-height: 1.4; }
+.docsway-result__headings a { font-size: 14px; font-weight: 600; text-decoration: none; color: inherit; }
+.docsway-result__headings a::before { content: "#"; margin-right: 6px; color: var(--docsway-muted); font-weight: 400; }
+.docsway-result__headings a:hover { color: var(--docsway-accent); }
+.docsway-result__snippet { display: block; margin-top: 1px; font-size: 13px; color: var(--docsway-muted); }
+.docsway-results__notice { margin: -.2em 0 .8em !important; padding: 8px 12px; font-size: 14px; background: var(--docsway-soft); border-radius: var(--docsway-radius); }
+.docsway-results .docsway-results__heading { margin: 1.4em 0 0 !important; padding: 0; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--docsway-muted); border: 0; }
+
+/* Topic filters above the results. */
+.docsway-topics { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+body .docsway-results a.docsway-topic {
+	display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; font-size: 13px; line-height: 1.3;
+	color: inherit; text-decoration: none; border: 1px solid var(--docsway-border); border-radius: 999px; background: var(--docsway-surface, transparent);
+	transition: border-color var(--docsway-speed, .15s), background var(--docsway-speed, .15s);
+}
+body .docsway-results a.docsway-topic:hover { border-color: var(--docsway-accent); }
+body .docsway-results a.docsway-topic.is-current { background: var(--docsway-accent); border-color: var(--docsway-accent); color: var(--docsway-on-accent); }
+.docsway-topic__count { font-size: 11px; font-weight: 600; padding: 0 6px; border-radius: 999px; background: var(--docsway-soft); color: var(--docsway-muted); }
+.docsway-topic.is-current .docsway-topic__count { background: rgba(255, 255, 255, .22); color: inherit; }
+
+/* Best answer card: the section that answers the search, plus other pages that cover it. */
+.docsway-answer {
+	margin: 0 0 6px; padding: 18px 20px; border: 1px solid color-mix(in srgb, var(--docsway-accent) 30%, var(--docsway-border));
+	border-radius: calc(var(--docsway-radius) + 4px);
+	background: linear-gradient(180deg, color-mix(in srgb, var(--docsway-accent) 7%, transparent), transparent 70%);
+}
+.docsway-results .docsway-answer__label { display: flex; align-items: center; gap: 6px; margin: 0 0 8px !important; font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--docsway-accent); }
+.docsway-results .docsway-answer__path { margin: 0 0 2px !important; font-size: 13px; color: var(--docsway-muted); }
+.docsway-results .docsway-answer__title { margin: 0 0 6px !important; padding: 0; font-size: 1.3em; line-height: 1.25; border: 0; }
+.docsway-answer__title a { color: inherit; text-decoration: none; }
+.docsway-answer__title a:hover { color: var(--docsway-accent); }
+.docsway-results .docsway-answer__text { margin: 0 0 10px !important; font-size: 1.02em; line-height: 1.6; }
+body .docsway-results a.docsway-answer__more { display: inline-flex; gap: 6px; font-weight: 600; font-size: 14px; color: var(--docsway-accent); text-decoration: none; }
+body .docsway-results a.docsway-answer__more:hover span { transform: translateX(3px); }
+.docsway-answer__more span { transition: transform var(--docsway-speed, .15s); }
+.docsway-answer__related { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--docsway-border); }
+.docsway-results .docsway-answer__sub { margin: 0 0 8px !important; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--docsway-muted); }
+.docsway-answer__related ul { display: grid; gap: 10px; }
+.docsway-answer__related li { margin: 0; line-height: 1.4; }
+.docsway-answer__related a { text-decoration: none; color: inherit; }
+.docsway-answer__page { font-weight: 600; color: var(--docsway-accent); }
+.docsway-answer__heading { color: inherit; }
+.docsway-answer__snippet { display: block; font-size: 13px; color: var(--docsway-muted); }
+.docsway-results__pages { margin-top: 1.4em; display: flex; flex-wrap: wrap; gap: 6px; }
+.docsway-results__pages .page-numbers { padding: 6px 10px; border: 1px solid var(--docsway-border); border-radius: 6px; text-decoration: none; }
+.docsway-results__pages .current { background: var(--docsway-accent); border-color: var(--docsway-accent); color: var(--docsway-on-accent); }
+
+/* ── Copy code ────────────────────────────────────────── */
+.docsway-code { position: relative; }
+.docsway-copy {
+	position: absolute; top: 8px; right: 8px; padding: 3px 8px; font: 600 12px/1.4 ui-sans-serif, system-ui, sans-serif;
+	color: #fff; background: var(--docsway-code-button); border: 0; border-radius: 4px; cursor: pointer; opacity: 0; transition: opacity var(--docsway-speed);
+}
+.docsway-code:hover .docsway-copy, .docsway-copy:focus-visible { opacity: 1; }
+
+/* ── Styles (Settings, Appearance) ─────────────────────── */
+/* The chosen style is a body class. Variables sit in :where() so a plain body { --docsway-…: … } in a theme still wins. */
+
+:where(.docsway-style-modern) {
+	--docsway-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--docsway-text: #1f2937;
+	--docsway-surface-text: #1f2937;
+	--docsway-muted: #6b7280;
+	--docsway-border: #e5e7eb;
+	--docsway-surface: #ffffff;
+	--docsway-soft: #f3f4f6;
+	--docsway-radius: 12px;
+	--docsway-shadow: 0 16px 40px rgba(17, 24, 39, .12);
+}
+.docsway-style-modern .docsway-menu__row { border-radius: 8px; }
+.docsway-style-modern .docsway-toc { background: var(--docsway-surface); box-shadow: 0 1px 2px rgba(17, 24, 39, .05), 0 6px 16px rgba(17, 24, 39, .05); }
+.docsway-style-modern .docsway-pager__link { box-shadow: 0 1px 2px rgba(17, 24, 39, .05); transition: border-color var(--docsway-speed), box-shadow var(--docsway-speed), transform var(--docsway-speed); }
+.docsway-style-modern .docsway-pager__link:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(17, 24, 39, .08); }
+.docsway-style-modern .docsway-card { background: var(--docsway-surface); box-shadow: 0 1px 2px rgba(17, 24, 39, .05), 0 6px 16px rgba(17, 24, 39, .05); }
+.docsway-style-modern .docsway-chip { border-radius: 999px; }
+.docsway-style-modern .docsway-answer { box-shadow: 0 6px 24px color-mix(in srgb, var(--docsway-accent) 12%, transparent); }
+
+:where(.docsway-style-minimal) {
+	--docsway-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--docsway-text: #222222;
+	--docsway-surface-text: #222222;
+	--docsway-muted: #737373;
+	--docsway-border: #ebebeb;
+	--docsway-surface: #ffffff;
+	--docsway-soft: #f7f7f7;
+	--docsway-active-bg: transparent;
+	--docsway-radius: 2px;
+	--docsway-font-size: 14px;
+	--docsway-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+}
+.docsway-style-minimal .docsway-menu__row, .docsway-style-minimal .docsway-menu__link, .docsway-style-minimal .docsway-menu__label { border-radius: 0; }
+.docsway-style-minimal .docsway-menu__row:hover { background: none; }
+.docsway-style-minimal .docsway-menu .is-current > .docsway-menu__row { box-shadow: inset 2px 0 0 var(--docsway-accent); }
+.docsway-style-minimal .docsway-menu__item--top > .docsway-menu__row .docsway-menu__link,
+.docsway-style-minimal .docsway-menu__item--top > .docsway-menu__row .docsway-menu__label { font-weight: 500; }
+.docsway-style-minimal .docsway-toc { padding: 0 0 0 16px; background: none; border: 0; border-left: 1px solid var(--docsway-border); border-radius: 0; }
+.docsway-style-minimal .docsway-search__input { border-width: 0 0 1px; border-radius: 0; }
+.docsway-style-minimal .docsway-search__input:focus { box-shadow: 0 1px 0 var(--docsway-accent); }
+.docsway-style-minimal .docsway-hit.is-active, .docsway-style-minimal .docsway-hit:hover { background: var(--docsway-soft); }
+.docsway-style-minimal .docsway-pager__link { padding: 14px 0; border-width: 1px 0 0; border-radius: 0; }
+.docsway-style-minimal .docsway-pager__title { color: inherit; }
+.docsway-style-minimal .docsway-pager__link:hover .docsway-pager__title { color: var(--docsway-accent); }
+.docsway-style-minimal .docsway-card { padding: 16px 0; border-width: 1px 0 0; border-radius: 0; }
+.docsway-style-minimal .docsway-chip { background: none; }
+.docsway-style-minimal .docsway-answer { background: none; border-radius: 0; border-width: 0 0 0 3px; border-color: var(--docsway-accent); padding: 4px 0 4px 18px; }
+
+:where(.docsway-style-classic) {
+	--docsway-font: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+	--docsway-text: #2b2620;
+	--docsway-surface-text: #2b2620;
+	--docsway-muted: #6f6457;
+	--docsway-border: #e3dccf;
+	--docsway-surface: #fffdf9;
+	--docsway-soft: #f7f2e9;
+	--docsway-radius: 4px;
+	--docsway-font-size: 16px;
+	--docsway-shadow: 0 12px 32px rgba(60, 40, 20, .14);
+}
+.docsway-style-classic :is(.docsway-menu__title, .docsway-toc__title, .docsway-hit__section, .docsway-result__section) { font-variant: small-caps; text-transform: lowercase; letter-spacing: .05em; font-size: 15px; }
+.docsway-style-classic .docsway-toc { border-left: 3px solid var(--docsway-accent); }
+.docsway-style-classic .docsway-pager__dir { font-style: italic; }
+.docsway-style-classic .docsway-crumbs li + li::before { content: "›"; }
+
+:where(.docsway-style-light) {
+	--docsway-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--docsway-text: #1d2333;
+	--docsway-surface-text: #1d2333;
+	--docsway-muted: #5f6b80;
+	--docsway-border: #e2e6ee;
+	--docsway-surface: #ffffff;
+	--docsway-soft: #f4f6fa;
+	--docsway-panel: #ffffff;
+	--docsway-radius: 10px;
+}
+
+:where(.docsway-style-dark) {
+	--docsway-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--docsway-text: #e6e9f0;
+	--docsway-surface-text: #e6e9f0;
+	--docsway-muted: #9aa4b8;
+	--docsway-border: #2f3747;
+	--docsway-surface: #1a202c;
+	--docsway-soft: #232a38;
+	--docsway-panel: #141922;
+	--docsway-active-bg: color-mix(in srgb, var(--docsway-accent) 22%, transparent);
+	--docsway-radius: 10px;
+	--docsway-shadow: 0 16px 40px rgba(0, 0, 0, .5);
+	--docsway-overlay: rgba(0, 0, 0, .6);
+	--docsway-code-button: rgba(255, 255, 255, .16);
+}
+.docsway-style-dark .docsway-hit mark, .docsway-style-dark .docsway-results mark { background: color-mix(in srgb, var(--docsway-accent) 35%, transparent); }
+
+:where(.docsway-style-modern)  { --docsway-page-bg: #ffffff; --docsway-page-text: #374151; --docsway-heading: #111827; --docsway-code-bg: #0f172a; --docsway-code-text: #e2e8f0; }
+:where(.docsway-style-minimal) { --docsway-page-bg: #ffffff; --docsway-page-text: #333333; --docsway-heading: #111111; --docsway-code-bg: #f7f7f7; --docsway-code-text: #222222; }
+:where(.docsway-style-classic) { --docsway-page-bg: #fffdf9; --docsway-page-text: #3b342b; --docsway-heading: #2b2620; --docsway-code-bg: #f4eee3; --docsway-code-text: #2b2620; }
+:where(.docsway-style-light)   { --docsway-page-bg: #f8fafc; --docsway-page-text: #334155; --docsway-heading: #0f172a; --docsway-code-bg: #0f172a; --docsway-code-text: #e2e8f0; }
+:where(.docsway-style-dark)    { --docsway-page-bg: #0d1117; --docsway-page-text: #c9d1d9; --docsway-heading: #f0f6fc; --docsway-code-bg: #161b22; --docsway-code-text: #e6edf3; }
+
+/* Auto light and dark: light by default, dark when the reader's device is dark or they chose dark.
+   The accent is lightened in dark mode so links stay readable. */
+:where(.docsway-style-auto) {
+	--docsway-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--docsway-text: #1d2333; --docsway-surface-text: #1d2333; --docsway-muted: #5f6b80; --docsway-border: #e2e6ee;
+	--docsway-surface: #ffffff; --docsway-soft: #f4f6fa; --docsway-panel: #ffffff; --docsway-radius: 10px;
+	--docsway-page-bg: #f8fafc; --docsway-page-text: #334155; --docsway-heading: #0f172a; --docsway-code-bg: #0f172a; --docsway-code-text: #e2e8f0;
+}
+:where(html.docsway-scheme-dark) :where(.docsway-style-auto) {
+	--docsway-text: #e6e9f0; --docsway-surface-text: #e6e9f0; --docsway-muted: #9aa4b8; --docsway-border: #2f3747;
+	--docsway-surface: #1a202c; --docsway-soft: #232a38; --docsway-panel: #141922;
+	--docsway-accent: color-mix(in srgb, var(--docsway-accent-base) 62%, #fff); --docsway-on-accent: #0b1220;
+	--docsway-active-bg: color-mix(in srgb, var(--docsway-accent) 22%, transparent);
+	--docsway-shadow: 0 16px 40px rgba(0, 0, 0, .5); --docsway-overlay: rgba(0, 0, 0, .6); --docsway-code-button: rgba(255, 255, 255, .16);
+	--docsway-page-bg: #0d1117; --docsway-page-text: #c9d1d9; --docsway-heading: #f0f6fc; --docsway-code-bg: #161b22; --docsway-code-text: #e6edf3;
+	color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+	:where(html:not(.docsway-scheme-light)) :where(.docsway-style-auto) {
+		--docsway-text: #e6e9f0; --docsway-surface-text: #e6e9f0; --docsway-muted: #9aa4b8; --docsway-border: #2f3747;
+		--docsway-surface: #1a202c; --docsway-soft: #232a38; --docsway-panel: #141922;
+		--docsway-accent: color-mix(in srgb, var(--docsway-accent-base) 62%, #fff); --docsway-on-accent: #0b1220;
+		--docsway-active-bg: color-mix(in srgb, var(--docsway-accent) 22%, transparent);
+		--docsway-shadow: 0 16px 40px rgba(0, 0, 0, .5); --docsway-overlay: rgba(0, 0, 0, .6); --docsway-code-button: rgba(255, 255, 255, .16);
+		--docsway-page-bg: #0d1117; --docsway-page-text: #c9d1d9; --docsway-heading: #f0f6fc; --docsway-code-bg: #161b22; --docsway-code-text: #e6edf3;
+		color-scheme: dark;
+	}
+}
+
+/* Light and Dark bring their own panels, so they read well on any page background. */
+:is(.docsway-style-light, .docsway-style-dark, .docsway-style-auto) .docsway-menu,
+:is(.docsway-style-light, .docsway-style-dark, .docsway-style-auto) .docsway-results {
+	padding: 12px; border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius);
+}
+:is(.docsway-style-light, .docsway-style-dark, .docsway-style-auto) .docsway-results { padding: 4px 20px 16px; background: var(--docsway-panel); }
+:is(.docsway-style-light, .docsway-style-dark, .docsway-style-auto) .docsway-home .docsway-home__results { padding: 0; border: 0; background: none; } /* Already inside the home panel. */
+:is(.docsway-style-light, .docsway-style-dark, .docsway-style-auto) .docsway-home { max-width: 1040px; padding: 36px 28px; background: var(--docsway-panel); border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius); }
+:is(.docsway-style-light, .docsway-style-dark, .docsway-style-auto) .docsway-card { background: var(--docsway-surface); }
+:is(.docsway-style-light, .docsway-style-dark, .docsway-style-auto) .docsway-pager__link { background: var(--docsway-panel); }
+:is(.docsway-style-light, .docsway-style-dark, .docsway-style-auto) .docsway-crumbs { display: inline-block; padding: 4px 10px; background: var(--docsway-panel); border-radius: var(--docsway-radius); }
+
+/* ── Docs layout (Settings, Appearance, Layout) ────────── */
+/* Spans the window between the theme's header and footer, whatever container the theme puts it in.
+   --docsway-sbw (scrollbar width) and --docsway-sticky-top (fixed headers) are measured by frontend.js. */
+/* Themes indent .entry-content on small screens (Twenty Sixteen does); the layout has its own spacing. */
+.docsway-layout .docsway-layout__content.entry-content { margin-left: 0; margin-right: 0; }
+.docsway-layout {
+	--docsway-sidebar-width: 272px;
+	--docsway-toc-width: 220px;
+	--docsway-gap: 48px;
+	position: relative; box-sizing: border-box; clear: both;
+	width: calc(100vw - var(--docsway-sbw, 0px));
+	margin-left: calc(50% - (100vw - var(--docsway-sbw, 0px)) / 2);
+	padding: 40px 0 64px;
+	color: var(--docsway-page-text); background: var(--docsway-page-bg); font-family: var(--docsway-font);
+}
+.docsway-layout *, .docsway-layout *::before, .docsway-layout *::after { box-sizing: border-box; }
+.docsway-layout__inner {
+	display: grid; grid-template-columns: var(--docsway-sidebar-width) minmax(0, 1fr); grid-template-areas: "side main";
+	gap: var(--docsway-gap); max-width: var(--docsway-max-width, 1280px); margin: 0 auto; padding: 0 24px;
+}
+.docsway-layout--full .docsway-layout__inner { max-width: none; padding: 0 clamp(16px, 3vw, 48px); }
+.docsway-layout--sidebar-right .docsway-layout__inner { grid-template-columns: minmax(0, 1fr) var(--docsway-sidebar-width); grid-template-areas: "main side"; }
+/* The contents column sits on the side opposite the menu. */
+.docsway-layout--with-toc .docsway-layout__inner { grid-template-columns: var(--docsway-sidebar-width) minmax(0, 1fr) var(--docsway-toc-width); grid-template-areas: "side main toc"; }
+.docsway-layout--with-toc.docsway-layout--sidebar-right .docsway-layout__inner { grid-template-columns: var(--docsway-toc-width) minmax(0, 1fr) var(--docsway-sidebar-width); grid-template-areas: "toc main side"; }
+.docsway-layout__sidebar { grid-area: side; min-width: 0; }
+.docsway-layout__main { grid-area: main; min-width: 0; }
+.docsway-layout__toc { grid-area: toc; min-width: 0; }
+/* Sticky while it fits the window. Taller than the window, it scrolls with the page instead of
+   getting a scrollbar of its own (frontend.js adds .is-tall). */
+.docsway-layout__sticky { position: sticky; top: var(--docsway-sticky-top, 24px); }
+.docsway-layout__sticky.is-tall { position: static; }
+.docsway-layout__sidebar .docsway-search { margin-bottom: 16px; }
+.docsway-layout__toc .docsway-toc { margin: 0; }
+.docsway-layout__toc-inline { display: none; }
+.docsway-layout .docsway-layout__title {
+	margin: 0 0 .6em; padding: 0; font-family: var(--docsway-font); font-size: 2.2em; line-height: 1.2; color: var(--docsway-heading);
+}
+.docsway-layout--home .docsway-home { margin-top: 0; }
+.docsway-layout__edit { margin: 2em 0 0; font-size: 13px; }
+body .docsway-layout__edit a { color: var(--docsway-muted); }
+.docsway-layout__content :is(h2, h3, h4) { scroll-margin-top: calc(var(--docsway-sticky-top, 24px) + 12px); }
+/* Page builders paint sections white by default, which would cover the style's page colour.
+   Backgrounds set on purpose in the builder still win (Divi marks those !important). */
+.docsway-layout .docsway-layout__content :is(.et_pb_section, .et_pb_row, .et_pb_column, .et-l, .et_builder_inner_content) { background-color: transparent; }
+.docsway-layout .docsway-layout__content .et_pb_section { padding-top: 0; padding-bottom: 0; }
+.docsway-layout .docsway-layout__content .et_pb_row { width: 100%; max-width: none; }
+.docsway-layout .docsway-crumbs { margin-bottom: 1.4em; }
+
+/* Content typography for the Docsway styles. Follow my theme leaves it to the theme.
+   Docsway's own parts placed inside the content (contents box, search home, results) keep their own look. */
+body:not(.docsway-style-theme) .docsway-layout__content { font-size: 16px; line-height: 1.75; color: var(--docsway-page-text); }
+body:not(.docsway-style-theme) .docsway-layout__content :is(h1, h2, h3, h4, h5, h6):not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { color: var(--docsway-heading); font-family: var(--docsway-font); font-weight: 650; line-height: 1.3; padding: 0; }
+body:not(.docsway-style-theme) .docsway-layout__content h2:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { font-size: 1.6em; margin: 1.8em 0 .6em; }
+body:not(.docsway-style-theme) .docsway-layout__content h3:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { font-size: 1.25em; margin: 1.5em 0 .5em; }
+body:not(.docsway-style-theme) .docsway-layout__content h4:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { font-size: 1.05em; margin: 1.3em 0 .4em; }
+body:not(.docsway-style-theme) .docsway-layout__content :is(p, ul, ol, table, blockquote):not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { margin: 0 0 1.1em; padding-bottom: 0; color: inherit; }
+body:not(.docsway-style-theme) .docsway-layout__content :is(ul, ol):not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { padding-left: 1.4em; }
+body:not(.docsway-style-theme) .docsway-layout__content li:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { margin: .3em 0; }
+body:not(.docsway-style-theme) .docsway-layout__content a:not(.docsway-chip):not(.docsway-card):not(.page-numbers):not(.docsway-anchor):not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { color: var(--docsway-accent); text-decoration: underline; text-underline-offset: 2px; }
+body:not(.docsway-style-theme) .docsway-layout__content :not(pre) > code:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; padding: .15em .35em; background: var(--docsway-soft); border-radius: 4px; }
+body:not(.docsway-style-theme) .docsway-layout__content pre:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) {
+	margin: 0 0 1.2em; padding: 16px 18px; overflow-x: auto; font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	color: var(--docsway-code-text); background: var(--docsway-code-bg); border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius);
+}
+body:not(.docsway-style-theme) .docsway-layout__content pre code:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { padding: 0; background: none; color: inherit; font: inherit; }
+body:not(.docsway-style-theme) .docsway-layout__content blockquote:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { padding: 4px 0 4px 16px; border-left: 3px solid var(--docsway-accent); color: var(--docsway-muted); }
+body:not(.docsway-style-theme) .docsway-layout__content table:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { width: 100%; border-collapse: collapse; font-size: .95em; }
+body:not(.docsway-style-theme) .docsway-layout__content :is(th, td):not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { padding: 8px 10px; border: 1px solid var(--docsway-border); text-align: left; }
+body:not(.docsway-style-theme) .docsway-layout__content img:not(:where(.docsway-toc, .docsway-home, .docsway-results, .docsway-pager, .docsway-crumbs, .docsway-feedback, .docsway-meta, .docsway-menu, .docsway-search) *) { max-width: 100%; height: auto; border-radius: var(--docsway-radius); }
+
+/* Narrower screens: the contents column moves to the top of the page, then the sidebar goes above the page. */
+@media (max-width: 1180px) {
+	.docsway-layout--with-toc .docsway-layout__inner { grid-template-columns: var(--docsway-sidebar-width) minmax(0, 1fr); grid-template-areas: "side main"; }
+	.docsway-layout--with-toc.docsway-layout--sidebar-right .docsway-layout__inner { grid-template-columns: minmax(0, 1fr) var(--docsway-sidebar-width); grid-template-areas: "main side"; }
+	.docsway-layout__toc { display: none; }
+	.docsway-layout__toc-inline { display: block; }
+}
+@media (max-width: 900px) {
+	.docsway-layout { padding: 24px 0 48px; }
+	.docsway-layout .docsway-layout__inner { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; gap: 24px; padding: 0 16px; }
+	.docsway-layout__sticky { position: static; }
+	.docsway-layout .docsway-layout__title { font-size: 1.8em; }
+}
+
+/* ── Standalone docs bar and footer ────────────────── */
+body.docsway-standalone { margin: 0; background: var(--docsway-surface, #fff); }
+/* The theme's header and footer are gone, so are its decorations: Twenty Sixteen's page frame, for example. */
+body.docsway-standalone::before, body.docsway-standalone::after { content: none !important; display: none !important; }
+.docsway-topbar, .docsway-docs-footer { box-sizing: border-box; font-family: var(--docsway-font); color: var(--docsway-surface-text); background: var(--docsway-surface); }
+.docsway-topbar *, .docsway-docs-footer * { box-sizing: border-box; }
+.docsway-topbar { position: sticky; top: 0; z-index: 9990; border-bottom: 1px solid var(--docsway-border); }
+body.admin-bar .docsway-topbar { top: 32px; }
+@media (max-width: 782px) { body.admin-bar .docsway-topbar { top: 46px; } }
+@media (max-width: 600px) { body.admin-bar .docsway-topbar { top: 0; } }
+.docsway-topbar__inner { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; max-width: var(--docsway-max-width, 1280px); min-height: 62px; margin: 0 auto; padding: 10px 24px; }
+.docsway-topbar--full .docsway-topbar__inner { max-width: none; padding-left: clamp(16px, 3vw, 48px); padding-right: clamp(16px, 3vw, 48px); }
+body .docsway-topbar__brand { display: flex; align-items: center; gap: 10px; color: inherit; font-size: 18px; font-weight: 700; text-decoration: none; border: 0; box-shadow: none; }
+.docsway-topbar__logo { display: block; width: auto; max-height: 36px; }
+.docsway-topbar__label { padding: 2px 9px; font-size: 12px; font-weight: 600; letter-spacing: .03em; color: var(--docsway-accent); background: color-mix(in srgb, var(--docsway-accent) 12%, transparent); border-radius: 999px; }
+.docsway-topbar__search { flex: 1 1 240px; max-width: 520px; margin: 0 auto; }
+.docsway-topbar .docsway-search { max-width: none; }
+.docsway-topbar .docsway-search .docsway-search__input { height: 38px; }
+.docsway-topbar__links { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+body .docsway-topbar__back { font-size: 14px; color: var(--docsway-muted); text-decoration: none; white-space: nowrap; border: 0; box-shadow: none; }
+body .docsway-topbar__back:hover { color: var(--docsway-accent); }
+.docsway-docs-footer { border-top: 1px solid var(--docsway-border); font-size: 14px; color: var(--docsway-muted); }
+.docsway-docs-footer .docsway-topbar__inner { justify-content: space-between; min-height: 0; padding-top: 22px; padding-bottom: 22px; }
+body .docsway-docs-footer a { color: inherit; text-decoration: none; }
+body .docsway-docs-footer a:hover { color: var(--docsway-accent); }
+@media (max-width: 700px) {
+	.docsway-topbar__search { order: 3; flex-basis: 100%; max-width: none; }
+	.docsway-topbar__back { display: none; }
+}
+
+/* ── Light / dark switch ─────────────────────────────── */
+body .docsway-scheme {
+	flex: none; display: inline-grid; place-items: center; width: 38px; height: 38px; margin: 0; padding: 0;
+	color: inherit; background: transparent; border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius); cursor: pointer; box-shadow: none;
+}
+body .docsway-scheme:hover, body .docsway-scheme:focus-visible { color: var(--docsway-accent); background: transparent; border-color: var(--docsway-accent); }
+.docsway-scheme__sun, .docsway-scheme[aria-pressed="true"] .docsway-scheme__moon { display: none; }
+.docsway-scheme[aria-pressed="true"] .docsway-scheme__sun { display: block; }
+.docsway-layout__tools { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
+.docsway-layout__tools .docsway-search { flex: 1; min-width: 0; margin: 0; }
+.docsway-layout__sidebar .docsway-layout__tools .docsway-search { margin-bottom: 0; }
+
+/* ── Page extras: meta line, heading links, feedback ─── */
+.docsway-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: -.3em 0 1.6em; font-size: 14px; color: var(--docsway-muted); }
+.docsway-meta__sep { opacity: .6; }
+body .docsway-anchor { margin-left: .35em; font-size: .75em; font-weight: 400; color: var(--docsway-muted); text-decoration: none; border: 0; box-shadow: none; opacity: 0; transition: opacity var(--docsway-speed); }
+:is(h2, h3, h4):hover > .docsway-anchor, .docsway-anchor:focus-visible, .docsway-anchor[data-copied] { opacity: 1; }
+body .docsway-anchor:hover { color: var(--docsway-accent); }
+.docsway-anchor[data-copied]::after { content: attr(data-copied); margin-left: .5em; padding: 2px 6px; font-size: 12px; color: var(--docsway-on-accent); background: var(--docsway-accent); border-radius: 4px; vertical-align: middle; }
+@media (hover: none) { body .docsway-anchor { opacity: .45; } }
+
+.docsway-feedback {
+	display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 2.4em 0 0; padding: 16px 20px;
+	color: var(--docsway-text); background: var(--docsway-soft); border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius); font-family: var(--docsway-font);
+}
+.docsway-feedback .docsway-feedback__question, .docsway-feedback .docsway-feedback__thanks { margin: 0; padding: 0; font-weight: 600; }
+.docsway-feedback__thanks { color: var(--docsway-muted); font-weight: 500; }
+.docsway-feedback__buttons { display: flex; gap: 8px; }
+.docsway-feedback__buttons[hidden], .docsway-feedback__thanks[hidden] { display: none; }
+.docsway-feedback .docsway-feedback__button {
+	margin: 0; padding: 6px 18px; font: inherit; font-size: 14px; line-height: 1.4; text-transform: none; letter-spacing: normal;
+	color: var(--docsway-surface-text); background: var(--docsway-surface); border: 1px solid var(--docsway-border); border-radius: var(--docsway-radius); cursor: pointer; box-shadow: none;
+}
+.docsway-feedback .docsway-feedback__button:hover, .docsway-feedback .docsway-feedback__button:focus-visible { color: var(--docsway-accent); background: var(--docsway-surface); border-color: var(--docsway-accent); }
+.docsway-feedback .docsway-feedback__button:disabled { opacity: .6; cursor: default; }
+
+@media (prefers-reduced-motion: reduce) {
+	.docsway-menu__toggle svg, .docsway-menu__list.is-animating, .docsway-pager__link, .docsway-copy { transition: none; }
+	.docsway-style-modern .docsway-pager__link:hover, body .docsway-home a.docsway-card:hover { transform: none; }
+	.docsway-chip, .docsway-card { transition: none; }
+}

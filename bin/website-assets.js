@@ -1,4 +1,4 @@
-// Builds website images for the Waypost product page in marketing/website/:
+// Builds website images for the Docsway product page in marketing/website/:
 // mockups (screenshots in browser and phone frames on brand backgrounds),
 // a social sharing image, and plain screenshots resized for the web.
 //
@@ -82,17 +82,17 @@ const mockups = [
 	{
 		name: 'documents-pro',
 		w: 1600, h: 1100, bg: 'bg-soft',
-		body: browser( shot( '06-documents' ), 'yoursite.com/docs/?dq=pebblecast', 1360 ) + '<div class="badge" style="top:60px;right:90px;">Waypost Pro</div>',
+		body: browser( shot( '06-documents' ), 'yoursite.com/docs/?dq=pebblecast', 1360 ) + '<div class="badge" style="top:60px;right:90px;">Docsway Pro</div>',
 	},
 	{
 		name: 'setup-wizard',
 		w: 1600, h: 1100, bg: 'bg-soft',
-		body: browser( shot( '10-setup-wizard' ), 'yoursite.com/wp-admin/admin.php?page=waypost-setup', 1360 ),
+		body: browser( shot( '10-setup-wizard' ), 'yoursite.com/wp-admin/admin.php?page=docsway-setup', 1360 ),
 	},
 	{
 		name: 'search-insights',
 		w: 1600, h: 1100, bg: 'bg-soft',
-		body: browser( shot( '13-search-insights' ), 'yoursite.com/wp-admin/admin.php?page=waypost-insights', 1360 ),
+		body: browser( shot( '13-search-insights' ), 'yoursite.com/wp-admin/admin.php?page=docsway-insights', 1360 ),
 	},
 	{
 		name: 'mobile',
@@ -104,7 +104,7 @@ const mockups = [
 		w: 1200, h: 630, bg: 'bg-indigo',
 		body: `<div class="grid"></div>
 			<div style="position:absolute;left:64px;top:150px;width:490px;color:#fff;">
-				<div style="display:flex;align-items:center;gap:14px;"><img src="${ icon }" style="width:58px;height:58px;border-radius:14px;"><span style="font-size:46px;font-weight:800;letter-spacing:-1px;">Waypost</span></div>
+				<div style="display:flex;align-items:center;gap:14px;"><img src="${ icon }" style="width:58px;height:58px;border-radius:14px;"><span style="font-size:46px;font-weight:800;letter-spacing:-1px;"><span style="font-weight:500;opacity:.75;">Aneris</span> Docsway</span></div>
 				<p style="margin-top:22px;font-size:30px;line-height:1.25;font-weight:600;">Your WordPress pages, now a docs site that answers questions.</p>
 				<p style="margin-top:18px;font-size:18px;color:#c7d2fe;">Sidebar menu, smart search and contents. No migration.</p>
 			</div>
@@ -114,7 +114,7 @@ const mockups = [
 
 ( async () => {
 	fs.mkdirSync( path.join( OUT, 'screenshots' ), { recursive: true } );
-	const tmp = fs.mkdtempSync( path.join( os.tmpdir(), 'waypost-web-' ) );
+	const tmp = fs.mkdtempSync( path.join( os.tmpdir(), 'docsway-web-' ) );
 	const browserApp = await chromium.launch();
 	try {
 		for ( const m of mockups ) {

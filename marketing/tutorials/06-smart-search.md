@@ -1,13 +1,13 @@
 # Smart search
 
-Waypost search only looks at your docs, never blog posts or shop pages, and it is built to answer questions rather than just list pages. There is nothing to set up: it works as soon as pages are in sections.
+Docsway search only looks at your docs, never blog posts or shop pages, and it is built to answer questions rather than just list pages. There is nothing to set up: it works as soon as pages are in sections.
 
 ## What readers get
 
 - **Best answer.** The section that answers the search best is shown on top: where it sits, the heading, a short summary and a **Read this section** link straight to it.
 - **Also covered in.** Up to three other pages that cover the same thing, each linking to its best section.
 - **Matching sections.** Under every result, up to three headings that hold the search, each with a line of text.
-- **Topics (Waypost Pro).** Buttons above the results narrow them to one of your top-level sections, with a count on each.
+- **Topics (Docsway Pro).** Buttons above the results narrow them to one of your top-level sections, with a count on each.
 - **Instant results** under the search box as readers type, with the best answer first.
 - **Ctrl+K or Cmd+K** (or the / key) opens a search window on any doc page.
 - **Highlights on arrival.** The page a reader opens highlights the words they searched for and briefly lights up the matching section. A **Clear** button removes the highlights.
@@ -20,16 +20,16 @@ Waypost search only looks at your docs, never blog posts or shop pages, and it i
 
 - **Questions:** words like "how", "do", "I" and "the" are ignored, so "How do I share an album?" searches for share and album.
 - **Word forms:** "installing", "installed" and "installation" all find "install".
-- **Typing mistakes:** when nothing matches, Waypost tries the closest words from your page titles and headings, so "dokcer" finds "docker". A note above the results says what it searched for instead.
+- **Typing mistakes:** when nothing matches, Docsway tries the closest words from your page titles and headings, so "dokcer" finds "docker". A note above the results says what it searched for instead.
 - **Some of the words:** if no page has every word, readers see pages with some of them, with a note, rather than an empty page.
 
-Waypost reads every doc page section by section and keeps a plain-text copy, updated each time a page is saved. Page builder content, including Divi 5, is read as text, so layout settings never turn up in results.
+Docsway reads every doc page section by section and keeps a plain-text copy, updated each time a page is saved. Page builder content, including Divi 5, is read as text, so layout settings never turn up in results.
 
-## Add synonyms (Waypost Pro)
+## Add synonyms (Docsway Pro)
 
-Readers do not always use your words. With Waypost Pro, teach search theirs:
+Readers do not always use your words. With Docsway Pro, teach search theirs:
 
-1. Go to **Waypost, Settings, Search**.
+1. Go to **Docsway, Settings, Search**.
 2. In **Synonyms**, type one group per line, with words separated by commas:
 
    ```
@@ -43,7 +43,7 @@ A search for any word in a group now finds pages with any of the others. The bes
 
 ## Settings
 
-In **Waypost, Settings, Search**:
+In **Docsway, Settings, Search**:
 
 | Setting | What it does |
 |---|---|
@@ -58,4 +58,4 @@ In **Waypost, Settings, Search**:
 
 ## Search boxes elsewhere on your site
 
-Add the **Docs Search** block, the **Waypost Docs Search** Divi module or `[waypost_search]` anywhere, for example in your site header. Results open on your docs home or results page.
+Add the **Docs Search** block, the **Docsway Docs Search** Divi module or `[docsway_search]` anywhere, for example in your site header. Results open on your docs home or results page.

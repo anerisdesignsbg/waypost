@@ -1,28 +1,28 @@
 # Layout and styles
 
-All of these live in **Waypost, Settings, Appearance**. The setup wizard asks the same questions.
+All of these live in **Docsway, Settings, Appearance**. The setup wizard asks the same questions.
 
 ## Layout
 
-- **Waypost docs layout** (recommended). Doc pages, your docs home and search results get a complete docs layout with a sidebar menu, contents column, breadcrumbs and previous and next links. Your theme's header and footer stay around it. Works with classic themes, block themes and Divi.
+- **Docsway docs layout** (recommended). Doc pages, your docs home and search results get a complete docs layout with a sidebar menu, contents column, breadcrumbs and previous and next links. Your theme's header and footer stay around it. Works with classic themes, block themes and Divi.
 - **My theme's layout.** Pages keep your theme's template. You place the menu, search and contents yourself with blocks, Divi modules or shortcodes. See [Blocks and shortcodes](10-blocks-and-shortcodes.md).
 
 With the docs layout you can also choose:
 
 | Option | Choices |
 |---|---|
-| Header and footer | **Your theme's**, or the **Waypost docs bar**: a header with your logo or site name, docs search, a light and dark switch (with the Auto style) and a link back to your site |
+| Header and footer | **Your theme's**, or the **Docsway docs bar**: a header with your logo or site name, docs search, a light and dark switch (with the Auto style) and a link back to your site |
 | Sidebar | Left or right |
 | Width | Within a page width (set the **Page width** in pixels) or full width |
 | On this page contents | Its own column opposite the menu, or at the top of the page. On smaller screens it always moves to the top |
 
 The preview beside the options shows the result.
 
-![A doc page in the Waypost docs layout](../screenshots/01-docs-page.png)
+![A doc page in the Docsway docs layout](../screenshots/01-docs-page.png)
 
 ## Styles
 
-A style sets fonts, colours, corners and spacing for everything Waypost shows: the menu, search, results, contents and the docs layout.
+A style sets fonts, colours, corners and spacing for everything Docsway shows: the menu, search, results, contents and the docs layout.
 
 | Style | Looks like |
 |---|---|
@@ -34,14 +34,14 @@ A style sets fonts, colours, corners and spacing for everything Waypost shows: t
 | Dark | Light text on dark panels, for sites with a dark background |
 | Auto light and dark | Light or dark to match each reader's device, with a switch they can use |
 
-Picking a style also picks a matching **Accent colour**. Change it to your brand colour afterwards; Waypost chooses readable text on top of it automatically.
+Picking a style also picks a matching **Accent colour**. Change it to your brand colour afterwards; Docsway chooses readable text on top of it automatically.
 
 ![Choosing a style in Settings](../screenshots/12-appearance.png)
 ![The Dark style](../screenshots/07-dark-style.png)
 
 ## Page extras
 
-In **Waypost, Settings, Navigation, Add to every doc page**:
+In **Docsway, Settings, Navigation, Add to every doc page**:
 
 - Contents list (On this page) on longer pages
 - Previous and next links at the bottom

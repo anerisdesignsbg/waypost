@@ -1,7 +1,7 @@
-// Browser tests for Waypost. Run `npm run start` and `npm run seed` first.
+// Browser tests for Docsway. Run `npm run start` and `npm run seed` first.
 const { defineConfig, devices } = require( '@playwright/test' );
 
-const baseURL = process.env.WAYPOST_URL || 'http://localhost:8888';
+const baseURL = process.env.DOCSWAY_URL || 'http://localhost:8888';
 
 module.exports = defineConfig( {
 	testDir: './tests/e2e',

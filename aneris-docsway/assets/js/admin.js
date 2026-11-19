@@ -1,0 +1,279 @@
+/* Docsway admin screens and setup wizard. */
+(function ($) {
+	'use strict';
+
+	var cfg = window.docswayAdmin || {};
+	var t = cfg.i18n || {};
+
+	function post(action, data) {
+		return $.post(cfg.ajaxUrl, $.extend({ action: 'docsway_' + action, nonce: cfg.nonce }, data || {}));
+	}
+
+	function status($el, msg, isError) {
+		$el.text(msg || '').toggleClass('is-error', !!isError);
+		if (msg && !isError) setTimeout(function () { $el.text(''); }, 3000);
+	}
+
+	function errorText(res) {
+		return (res && res.data && typeof res.data === 'string') ? res.data : t.failed;
+	}
+
+	/* ── Copy buttons ─────────────────────────────────── */
+	$(document).on('click', '.dsw-copy__btn', function () {
+		var $b = $(this), text = $b.data('copy'), label = $b.text();
+		var done = function () { $b.text(t.copied || 'Copied'); setTimeout(function () { $b.text(label); }, 1500); };
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText(text).then(done);
+		} else {
+			var $tmp = $('<textarea>').val(text).appendTo('body').select();
+			document.execCommand('copy');
+			$tmp.remove();
+			done();
+		}
+	});
+
+	/* ── Menu order ───────────────────────────────────── */
+	var dirty = false;
+	if ($('#docsway-order').length) {
+		$('.dsw-sortable').sortable({
+			handle: '.dsw-node__handle',
+			items: '> .dsw-node',
+			axis: 'y',
+			tolerance: 'pointer',
+			placeholder: 'dsw-node dsw-node--placeholder',
+			forcePlaceholderSize: true,
+			update: function () { dirty = true; }
+		});
+		window.addEventListener('beforeunload', function (e) {
+			if (dirty) { e.preventDefault(); e.returnValue = t.unsaved; }
+		});
+	}
+
+	$('#docsway-save-order').on('click', function () {
+		var $b = $(this), $s = $('#docsway-order-status'), order = [];
+		$('.dsw-sortable').each(function () {
+			$(this).children('.dsw-node').each(function (i) {
+				order.push({ key: String($(this).data('key')), position: i });
+			});
+		});
+		$b.prop('disabled', true);
+		status($s, t.saving);
+		post('save_order', { order: JSON.stringify(order) })
+			.done(function (r) { if (r.success) { dirty = false; status($s, t.saved); } else status($s, errorText(r), true); })
+			.fail(function () { status($s, t.failed, true); })
+			.always(function () { $b.prop('disabled', false); });
+	});
+
+	var resetArmed = false;
+	$('#docsway-reset-order').on('click', function () {
+		var $s = $('#docsway-order-status');
+		if (!resetArmed) {
+			resetArmed = true;
+			status($s, t.confirmReset, true);
+			setTimeout(function () { resetArmed = false; }, 4000);
+			return;
+		}
+		post('reset_order').done(function (r) { if (r.success) { dirty = false; location.reload(); } else status($s, errorText(r), true); });
+	});
+
+	$('#docsway-flush').on('click', function () {
+		var $s = $('#docsway-order-status');
+		post('flush').done(function (r) { status($s, r.success ? t.saved : errorText(r), !r.success); });
+	});
+
+	/* ── Section links ────────────────────────────────── */
+	$(document).on('click', '.dsw-link-save', function () {
+		var $row = $(this).closest('tr'), $s = $row.find('.dsw-status');
+		status($s, t.saving);
+		post('save_link', { term: $row.data('term'), post: $row.find('select').val() })
+			.done(function (r) { status($s, r.success ? t.saved : errorText(r), !r.success); })
+			.fail(function () { status($s, t.failed, true); });
+	});
+
+	/* ── Assign pages ─────────────────────────────────── */
+	$('#docsway-assign-filter').on('input', function () {
+		var q = $(this).val().toLowerCase().trim();
+		$('#docsway-assign tbody tr').each(function () {
+			$(this).toggle(!q || String($(this).data('title')).indexOf(q) > -1);
+		});
+	});
+
+	$('#docsway-assign-all').on('change', function () {
+		$('#docsway-assign tbody tr:visible input[type=checkbox]').prop('checked', this.checked);
+	});
+
+	$('[data-assign]').on('click', function () {
+		var mode = $(this).data('assign'), $s = $('#docsway-assign-status');
+		var ids = $('#docsway-assign tbody input[type=checkbox]:checked').map(function () { return this.value; }).get();
+		var term = $('#docsway-assign-term').val();
+		if (!ids.length) return status($s, t.pickPages, true);
+		if (mode !== 'remove' && (!term || term === '0')) return status($s, t.pickSection, true);
+		status($s, t.saving);
+		post('assign', { mode: mode, term: term, ids: ids })
+			.done(function (r) {
+				if (!r.success) return status($s, errorText(r), true);
+				$.each(r.data.names || {}, function (id, names) {
+					var $row = $('#docsway-assign input[value="' + id + '"]').prop('checked', false).closest('tr');
+					$row.find('.dsw-assign__terms').html(names ? $('<span>').text(names) : '<span class="dsw-muted">–</span>');
+					$row.addClass('is-updated');
+				});
+				$('#docsway-assign-all').prop('checked', false);
+				status($s, t.saved);
+			})
+			.fail(function () { status($s, t.failed, true); });
+	});
+
+	$('#docsway-add-section').on('click', function () {
+		var $s = $('#docsway-section-status'), name = $('#docsway-new-name').val().trim();
+		if (!name) return status($s, t.nameNeeded, true);
+		post('add_section', { name: name, parent: $('#docsway-new-parent').val() })
+			.done(function (r) {
+				if (!r.success) return status($s, errorText(r), true);
+				$('#docsway-assign-term').html(r.data.options);
+				$('#docsway-new-parent').html(r.data.parents);
+				$('#docsway-new-name').val('');
+				status($s, t.saved);
+			})
+			.fail(function () { status($s, t.failed, true); });
+	});
+
+	/* ── Wizard: outline preview ──────────────────────── */
+	var $outline = $('#dsw-outline');
+	function renderOutline() {
+		var $p = $('#dsw-outline-preview').empty();
+		var lines = ($outline.val() || '').split(/\r?\n/).filter(function (l) { return l.trim(); });
+		if (!lines.length) { $p.append($('<li class="dsw-muted">').text('–')); return; }
+		var prev = -1;
+		lines.forEach(function (l) {
+			var exp = l.replace(/\t/g, '  ');
+			var depth = Math.floor((exp.length - exp.replace(/^\s+/, '').length) / 2);
+			depth = Math.min(depth, prev + 1);
+			prev = depth;
+			$p.append($('<li>').css('padding-left', (depth * 18) + 'px').toggleClass('is-top', depth === 0).text(l.trim().replace(/^[-*•]\s*/, '')));
+		});
+	}
+	if ($outline.length) {
+		$outline.on('input', renderOutline);
+		$outline.on('keydown', function (e) {
+			if (e.key !== 'Tab') return;
+			e.preventDefault(); // Tab indents instead of leaving the box.
+			var el = this, s = el.selectionStart, v = el.value;
+			var lineStart = v.lastIndexOf('\n', s - 1) + 1;
+			if (e.shiftKey) {
+				if (v.substr(lineStart, 2) === '  ') { el.value = v.slice(0, lineStart) + v.slice(lineStart + 2); el.selectionStart = el.selectionEnd = Math.max(lineStart, s - 2); }
+			} else {
+				el.value = v.slice(0, lineStart) + '  ' + v.slice(lineStart);
+				el.selectionStart = el.selectionEnd = s + 2;
+			}
+			renderOutline();
+		});
+		renderOutline();
+	}
+
+	/* ── Wizard: placing tabs ─────────────────────────── */
+	$('[data-tabs]').each(function () {
+		var $wrap = $(this), $tabs = $wrap.find('[role=tab]');
+		function select($tab) {
+			$tabs.attr({ 'aria-selected': 'false', tabindex: -1 });
+			$wrap.find('[role=tabpanel]').attr('hidden', true);
+			$tab.attr({ 'aria-selected': 'true', tabindex: 0 }).trigger('focus');
+			$('#' + $tab.attr('aria-controls')).removeAttr('hidden');
+		}
+		$tabs.on('click', function () { select($(this)); });
+		$tabs.on('keydown', function (e) {
+			var i = $tabs.index(this);
+			if (e.key === 'ArrowRight') select($tabs.eq((i + 1) % $tabs.length));
+			if (e.key === 'ArrowLeft') select($tabs.eq((i - 1 + $tabs.length) % $tabs.length));
+		});
+	});
+
+	/* ── Wizard: choosing "existing page" focuses its select ── */
+	$('select[name=results_page]').on('change', function () {
+		$('input[name=results_mode][value=existing]').prop('checked', true);
+	});
+	$('select[name=home_page]').on('change', function () {
+		$('input[name=home_mode][value=existing]').prop('checked', true);
+	});
+	$('select[name=taxonomy]').on('change', function () {
+		$('input[name=taxonomy_mode][value=existing]').prop('checked', true);
+	});
+
+	/* ── Style picker: live preview ───────────────────── */
+	function onAccent(hex) {
+		var n = parseInt(hex.slice(1), 16), lin = function (c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+		var l = 0.2126 * lin(n >> 16) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+		return (1.05 / (l + 0.05)) >= ((l + 0.05) / 0.056) ? '#ffffff' : '#111111'; // Same rule as Docsway_Settings::on_accent().
+	}
+	function setAccent(hex) {
+		document.documentElement.style.setProperty('--docsway-accent', hex);
+		document.documentElement.style.setProperty('--docsway-on-accent', onAccent(hex));
+	}
+	$('input[name=style]').on('change', function () {
+		var $preview = $('.dsw-look');
+		$preview.attr('class', $preview.attr('class').replace(/\bdocsway-style-\S+/g, '').trim() + ' docsway-style-' + this.value);
+		$('#dsw-accent').val($(this).data('accent'));
+		setAccent($(this).data('accent'));
+	});
+	$('#dsw-accent').on('input change', function () { setAccent(this.value); });
+
+	/* ── Search home: fill quick searches from Search insights ── */
+	$('#dsw-quick-fill').on('click', function () {
+		var terms = $(this).data('terms') || [];
+		var used = $('#dsw-quick input[name$="[label]"]').map(function () { return this.value.trim().toLowerCase(); }).get();
+		$('#dsw-quick tbody tr').each(function () {
+			var $label = $(this).find('input[name$="[label]"]');
+			if ($label.val().trim() || !terms.length) return;
+			var term;
+			while (terms.length && used.indexOf(term = terms.shift()) > -1) { term = ''; }
+			if (term) { $label.val(term); used.push(term); }
+		});
+	});
+
+	/* ── Layout picker: live diagram ──────────────────── */
+	$('[data-dsw-layout]').each(function () {
+		var $l = $(this), $d = $l.find('.dsw-diagram');
+		var val = function (name) { return $l.find('input[name=' + name + ']:checked').val(); };
+		function sync() {
+			$l.toggleClass('is-theme', val('layout') === 'theme');
+			$d.attr({ 'data-sidebar': val('sidebar'), 'data-width': val('width'), 'data-toc': val('toc_position'), 'data-chrome': val('chrome') });
+			$l.find('.dsw-layout__max').toggle(val('width') !== 'full');
+		}
+		$l.on('change', 'input', sync);
+		sync();
+	});
+
+	/* ── Settings: one section at a time ──────────────── */
+	$('[data-dsw-sections]').each(function () {
+		var $form = $(this);
+		var $sections = $form.find('.dsw-help__body > section.dsw-card[id]');
+		var $links = $form.find('.dsw-sections-nav a[href^="#"]');
+		function show(id, remember) {
+			if (!id || !$sections.filter(function () { return this.id === id; }).length) id = $sections.first().attr('id');
+			$sections.each(function () { this.hidden = this.id !== id; });
+			$links.removeClass('is-active').removeAttr('aria-current').filter('[href="#' + id + '"]').addClass('is-active').attr('aria-current', 'true');
+			$form.find('input[name=section]').val(id);
+			if (remember) history.replaceState(null, '', '#' + id);
+		}
+		$form.addClass('is-tabbed');
+		$links.on('click', function (e) {
+			e.preventDefault();
+			show(this.hash.slice(1), true);
+			window.scrollTo(0, 0);
+		});
+		$(window).on('hashchange', function () { show(location.hash.slice(1), false); });
+		show(location.hash.slice(1), false);
+	});
+
+	/* ── Help page: highlight topic in nav ────────────── */
+	var $helpLinks = $('.dsw-help__nav:not(.dsw-sections-nav) a[href^="#"]');
+	if ($helpLinks.length && 'IntersectionObserver' in window) {
+		var obs = new IntersectionObserver(function (entries) {
+			entries.forEach(function (en) {
+				if (en.isIntersecting) {
+					$helpLinks.removeClass('is-active').filter('[href="#' + en.target.id + '"]').addClass('is-active');
+				}
+			});
+		}, { rootMargin: '-20% 0px -70% 0px' });
+		$('.dsw-topic').each(function () { obs.observe(this); });
+	}
+})(jQuery);

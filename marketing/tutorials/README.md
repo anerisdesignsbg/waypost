@@ -1,6 +1,6 @@
-# Waypost tutorials
+# Docsway tutorials
 
-Step-by-step guides for site owners. They are published as the Waypost docs site by the demo plugin (see `demo/README.md`), so keep the file names: they become the pages and links. Images use `![caption](../screenshots/name.png)`.
+Step-by-step guides for site owners. They are published as the Docsway docs site by the demo plugin (see `demo/README.md`), so keep the file names: they become the pages and links. Images use `![caption](../screenshots/name.png)`.
 
 | # | Tutorial | For |
 |---|---|---|
@@ -10,12 +10,12 @@ Step-by-step guides for site owners. They are published as the Waypost docs site
 | 4 | [Layout and styles](04-layout-and-styles.md) | Look and feel |
 | 5 | [Your docs home page](05-search-home.md) | Look and feel |
 | 6 | [Smart search](06-smart-search.md) | Search |
-| 7 | [Search inside PDF and Word files](07-documents.md) | Search (Waypost Pro) |
+| 7 | [Search inside PDF and Word files](07-documents.md) | Search (Docsway Pro) |
 | 8 | [Search insights and page feedback](08-insights-and-feedback.md) | Improving your docs |
-| 9 | [Using Waypost with Divi](09-divi.md) | Divi users |
+| 9 | [Using Docsway with Divi](09-divi.md) | Divi users |
 | 10 | [Blocks and shortcodes](10-blocks-and-shortcodes.md) | Reference |
 | 11 | [Troubleshooting](11-troubleshooting.md) | When something looks wrong |
 
-Features marked Waypost Pro need the Waypost Pro add-on; everything else is in the free plugin.
+Features marked Docsway Pro need the Docsway Pro add-on; everything else is in the free plugin.
 
-House style: UK English, plain wording, short steps, no em dashes. Menu paths are written as Waypost, Settings, Search.
+House style: UK English, plain wording, short steps, no em dashes. Menu paths are written as Docsway, Settings, Search.

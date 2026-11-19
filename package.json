@@ -1,8 +1,8 @@
 {
-	"name": "waypost-dev",
+	"name": "docsway-dev",
 	"version": "1.0.0",
 	"private": true,
-	"description": "Development and test environment for the Waypost WordPress plugin.",
+	"description": "Development and test environment for the Docsway WordPress plugin.",
 	"scripts": {
 		"start": "wp-env start",
 		"stop": "wp-env stop",
@@ -11,21 +11,21 @@
 		"reset": "wp-env clean all && npm run seed",
 		"wp": "wp-env run cli wp",
 		"logs": "wp-env run cli tail -n 50 wp-content/debug.log",
-		"lint:php": "wp-env run cli bash -c 'find wp-content/plugins/waypost wp-content/plugins/waypost-pro -name \"*.php\" -exec php -l {} \\; | grep -v \"No syntax errors\" || true'",
+		"lint:php": "wp-env run cli bash -c 'find wp-content/plugins/aneris-docsway wp-content/plugins/aneris-docsway-pro -name \"*.php\" -exec php -l {} \\; | grep -v \"No syntax errors\" || true'",
 		"test": "playwright test",
 		"test:headed": "playwright test --headed",
 		"test:report": "playwright show-report",
 		"screenshots": "node bin/screenshots.js",
 		"wporg-assets": "node bin/wporg-assets.js",
 		"website-assets": "node bin/website-assets.js",
-		"plugin-check": "wp-env run tests-cli bash -c 'wp plugin is-installed plugin-check || wp plugin install plugin-check; wp plugin activate plugin-check --quiet; wp plugin check waypost; status=$?; wp plugin deactivate plugin-check --quiet; exit $status'",
-		"zip": "mkdir -p dist && rm -f dist/waypost.zip && zip -qr dist/waypost.zip waypost -x '*.DS_Store' && echo 'dist/waypost.zip ready'",
+		"plugin-check": "wp-env run tests-cli bash -c 'wp plugin is-installed plugin-check || wp plugin install plugin-check; wp plugin activate plugin-check --quiet; wp plugin check aneris-docsway; status=$?; wp plugin deactivate plugin-check --quiet; exit $status'",
+		"zip": "mkdir -p dist && rm -f dist/aneris-docsway.zip && zip -qr dist/aneris-docsway.zip aneris-docsway -x '*.DS_Store' && echo 'dist/aneris-docsway.zip ready'",
 		"demo:content": "node bin/demo-content.js",
 		"demo:start": "npm run demo:content && cd demo && wp-env start",
 		"demo:stop": "cd demo && wp-env stop",
-		"demo:build": "npm run demo:content && cd demo && wp-env run cli wp waypost-demo build",
-		"demo:zip": "npm run demo:content && mkdir -p dist && rm -f dist/waypost-demo-content.zip && cd demo && zip -qr ../dist/waypost-demo-content.zip waypost-demo-content -x '*.DS_Store' && echo 'dist/waypost-demo-content.zip ready'",
-		"zip:pro": "mkdir -p dist && rm -f dist/waypost-pro.zip && zip -qr dist/waypost-pro.zip waypost-pro -x '*.DS_Store' && echo 'dist/waypost-pro.zip ready'"
+		"demo:build": "npm run demo:content && cd demo && wp-env run cli wp docsway-demo build",
+		"demo:zip": "npm run demo:content && mkdir -p dist && rm -f dist/aneris-docsway-demo.zip && cd demo && zip -qr ../dist/aneris-docsway-demo.zip aneris-docsway-demo -x '*.DS_Store' && echo 'dist/aneris-docsway-demo.zip ready'",
+		"zip:pro": "mkdir -p dist && rm -f dist/aneris-docsway-pro.zip && zip -qr dist/aneris-docsway-pro.zip aneris-docsway-pro -x '*.DS_Store' && echo 'dist/aneris-docsway-pro.zip ready'"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.63.0",

@@ -11,7 +11,7 @@ const { execSync } = require( 'child_process' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 
-const BASE = process.env.WAYPOST_URL || 'http://localhost:8889';
+const BASE = process.env.DOCSWAY_URL || 'http://localhost:8889';
 const OUT = path.join( __dirname, '..', 'marketing', 'screenshots' );
 const ADMIN = path.join( __dirname, '..', 'tests', '.auth', 'admin.json' );
 const only = process.argv.slice( 2 );
@@ -23,8 +23,8 @@ function settings( values ) {
 	wp( 'eval-file bin/screenshot-settings.php ' + Buffer.from( JSON.stringify( values ) ).toString( 'base64' ) );
 }
 
-// The look most shots share: the Waypost layout with its own docs bar, in the Modern style.
-const LOOK = { blogname: 'Magpie', layout: 'waypost', chrome: 'waypost', style: 'modern', accent: '#4f46e5', width: 'contained', sidebar: 'left', toc_position: 'side', show_updated: 1, show_reading: 1, heading_links: 1, feedback: 1 };
+// The look most shots share: the Docsway layout with its own docs bar, in the Modern style.
+const LOOK = { blogname: 'Magpie', layout: 'docsway', chrome: 'docsway', style: 'modern', accent: '#4f46e5', width: 'contained', sidebar: 'left', toc_position: 'side', show_updated: 1, show_reading: 1, heading_links: 1, feedback: 1 };
 
 async function scrollTo( page, selector, offset = 90 ) {
 	await page.locator( selector ).first().evaluate( ( el, off ) => window.scrollTo( 0, el.getBoundingClientRect().top + window.scrollY - off ), offset );
@@ -48,10 +48,10 @@ const shots = [
 	},
 	{
 		name: '03-best-answer',
-		caption: 'Smart search answers questions: the best section on top with a short summary and other pages that cover it. Topic filters above the results are part of Waypost Pro.',
+		caption: 'Smart search answers questions: the best section on top with a short summary and other pages that cover it. Topic filters above the results are part of Docsway Pro.',
 		async run( page ) {
 			await page.goto( '/documentation/?dq=' + encodeURIComponent( 'How do I share an album?' ) );
-			await scrollTo( page, '.waypost-home__results', 70 );
+			await scrollTo( page, '.docsway-home__results', 70 );
 		},
 	},
 	{
@@ -60,8 +60,8 @@ const shots = [
 		async run( page ) {
 			await page.goto( '/installing-with-docker/' );
 			await page.keyboard.press( 'Control+k' );
-			await page.locator( '.waypost-modal .waypost-search__input' ).fill( 'reset admin password' );
-			await page.locator( '.waypost-modal .waypost-hit--answer' ).waitFor();
+			await page.locator( '.docsway-modal .docsway-search__input' ).fill( 'reset admin password' );
+			await page.locator( '.docsway-modal .docsway-hit--answer' ).waitFor();
 			await page.waitForTimeout( 400 );
 		},
 	},
@@ -70,19 +70,19 @@ const shots = [
 		caption: 'Readers land on the exact section, with their search words highlighted.',
 		async run( page ) {
 			await page.goto( '/documentation/?dq=' + encodeURIComponent( 'stop sharing album' ) );
-			await page.locator( '.waypost-answer__more' ).click();
-			await page.locator( '.waypost-found-bar' ).waitFor();
+			await page.locator( '.docsway-answer__more' ).click();
+			await page.locator( '.docsway-found-bar' ).waitFor();
 			await page.waitForTimeout( 900 );
 		},
 	},
 	{
 		name: '06-documents',
-		caption: 'Waypost Pro: search inside PDF, Word, PowerPoint and Excel files. Documents sit in your sections with a file type label.',
+		caption: 'Docsway Pro: search inside PDF, Word, PowerPoint and Excel files. Documents sit in your sections with a file type label.',
 		async run( page ) {
 			await page.goto( '/documentation/?dq=pebblecast' );
-			const toggle = page.locator( '.waypost-menu__item--top', { hasText: 'Downloads' } ).locator( '.waypost-menu__toggle' ).first();
+			const toggle = page.locator( '.docsway-menu__item--top', { hasText: 'Downloads' } ).locator( '.docsway-menu__toggle' ).first();
 			await toggle.click();
-			await scrollTo( page, '.waypost-home__results', 70 );
+			await scrollTo( page, '.docsway-home__results', 70 );
 		},
 	},
 	{
@@ -115,7 +115,7 @@ const shots = [
 		caption: 'A five-minute setup wizard picks your pages, sections, layout and style.',
 		admin: true,
 		async run( page ) {
-			await page.goto( '/wp-admin/admin.php?page=waypost-setup&step=look' );
+			await page.goto( '/wp-admin/admin.php?page=docsway-setup&step=look' );
 		},
 	},
 	{
@@ -123,7 +123,7 @@ const shots = [
 		caption: 'Drag and drop to order the menu. Sections can nest four levels deep.',
 		admin: true,
 		async run( page ) {
-			await page.goto( '/wp-admin/admin.php?page=waypost-structure' );
+			await page.goto( '/wp-admin/admin.php?page=docsway-structure' );
 		},
 	},
 	{
@@ -131,8 +131,8 @@ const shots = [
 		caption: 'Pick a ready-made style and accent colour in Settings. Layout, sidebar side and width are one click each.',
 		admin: true,
 		async run( page ) {
-			await page.goto( '/wp-admin/admin.php?page=waypost-settings#appearance' );
-			await scrollTo( page, '#appearance .wpst-styles', 60 );
+			await page.goto( '/wp-admin/admin.php?page=docsway-settings#appearance' );
+			await scrollTo( page, '#appearance .dsw-styles', 60 );
 		},
 	},
 	{
@@ -140,16 +140,16 @@ const shots = [
 		caption: 'Search insights show what readers look for and which searches found nothing.',
 		admin: true,
 		async run( page ) {
-			await page.goto( '/wp-admin/admin.php?page=waypost-insights' );
+			await page.goto( '/wp-admin/admin.php?page=docsway-insights' );
 		},
 	},
 	{
 		name: '14-media-sections',
-		caption: 'Waypost Pro: add a PDF or Word file to the docs by ticking its sections in the Media Library.',
+		caption: 'Docsway Pro: add a PDF or Word file to the docs by ticking its sections in the Media Library.',
 		admin: true,
 		async run( page ) {
-			await page.goto( '/wp-admin/admin.php?page=waypost-structure&tab=assign&show=documents' );
-			const id = await page.locator( '#waypost-assign tbody tr', { hasText: 'quick start card' } ).locator( 'input[type=checkbox]' ).getAttribute( 'value' );
+			await page.goto( '/wp-admin/admin.php?page=docsway-structure&tab=assign&show=documents' );
+			const id = await page.locator( '#docsway-assign tbody tr', { hasText: 'quick start card' } ).locator( 'input[type=checkbox]' ).getAttribute( 'value' );
 			await page.goto( `/wp-admin/upload.php?item=${ id }` );
 			await page.getByText( 'Doc sections', { exact: true } ).first().waitFor();
 			await page.waitForTimeout( 500 );
@@ -199,7 +199,7 @@ const shots = [
 	} finally {
 		await browser.close();
 		console.log( 'Restoring the seeded settings…' );
-		settings( { blogname: 'Waypost' } );
+		settings( { blogname: 'Docsway' } );
 		wp( 'eval-file bin/seed.php' );
 	}
 	if ( ! only.length ) {

@@ -1,12 +1,12 @@
-// Copies the tutorials and screenshots into the Waypost Demo Content plugin
-// (demo/waypost-demo-content/content/), with screenshots resized for the web.
+// Copies the tutorials and screenshots into the Docsway Demo Content plugin
+// (demo/aneris-docsway-demo/content/), with screenshots resized for the web.
 // Run by the demo:* npm scripts; the copied files are not committed.
 const fs = require( 'fs' );
 const path = require( 'path' );
 const { execFileSync } = require( 'child_process' );
 
 const root = path.join( __dirname, '..' );
-const out = path.join( root, 'demo', 'waypost-demo-content', 'content' );
+const out = path.join( root, 'demo', 'aneris-docsway-demo', 'content' );
 const tutorials = path.join( root, 'marketing', 'tutorials' );
 const shots = path.join( root, 'marketing', 'screenshots' );
 
@@ -26,5 +26,5 @@ for ( const f of fs.readdirSync( shots ).filter( ( f ) => /^\d+-.+\.png$/.test( 
 		fs.copyFileSync( path.join( shots, f ), dest );
 	}
 }
-fs.copyFileSync( path.join( root, 'marketing', 'wordpress-org', 'assets', 'icon-256x256.png' ), path.join( out, 'images', 'waypost-icon.png' ) );
-console.log( 'Demo content ready in demo/waypost-demo-content/content/' );
+fs.copyFileSync( path.join( root, 'marketing', 'wordpress-org', 'assets', 'icon-256x256.png' ), path.join( out, 'images', 'docsway-icon.png' ) );
+console.log( 'Demo content ready in demo/aneris-docsway-demo/content/' );

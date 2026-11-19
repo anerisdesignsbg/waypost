@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
 	"phpVersion": "8.2",
-	"plugins": [ "../waypost", "./waypost-demo-content" ],
+	"plugins": [ "../aneris-docsway", "./aneris-docsway-demo" ],
 	"port": 8890,
 	"testsPort": 8891,
 	"config": {

@@ -1,4 +1,4 @@
-// The Waypost docs layout in block themes. Runs last (files run A to Z): it switches the
+// The Docsway docs layout in block themes. Runs last (files run A to Z): it switches the
 // site's theme and puts Twenty Sixteen back afterwards.
 const { test, expect } = require( '@playwright/test' );
 
@@ -23,39 +23,39 @@ test.describe.serial( 'Block themes', () => {
 			await activate( page, theme );
 
 			await page.goto( '/installing-on-ubuntu/' );
-			await expect( page.locator( '.waypost-layout--doc' ) ).toHaveCount( 1 );
+			await expect( page.locator( '.docsway-layout--doc' ) ).toHaveCount( 1 );
 			await expect( page.locator( 'header.wp-block-template-part' ) ).toHaveCount( 1 );
 			await expect( page.locator( 'footer.wp-block-template-part' ) ).toHaveCount( 1 );
 			await expect( page.locator( 'main' ) ).toHaveCount( 1 );
 			await expect( page.locator( 'meta[name=viewport]' ) ).toHaveCount( 1 );
-			await expect( page.locator( '.waypost-layout__sidebar .waypost-menu' ) ).toBeVisible();
-			await expect( page.locator( '.waypost-layout__title' ) ).toHaveText( 'Installing on Ubuntu' );
+			await expect( page.locator( '.docsway-layout__sidebar .docsway-menu' ) ).toBeVisible();
+			await expect( page.locator( '.docsway-layout__title' ) ).toHaveText( 'Installing on Ubuntu' );
 			const scroll = await page.evaluate( () => document.documentElement.scrollWidth - document.documentElement.clientWidth );
 			expect( scroll ).toBe( 0 );
 
 			await page.goto( '/documentation/?dq=album' );
-			await expect( page.locator( '.waypost-layout--home .waypost-home__list .waypost-result' ) ).toHaveCount( 10 );
+			await expect( page.locator( '.docsway-layout--home .docsway-home__list .docsway-result' ) ).toHaveCount( 10 );
 
 			await page.goto( '/about-us/' );
-			await expect( page.locator( '.waypost-layout' ) ).toHaveCount( 0 );
+			await expect( page.locator( '.docsway-layout' ) ).toHaveCount( 0 );
 			await expect( page.locator( 'header.wp-block-template-part' ) ).toHaveCount( 1 );
 		} );
 	}
 
-	test( 'Twenty Twenty-Five with the Waypost docs bar', async ( { page } ) => {
+	test( 'Twenty Twenty-Five with the Docsway docs bar', async ( { page } ) => {
 		await activate( page, 'Twenty Twenty-Five' );
 		const docsBar = async ( value ) => {
-			await page.goto( '/wp-admin/admin.php?page=waypost-settings#appearance' );
+			await page.goto( '/wp-admin/admin.php?page=docsway-settings#appearance' );
 			await page.locator( `input[name=chrome][value=${ value }]` ).check( { force: true } );
 			await page.click( 'button:has-text("Save settings")' );
 		};
-		await docsBar( 'waypost' );
+		await docsBar( 'docsway' );
 		try {
 			await page.goto( '/installing-on-ubuntu/' );
-			await expect( page.locator( '.waypost-topbar' ) ).toBeVisible();
+			await expect( page.locator( '.docsway-topbar' ) ).toBeVisible();
 			await expect( page.locator( 'header.wp-block-template-part' ) ).toHaveCount( 0 );
 			await expect( page.locator( 'meta[name=viewport]' ) ).toHaveCount( 1 ); // Only the block theme's own.
-			await expect( page.locator( '.waypost-layout--doc' ) ).toHaveCount( 1 );
+			await expect( page.locator( '.docsway-layout--doc' ) ).toHaveCount( 1 );
 		} finally {
 			await docsBar( 'theme' );
 		}

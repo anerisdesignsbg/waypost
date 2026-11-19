@@ -1,14 +1,17 @@
-# Brief: add Waypost to anerisdesigns.co
+# Brief: add Docsway to anerisdesigns.co
 
-This brief is for an AI assistant (or designer) adding **Waypost** to the Aneris Designs website, **anerisdesigns.co**. It contains everything needed: what the product is, the facts, ready-to-use copy, the page structure, the assets and what is still undecided. Ask the owner before inventing anything not written here.
+This brief is for an AI assistant (or designer) adding **Docsway** to the Aneris Designs website, **anerisdesigns.co**. It contains everything needed: what the product is, the facts, ready-to-use copy, the page structure, the assets and what is still undecided. Ask the owner before inventing anything not written here.
+
+**Name:** the full product name is **Aneris Docsway** (Docsway for short in running text). It was called Waypost until November 2026, when WordPress.org asked for a name starting with our own identifier because another plugin already sells under "Waypost". If the site already mentions Waypost anywhere, replace it. The WordPress.org address will be `https://wordpress.org/plugins/aneris-docsway/` once approved; the live demo stays at `https://anerisdesigns.co/waypost-plugin/` for now.
+
 
 ## 1. The task
 
-Add Waypost to anerisdesigns.co as a product:
+Add Docsway to anerisdesigns.co as a product:
 
-1. A **product page**, for example at `https://anerisdesigns.co/waypost/`, using the site's normal header and footer. It explains Waypost, shows screenshots, compares Free and Pro, shows prices and links to the live demo.
+1. A **product page**, for example at `https://anerisdesigns.co/docsway/`, using the site's normal header and footer. It explains Docsway, shows screenshots, compares Free and Pro, shows prices and links to the live demo.
 2. A small **live search demo** on that page: a search box that sends the visitor to real results on the demo docs site (code in section 8).
-3. A link to the product page from the main site, for example a "Waypost" or "Products" item in the menu, and optionally a short card on the home page.
+3. A link to the product page from the main site, for example a "Docsway" or "Products" item in the menu, and optionally a short card on the home page.
 
 The **full demo and documentation** already exist as a separate WordPress install at **https://anerisdesigns.co/waypost-plugin/**. Do not rebuild them; link to them.
 
@@ -19,16 +22,16 @@ Before starting, check with the owner which builder the site uses (WordPress wit
 - **UK English** (colour, organise, licence as a noun, favourite).
 - **No em dashes** anywhere: not in headings, body copy, buttons or alt text. Use commas, colons, full stops or "and" instead.
 - Plain, friendly wording. Short sentences. No hype words such as "revolutionary" or "game-changing".
-- The product name is written **Waypost** (capital W, one word), and the paid add-on **Waypost Pro**.
+- The product name is written **Docsway** (capital W, one word), and the paid add-on **Docsway Pro**.
 - The company is **Aneris Designs**.
 
-## 3. What Waypost is
+## 3. What Docsway is
 
-Waypost is a **WordPress plugin** that turns the pages a site already has into a proper documentation site, with **smart search that answers questions**. There is no content migration: pages stay where they are, page addresses do not change, and pages built with Divi, the block editor or any page builder keep their layouts.
+Docsway is a **WordPress plugin** that turns the pages a site already has into a proper documentation site, with **smart search that answers questions**. There is no content migration: pages stay where they are, page addresses do not change, and pages built with Divi, the block editor or any page builder keep their layouts.
 
 **Who it is for:** businesses and agencies with a WordPress site that need product docs, a help centre, a knowledge base, user guides or internal manuals, without moving content into a separate docs system.
 
-**How it works in one line:** put your pages into sections, and Waypost builds the menu, search, contents, breadcrumbs and page navigation around them. A five-minute setup wizard does the work.
+**How it works in one line:** put your pages into sections, and Docsway builds the menu, search, contents, breadcrumbs and page navigation around them. A five-minute setup wizard does the work.
 
 **The main selling point:** search that understands readers. It answers a question like "How do I share an album?" by showing the exact section of the exact page that answers it, with a short summary on top, instead of a plain list of pages.
 
@@ -63,7 +66,7 @@ Waypost is a **WordPress plugin** that turns the pages a site already has into a
 - Pages, posts or any custom post type; its own sections or an existing taxonomy.
 - Setup wizard and built-in tutorials.
 
-### Waypost Pro (paid add-on)
+### Docsway Pro (paid add-on)
 
 Everything in the free version, plus:
 - **Search inside documents:** PDF, Word, PowerPoint, Excel, OpenDocument and text files from the Media Library join the doc sections. Search finds words inside them, and the menu lists them with a file type label.
@@ -77,8 +80,8 @@ Everything in the free version, plus:
 
 | Item | Status |
 |---|---|
-| Free plugin on WordPress.org | **Under review**, submitted 12 November 2026. Its page will be `https://wordpress.org/plugins/waypost/` once approved. Until then, the "Download free" button should say "Coming soon to WordPress.org" or link to the demo instead. |
-| Waypost Pro | **Not on sale yet.** Sold through Freemius once the free plugin is approved. Until then show "Coming soon" or a "Notify me" link, not live buy buttons. |
+| Free plugin on WordPress.org | **Under review**, first submitted 12 November 2026 and resubmitted as Aneris Docsway on 19 November 2026. Its page will be `https://wordpress.org/plugins/aneris-docsway/` once approved. Until then, the "Download free" button should say "Coming soon to WordPress.org" or link to the demo instead. |
+| Docsway Pro | **Not on sale yet.** Sold through Freemius once the free plugin is approved. Until then show "Coming soon" or a "Notify me" link, not live buy buttons. |
 | Live demo and docs | Live at `https://anerisdesigns.co/waypost-plugin/` |
 | Freemius checkout links | Not created yet. The owner will supply them. |
 
@@ -97,9 +100,9 @@ Everything in the free version, plus:
 
 ## 6. Suggested page structure
 
-1. **Hero:** headline, one-line pitch, buttons "See the live demo" and "Get Waypost". Use the docs page screenshot or the best answer screenshot.
+1. **Hero:** headline, one-line pitch, buttons "See the live demo" and "Get Docsway". Use the docs page screenshot or the best answer screenshot.
 2. **The problem and the promise:** short paragraph (copy in section 7).
-3. **Live search demo:** the search box from section 8, with the line "Try it: ask a question about Waypost".
+3. **Live search demo:** the search box from section 8, with the line "Try it: ask a question about Docsway".
 4. **Smart search:** the best answer screenshot and three or four short points.
 5. **A complete docs site:** docs page screenshot, layout and menu points.
 6. **Styles:** the Dark style or style picker screenshot, "Seven styles, any colour".
@@ -107,11 +110,11 @@ Everything in the free version, plus:
 8. **Free and Pro comparison table** (section 4).
 9. **Pricing** (section 5), with the launch offer if it is still running.
 10. **FAQ** (section 7).
-11. **Final call to action:** "See the live demo" and "Get Waypost".
+11. **Final call to action:** "See the live demo" and "Get Docsway".
 
 ## 7. Ready-to-use copy
 
-**Page title (SEO):** Waypost: documentation site and smart search for WordPress
+**Page title (SEO):** Docsway: documentation site and smart search for WordPress
 
 **Meta description (under 160 characters):** Turn the pages you already have into a docs site with a sidebar menu and smart search that answers questions. No migration, no URL changes.
 
@@ -120,13 +123,13 @@ Everything in the free version, plus:
 - Your pages, now a proper documentation site
 - Docs your readers can actually search
 
-**Hero subheading:** Waypost builds a sidebar menu, smart search, contents and page navigation around the pages you already have. Nothing moves, nothing breaks, and setup takes about five minutes.
+**Hero subheading:** Docsway builds a sidebar menu, smart search, contents and page navigation around the pages you already have. Nothing moves, nothing breaks, and setup takes about five minutes.
 
-**Problem and promise:** Most documentation tools make you move your content somewhere new. Waypost works the other way round: put your existing pages into sections and it builds a complete docs site around them, with search that points readers to the exact answer.
+**Problem and promise:** Most documentation tools make you move your content somewhere new. Docsway works the other way round: put your existing pages into sections and it builds a complete docs site around them, with search that points readers to the exact answer.
 
 **Smart search section:**
 - Heading: Search that answers, not just lists
-- Text: Ask "How do I share an album?" and Waypost shows the section that answers it, with a short summary and a link straight to it. It understands questions, finds other forms of a word and fixes typing mistakes.
+- Text: Ask "How do I share an album?" and Docsway shows the section that answers it, with a short summary and a link straight to it. It understands questions, finds other forms of a word and fixes typing mistakes.
 
 **Docs site section:**
 - Heading: A complete docs site in one click
@@ -141,38 +144,38 @@ Everything in the free version, plus:
 - Text: Classic themes, block themes and Divi, with blocks, Divi modules and shortcodes. Use pages, posts or any custom post type.
 
 **Pro section:**
-- Heading: Waypost Pro: for docs that go beyond web pages
+- Heading: Docsway Pro: for docs that go beyond web pages
 - Text: Search inside PDF, Word, PowerPoint and Excel files, teach search your readers' own words with synonyms, and let readers filter results by topic.
 
 **FAQ (short answers):**
-- *Do I have to move my pages?* No. Waypost never moves or copies content, and page addresses stay the same.
+- *Do I have to move my pages?* No. Docsway never moves or copies content, and page addresses stay the same.
 - *Does it work with Divi?* Yes, including pages built with the Divi Builder. It adds Divi modules too; on Divi 5 use the shortcodes in a Code module.
 - *Does search need a separate service?* No. Everything runs on your own site, with nothing to set up.
-- *Can it search inside PDFs?* Yes, with Waypost Pro. Scanned PDFs have no text to read, so add a short description to them.
+- *Can it search inside PDFs?* Yes, with Docsway Pro. Scanned PDFs have no text to read, so add a short description to them.
 - *What happens when a Pro licence expires?* Pro keeps working; only updates and support stop.
 - *Is any personal data stored?* Search insights store only the words searched and how many results they found. Nothing is sent to Aneris Designs.
 
-**Buttons:** "See the live demo", "Try the search", "Get Waypost Pro", "Download free".
+**Buttons:** "See the live demo", "Try the search", "Get Docsway Pro", "Download free".
 
 ## 8. Live search demo code
 
 A plain HTML search box that sends the visitor to real results on the demo docs site. It needs no plugin on the main site and works in a Divi Code module or a block editor Custom HTML block. Style it to match the site.
 
 ```html
-<form class="waypost-try" action="https://anerisdesigns.co/waypost-plugin/" method="get">
-  <label for="waypost-try-q">Try it: ask a question about Waypost</label>
-  <input id="waypost-try-q" type="search" name="dq" placeholder="How do I change the style?" required>
+<form class="docsway-try" action="https://anerisdesigns.co/waypost-plugin/" method="get">
+  <label for="docsway-try-q">Try it: ask a question about Docsway</label>
+  <input id="docsway-try-q" type="search" name="dq" placeholder="How do I change the style?" required>
   <button type="submit">Search the docs</button>
 </form>
 ```
 
-Example questions to show near it (the demo site holds the Waypost tutorials, so use questions about Waypost): "How do I change the style?", "How do I order the menu?", "shortcodes", "Divi".
+Example questions to show near it (the demo site holds the Docsway tutorials, so use questions about Docsway): "How do I change the style?", "How do I order the menu?", "shortcodes", "Divi".
 
 ## 9. Assets
 
 ### Website-ready mockups (use these first)
 
-In `marketing/website/`, as JPGs sized for the web. They show real Waypost screens inside browser and phone frames on brand backgrounds. Rebuild them with `npm run website-assets`.
+In `marketing/website/`, as JPGs sized for the web. They show real Docsway screens inside browser and phone frames on brand backgrounds. Rebuild them with `npm run website-assets`.
 
 | File | Size | Shows | Best for |
 |---|---|---|---|
@@ -185,14 +188,14 @@ In `marketing/website/`, as JPGs sized for the web. They show real Waypost scree
 | `mobile.jpg` | 1200 × 1200 | A doc page on a phone, on indigo | Works with section |
 | `setup-wizard.jpg` | 1600 × 1100 | The setup wizard | "Five-minute setup" |
 | `search-insights.jpg` | 1600 × 1100 | Search insights | Insights point |
-| `documents-pro.jpg` | 1600 × 1100 | A PDF found by search, with a "Waypost Pro" badge | Pro section |
+| `documents-pro.jpg` | 1600 × 1100 | A PDF found by search, with a "Docsway Pro" badge | Pro section |
 | `social-share.jpg` | 1200 × 630 | Logo, headline and a screenshot | Social media and link previews (the page's Open Graph / featured image) |
 
 `marketing/website/screenshots/` holds all 14 plain screenshots at 1600 pixels wide as JPGs, for galleries or lightboxes.
 
 ### Original screenshots
 
-These files are in the Waypost project folder. The owner can upload them to the website's Media Library.
+These files are in the Docsway project folder. The owner can upload them to the website's Media Library.
 
 **Screenshots** (`marketing/screenshots/`, 2880 × 1800 pixels; resize to about 1600 wide for the web):
 
@@ -220,13 +223,13 @@ Captions for each are in `marketing/screenshots/captions.txt`. The screenshots s
 - Banner: `marketing/wordpress-org/assets/banner-1544x500.png`.
 - Main colour: indigo `#4f46e5`. Supporting: `#312e81` (dark indigo), `#e0e7ff` (pale indigo).
 
-**Longer copy:** the full WordPress.org listing text, with all FAQs, is in `waypost/readme.txt`. The tutorials are in `marketing/tutorials/`.
+**Longer copy:** the full WordPress.org listing text, with all FAQs, is in `aneris-docsway/readme.txt`. The tutorials are in `marketing/tutorials/`.
 
 ## 10. Open questions to ask the owner
 
 1. Which builder does anerisdesigns.co use, and should the product page match an existing page's design?
-2. Page address: `/waypost/` or something else?
+2. Page address: `/docsway/` or something else?
 3. Are the planned prices and the 30-day refund final?
 4. Before launch, should buttons say "Coming soon", collect emails ("Notify me"), or be hidden?
-5. Should the demo docs site's "Back to" link point to the new product page? (Set in the demo site under Waypost, Settings, Appearance, Back link.)
-6. Should Waypost appear in the main menu, on the home page, or both?
+5. Should the demo docs site's "Back to" link point to the new product page? (Set in the demo site under Docsway, Settings, Appearance, Back link.)
+6. Should Docsway appear in the main menu, on the home page, or both?

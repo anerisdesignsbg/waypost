@@ -1,6 +1,6 @@
 <?php
 /**
- * Waypost dummy content.
+ * Docsway dummy content.
  *
  * Builds a realistic documentation site for a fictional self-hosted photo
  * library ("Magpie"): 170+ pages in sections up to four levels deep,
@@ -16,15 +16,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( "Run this with WP-CLI: wp eval-file bin/seed.php\n" );
 }
-if ( ! class_exists( 'Waypost_Settings' ) ) {
-	WP_CLI::error( 'Activate the Waypost plugin first.' );
+if ( ! class_exists( 'Docsway_Settings' ) ) {
+	WP_CLI::error( 'Activate the Docsway plugin first.' );
 }
 
 $want_divi = isset( $args ) && in_array( 'divi', (array) $args, true );
 mt_srand( 42 ); // Same content every run.
 
-const WAYPOST_SEED_META = '_waypost_seed';
-$tax = WAYPOST_OWN_TAXONOMY;
+const DOCSWAY_SEED_META = '_docsway_seed';
+$tax = DOCSWAY_OWN_TAXONOMY;
 
 // ── 1. Clean up the previous run ────────────────────────────────────────────
 
@@ -37,8 +37,8 @@ $old = get_posts(
 		'fields'         => 'ids',
 		'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery
 			'relation' => 'OR',
-			array( 'key' => WAYPOST_SEED_META ),
-			array( 'key' => '_waypost_created' ), // Docs home pages made by the setup wizard.
+			array( 'key' => DOCSWAY_SEED_META ),
+			array( 'key' => '_docsway_created' ), // Docs home pages made by the setup wizard.
 		),
 	)
 );
@@ -48,11 +48,11 @@ foreach ( $old as $id ) {
 foreach ( get_terms( array( 'taxonomy' => $tax, 'hide_empty' => false, 'fields' => 'ids' ) ) as $tid ) {
 	wp_delete_term( $tid, $tax );
 }
-delete_option( 'waypost_order' );
-delete_option( 'waypost_search_log' );
-Waypost_Feedback::reset();
-delete_transient( 'waypost_tree' );
-Waypost_Settings::update( array( 'taxonomy_mode' => 'own', 'post_types' => array( 'page' ) ) );
+delete_option( 'docsway_order' );
+delete_option( 'docsway_search_log' );
+Docsway_Feedback::reset();
+delete_transient( 'docsway_tree' );
+Docsway_Settings::update( array( 'taxonomy_mode' => 'own', 'post_types' => array( 'page' ) ) );
 
 // ── 2. Text helpers ─────────────────────────────────────────────────────────
 
@@ -122,7 +122,7 @@ $page = function ( $title, $content, $terms = array(), $status = 'publish', $typ
 		WP_CLI::warning( "Could not create {$title}: " . $id->get_error_message() );
 		return 0;
 	}
-	update_post_meta( $id, WAYPOST_SEED_META, 1 );
+	update_post_meta( $id, DOCSWAY_SEED_META, 1 );
 	if ( $terms ) {
 		wp_set_object_terms( $id, array_map( 'intval', (array) $terms ), $tax );
 	}
@@ -389,11 +389,11 @@ foreach ( $real as $t => $html ) {
 	}
 }
 
-// Documents from the Media Library, read for search (bin/seed-documents). Needs Waypost Pro.
+// Documents from the Media Library, read for search (bin/seed-documents). Needs Docsway Pro.
 $s_files = 0;
-if ( class_exists( 'Waypost_Pro_Documents' ) ) :
-Waypost_Settings::update( array( 'documents' => 1, 'documents_menu' => 1, 'topic_filters' => 1, 'synonyms' => '' ) );
-Waypost_Pro_Documents::register();
+if ( class_exists( 'Docsway_Pro_Documents' ) ) :
+Docsway_Settings::update( array( 'documents' => 1, 'documents_menu' => 1, 'topic_filters' => 1, 'synonyms' => '' ) );
+Docsway_Pro_Documents::register();
 $s_files = $section( 'Downloads' );
 $doc     = function ( $file, $title, $terms, $description = '' ) use ( $tax, &$created ) {
 	$path = dirname( __FILE__ ) . '/seed-documents/' . $file;
@@ -412,7 +412,7 @@ $doc     = function ( $file, $title, $terms, $description = '' ) use ( $tax, &$c
 		),
 		$up['file']
 	);
-	update_post_meta( $id, WAYPOST_SEED_META, 1 );
+	update_post_meta( $id, DOCSWAY_SEED_META, 1 );
 	wp_set_object_terms( $id, array_map( 'intval', (array) $terms ), $tax ); // Reads the text straight away.
 	$created++;
 	return $id;
@@ -425,8 +425,8 @@ endif;
 
 // ── 4. Section links (clickable headings) ───────────────────────────────────
 
-update_term_meta( $s_intro, Waypost_Tree::LINK_META, $ids['Welcome to Magpie'] );
-update_term_meta( $s_albums, Waypost_Tree::LINK_META, $ids['Albums overview'] );
+update_term_meta( $s_intro, Docsway_Tree::LINK_META, $ids['Welcome to Magpie'] );
+update_term_meta( $s_albums, Docsway_Tree::LINK_META, $ids['Albums overview'] );
 
 // ── 5. Custom top-level order ───────────────────────────────────────────────
 
@@ -434,21 +434,21 @@ $order = array();
 foreach ( array( $s_intro, $s_install, $s_config, $s_import, $s_sharing, $s_integr, $s_guides, $s_api, $s_trouble, $s_faq, $s_files, $s_vi ) as $pos => $tid ) {
 	$order[ 'term_' . $tid ] = $pos;
 }
-update_option( 'waypost_order', $order, false );
+update_option( 'docsway_order', $order, false );
 
 // ── 6. Special pages and settings ───────────────────────────────────────────
 
 $home = $page(
 	'Documentation',
-	'<!-- wp:waypost/search-home /-->' // The docs layout shows the menu in its sidebar.
+	'<!-- wp:docsway/search-home /-->' // The docs layout shows the menu in its sidebar.
 );
-$results = $page( 'Search results', "<!-- wp:shortcode -->\n[waypost_search_results]\n<!-- /wp:shortcode -->" );
+$results = $page( 'Search results', "<!-- wp:shortcode -->\n[docsway_search_results]\n<!-- /wp:shortcode -->" );
 $page(
 	'Blocks demo',
-	"<!-- wp:heading --><h2>Docs Search block</h2><!-- /wp:heading -->\n<!-- wp:waypost/search {\"placeholder\":\"Try ‘album’ or ‘docker’\"} /-->\n<!-- wp:heading --><h2>Docs Menu block</h2><!-- /wp:heading -->\n<!-- wp:waypost/menu /-->"
+	"<!-- wp:heading --><h2>Docs Search block</h2><!-- /wp:heading -->\n<!-- wp:docsway/search {\"placeholder\":\"Try ‘album’ or ‘docker’\"} /-->\n<!-- wp:heading --><h2>Docs Menu block</h2><!-- /wp:heading -->\n<!-- wp:docsway/menu /-->"
 );
 
-Waypost_Settings::update(
+Docsway_Settings::update(
 	array(
 		'setup_done'    => 1,
 		'results_page'  => $results,
@@ -459,7 +459,7 @@ Waypost_Settings::update(
 		'style'         => 'theme',
 		'accent'        => '#2563eb',
 		'results_target' => 'home',
-		'layout'        => 'waypost',
+		'layout'        => 'docsway',
 		'sidebar'       => 'left',
 		'width'         => 'contained',
 		'max_width'     => 1280,
@@ -488,7 +488,7 @@ Waypost_Settings::update(
 // ── 7. Search insights sample data ──────────────────────────────────────────
 
 update_option(
-	'waypost_search_log',
+	'docsway_search_log',
 	array(
 		'album'                => array( 'count' => 42, 'hits' => 9, 'first' => time() - 9 * DAY_IN_SECONDS, 'last' => time() - 3600 ),
 		'docker'               => array( 'count' => 31, 'hits' => 4, 'first' => time() - 8 * DAY_IN_SECONDS, 'last' => time() - 7200 ),
@@ -505,8 +505,8 @@ update_option(
 // "Was this helpful?" sample answers, so Search insights has something to show.
 foreach ( array( 'Uploads are stuck' => array( 4, 9 ), 'Storage locations' => array( 3, 5 ), 'Installing with Docker' => array( 31, 3 ), 'Shared albums' => array( 24, 2 ), 'Backups and retention' => array( 12, 1 ) ) as $t => $votes ) {
 	if ( ! empty( $ids[ $t ] ) ) {
-		update_post_meta( $ids[ $t ], '_waypost_helpful_yes', $votes[0] );
-		update_post_meta( $ids[ $t ], '_waypost_helpful_no', $votes[1] );
+		update_post_meta( $ids[ $t ], '_docsway_helpful_yes', $votes[0] );
+		update_post_meta( $ids[ $t ], '_docsway_helpful_no', $votes[1] );
 	}
 }
 
@@ -521,7 +521,7 @@ if ( $want_divi ) {
 			$s_guides
 		);
 		update_post_meta( $divi, '_et_pb_use_builder', 'on' );
-		WP_CLI::log( 'Divi activated. Build a Theme Builder template with the Waypost modules to finish (see README).' );
+		WP_CLI::log( 'Divi activated. Build a Theme Builder template with the Docsway modules to finish (see README).' );
 	} else {
 		WP_CLI::warning( 'Divi is not installed. Unzip it into themes/Divi and add .wp-env.override.json (see README).' );
 	}
@@ -530,7 +530,7 @@ if ( $want_divi ) {
 	$sidebars = get_option( 'sidebars_widgets', array() );
 	$text     = get_option( 'widget_text', array() );
 	$text     = is_array( $text ) ? $text : array();
-	$text[90] = array( 'title' => '', 'text' => '[waypost_search button="no"][waypost_menu]', 'filter' => false, 'visual' => false );
+	$text[90] = array( 'title' => '', 'text' => '[docsway_search button="no"][docsway_menu]', 'filter' => false, 'visual' => false );
 	$text['_multiwidget'] = 1;
 	update_option( 'widget_text', $text );
 	$sidebars['sidebar-1'] = array( 'text-90' );
@@ -543,7 +543,7 @@ if ( ! get_user_by( 'login', 'editor' ) ) {
 
 update_option( 'permalink_structure', '/%postname%/' );
 flush_rewrite_rules();
-Waypost_Tree::flush();
+Docsway_Tree::flush();
 
-$docs = count( Waypost_Tree::flat() );
+$docs = count( Docsway_Tree::flat() );
 WP_CLI::success( "Created {$created} items. {$docs} pages are in the docs menu. Visit /documentation/ to start." );
