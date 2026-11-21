@@ -21,7 +21,7 @@ Docsway Pro is an add-on for the free Docsway plugin. It keeps everything Docswa
 == Installation ==
 
 1. Install and activate the free Docsway plugin from Plugins, Add New.
-2. Upload `aneris-docsway-pro.zip` under Plugins, Add New, Upload Plugin, then activate it.
+2. Upload the Aneris Docsway Pro zip file under Plugins, Add New, Upload Plugin, then activate it.
 3. Enter your licence key when asked. Updates then arrive like any other plugin update.
 
 == Changelog ==

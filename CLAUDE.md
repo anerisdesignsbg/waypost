@@ -29,7 +29,7 @@ Origin: generalised from a client plugin built for FastNetMon.com (`fnm-docs-men
 - `npm test` run all browser tests (site must be running and seeded). `npm run test:headed` to watch.
 - `npm run logs` tail `debug.log`. `npm run lint:php` syntax-check every PHP file.
 - `npm run wp -- <command>` any WP-CLI command, e.g. `npm run wp -- option get docsway_settings`.
-- `npm run zip` build `dist/aneris-docsway.zip` for installing elsewhere.
+- `npm run zip` build `dist/aneris-docsway-<version>.zip` for installing elsewhere (`bin/zip.sh` takes the version from the plugin header and checks it against the readme's Stable tag; `zip:pro` and `demo:zip` work the same way).
 - `npm run plugin-check` run WordPress.org's Plugin Check on the test site (must show no errors before a release). `npm run wporg-assets` rebuild the WordPress.org banners, icons and numbered screenshots in `marketing/wordpress-org/assets/`; `marketing/wordpress-org/SETUP.md` is the submission and release guide.
 - `npm run screenshots` retake the listing screenshots in `marketing/screenshots/` (uses the test site at :8889, reseeds before and after). Listing copy is `aneris-docsway/readme.txt`; tutorials are in `marketing/tutorials/`.
 

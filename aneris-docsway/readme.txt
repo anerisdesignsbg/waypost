@@ -62,7 +62,7 @@ More is on the way: multiple docs sets, private docs for chosen roles, a fuller 
 
 == Installation ==
 
-1. In your dashboard, go to Plugins, Add New, upload `aneris-docsway.zip` and press Install Now. Or upload the `docsway` folder to `/wp-content/plugins/`.
+1. In your dashboard, go to Plugins, Add New, upload the Aneris Docsway zip file and press Install Now. Or upload the `aneris-docsway` folder to `/wp-content/plugins/`.
 2. Activate the plugin. The setup wizard opens.
 3. Follow the steps: choose where your docs live, create sections, add pages to them, and pick a layout and style.
 4. Open your docs home page. That's it.

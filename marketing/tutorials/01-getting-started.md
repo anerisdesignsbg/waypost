@@ -9,7 +9,7 @@ You need WordPress 6.0 or newer, PHP 7.4 or newer, and some pages (or posts) you
 ## 1. Install and activate
 
 1. In your dashboard, go to **Plugins, Add New, Upload Plugin**.
-2. Choose `aneris-docsway.zip` and press **Install Now**, then **Activate**.
+2. Choose the Aneris Docsway zip file and press **Install Now**, then **Activate**.
 
 The setup wizard opens straight away. You can leave it at any time with **Exit setup** and come back later from **Docsway, Settings, Open setup wizard**.
 

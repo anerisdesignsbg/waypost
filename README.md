@@ -30,7 +30,7 @@ Documentation menu, search and page navigation for the pages you already have. T
 | `npm test` | Run all browser tests |
 | `npm run test:headed` | Run tests in a visible browser |
 | `npm run logs` | Show the latest PHP errors |
-| `npm run zip` | Build `dist/aneris-docsway.zip` to install on another site |
+| `npm run zip` | Build `dist/aneris-docsway-<version>.zip` to install on another site |
 
 Edits to files in `aneris-docsway/` show up straight away; just reload the page.
 

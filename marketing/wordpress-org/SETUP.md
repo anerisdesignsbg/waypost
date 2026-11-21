@@ -6,7 +6,7 @@ Everything needed to get Docsway into the WordPress.org plugin directory, from a
 
 | Item | Where |
 |---|---|
-| Plugin zip | `npm run zip` builds `dist/aneris-docsway.zip` (the free plugin, about 115 KB). `npm run zip:pro` builds `dist/aneris-docsway-pro.zip`, which is sold separately and never goes to WordPress.org |
+| Plugin zip | `npm run zip` builds `dist/aneris-docsway-<version>.zip`, for example `aneris-docsway-1.0.0.zip` (the free plugin, about 120 KB). The version comes from the plugin header, the script stops if it differs from the readme's Stable tag, and older builds are removed. `npm run zip:pro` builds `dist/aneris-docsway-pro-<version>.zip`, which is sold separately and never goes to WordPress.org |
 | Listing text, FAQs, screenshot captions | `aneris-docsway/readme.txt` |
 | Banners, icons, screenshots | `marketing/wordpress-org/assets/` (rebuild with `npm run wporg-assets`) |
 | Plugin Check | `npm run plugin-check`: no errors. 5 warnings about `tax_query`, which is how Docsway filters by section; warnings do not block submission |
@@ -51,7 +51,7 @@ Make sure that:
 ## 3. Submit
 
 1. Go to https://wordpress.org/plugins/developers/add/ while logged in.
-2. Upload `dist/aneris-docsway.zip` and accept the terms.
+2. Upload `dist/aneris-docsway-<version>.zip` and accept the terms.
 3. The upload runs Plugin Check automatically; any error blocks the submission until it is fixed.
 4. Confirm the slug it offers (`aneris-docsway`).
 

@@ -12,12 +12,12 @@ The content comes from `marketing/tutorials/*.md` and `marketing/screenshots/`, 
 |---|---|
 | `npm run demo:start` | Start the local demo site at http://localhost:8890 (admin / password) |
 | `npm run demo:build` | Rebuild the docs on the local demo site from the current tutorials |
-| `npm run demo:zip` | Build `dist/aneris-docsway-demo.zip` for a live site |
+| `npm run demo:zip` | Build `dist/aneris-docsway-demo-<version>.zip` for a live site |
 | `npm run demo:stop` | Stop the local demo site |
 
 ## Putting it live at anerisdesigns.co/docsway-demo
 
-You need two zips: `dist/aneris-docsway.zip` (`npm run zip`) and `dist/aneris-docsway-demo.zip` (`npm run demo:zip`).
+You need two zips: `dist/aneris-docsway-<version>.zip` (`npm run zip`) and `dist/aneris-docsway-demo-<version>.zip` (`npm run demo:zip`).
 
 ### 1. Install WordPress in the folder
 
@@ -35,14 +35,14 @@ The demo is its own WordPress, separate from your main site.
 ### 2. Install Docsway
 
 1. In the new site's dashboard, go to **Plugins, Add New, Upload Plugin**.
-2. Choose `aneris-docsway.zip`, press **Install Now**, then **Activate**.
+2. Choose `aneris-docsway-<version>.zip`, press **Install Now**, then **Activate**.
 3. The setup wizard opens. Press **Exit setup**: the demo plugin sets everything up instead.
 
 Once Docsway is approved on WordPress.org, you can install it from **Plugins, Add New** by searching for Docsway instead, and it will update itself like any other plugin.
 
 ### 3. Build the docs
 
-1. **Plugins, Add New, Upload Plugin**, choose `aneris-docsway-demo.zip`, install and activate.
+1. **Plugins, Add New, Upload Plugin**, choose `aneris-docsway-demo-<version>.zip`, install and activate.
 2. Go to **Tools, Docsway demo** and press **Build the docs site**.
 3. When it says "Done: 7 sections, 11 pages and 13 images", press **View the docs**.
 

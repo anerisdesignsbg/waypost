@@ -19,13 +19,13 @@
 		"wporg-assets": "node bin/wporg-assets.js",
 		"website-assets": "node bin/website-assets.js",
 		"plugin-check": "wp-env run tests-cli bash -c 'wp plugin is-installed plugin-check || wp plugin install plugin-check; wp plugin activate plugin-check --quiet; wp plugin check aneris-docsway; status=$?; wp plugin deactivate plugin-check --quiet; exit $status'",
-		"zip": "mkdir -p dist && rm -f dist/aneris-docsway.zip && zip -qr dist/aneris-docsway.zip aneris-docsway -x '*.DS_Store' && echo 'dist/aneris-docsway.zip ready'",
+		"zip": "bash bin/zip.sh aneris-docsway",
 		"demo:content": "node bin/demo-content.js",
 		"demo:start": "npm run demo:content && cd demo && wp-env start",
 		"demo:stop": "cd demo && wp-env stop",
 		"demo:build": "npm run demo:content && cd demo && wp-env run cli wp docsway-demo build",
-		"demo:zip": "npm run demo:content && mkdir -p dist && rm -f dist/aneris-docsway-demo.zip && cd demo && zip -qr ../dist/aneris-docsway-demo.zip aneris-docsway-demo -x '*.DS_Store' && echo 'dist/aneris-docsway-demo.zip ready'",
-		"zip:pro": "mkdir -p dist && rm -f dist/aneris-docsway-pro.zip && zip -qr dist/aneris-docsway-pro.zip aneris-docsway-pro -x '*.DS_Store' && echo 'dist/aneris-docsway-pro.zip ready'"
+		"demo:zip": "npm run demo:content && bash bin/zip.sh aneris-docsway-demo demo",
+		"zip:pro": "bash bin/zip.sh aneris-docsway-pro"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.63.0",

@@ -53,7 +53,7 @@ The dashboard's **SDK Integration** page shows a generated code snippet. The bun
 ## 5. Test a purchase in sandbox mode
 
 1. Turn on **Sandbox** in the Freemius dashboard and buy a plan with their test card details.
-2. Install the free Docsway plugin and `dist/aneris-docsway-pro.zip` on a staging site (not WordPress.org).
+2. Install the free Docsway plugin and `dist/aneris-docsway-pro-<version>.zip` on a staging site (not WordPress.org).
 3. Go to **Docsway, Docsway Pro**, enter the test licence key and check that documents, synonyms and topic filters appear.
 4. Check the Account page, then deactivate the licence and check that Pro pauses again.
 
@@ -65,7 +65,7 @@ The dashboard's **SDK Integration** page shows a generated code snippet. The bun
    npm run zip:pro
    ```
 
-2. In Freemius, go to **Deployment, Add New Version**, upload `dist/aneris-docsway-pro.zip`, then set the version to **Released**.
+2. In Freemius, go to **Deployment, Add New Version**, upload `dist/aneris-docsway-pro-<version>.zip`, then set the version to **Released**.
 
 Freemius stores the zip and sends it to customers after purchase and as automatic updates. Updates appear in WordPress like any other plugin update, for customers with a valid licence (allow up to about 12 hours to show).
 
