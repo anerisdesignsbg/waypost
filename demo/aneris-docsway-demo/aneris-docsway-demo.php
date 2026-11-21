@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       Aneris Docsway Demo Content
- * Description:       Builds the Docsway tutorials as a docs site: sections, pages, screenshots and settings. Run it from Tools, Docsway demo, then you can delete this plugin.
- * Version:           1.0.0
+ * Description:       Builds the Docsway tutorials as a docs site: sections, pages, screenshots and settings, and sends any other address on the site to the docs home or a page you choose. Run it from Tools, Docsway demo, and keep it active for the redirect.
+ * Version:           1.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Requires Plugins:  aneris-docsway
@@ -19,6 +19,9 @@ define( 'DOCSWAY_DEMO_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once DOCSWAY_DEMO_DIR . 'includes/class-markdown.php';
 require_once DOCSWAY_DEMO_DIR . 'includes/class-builder.php';
+require_once DOCSWAY_DEMO_DIR . 'includes/class-redirect.php';
+
+Docsway_Demo_Redirect::init();
 
 add_action( 'admin_menu', 'docsway_demo_menu' );
 add_action( 'admin_post_docsway_demo_build', 'docsway_demo_handle' );
@@ -44,12 +47,13 @@ function docsway_demo_page() {
 			</p></div>
 		<?php endif; ?>
 		<p><?php esc_html_e( 'This builds the Docsway tutorials as a documentation site on this WordPress: doc sections, one page per tutorial with its screenshots, a docs home page set as the front page, and the Docsway settings (Modern style with the docs bar).', 'aneris-docsway-demo' ); ?></p>
-		<p><?php esc_html_e( 'It also sets the site title to "Docsway" and, the first time, moves WordPress\'s sample post and page to the bin. Running it again replaces the tutorial pages with fresh copies; nothing else is touched.', 'aneris-docsway-demo' ); ?></p>
+		<p><?php esc_html_e( 'It also sets the site title to "Aneris Docsway" and, the first time, moves WordPress\'s sample post and page to the bin. Running it again replaces the tutorial pages with fresh copies; nothing else is touched.', 'aneris-docsway-demo' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="docsway_demo_build">
 			<?php wp_nonce_field( 'docsway_demo_build' ); ?>
 			<p><button type="submit" class="button button-primary button-hero"><?php esc_html_e( 'Build the docs site', 'aneris-docsway-demo' ); ?></button></p>
 		</form>
+		<?php Docsway_Demo_Redirect::form(); ?>
 	</div>
 	<?php
 }
