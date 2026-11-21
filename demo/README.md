@@ -15,7 +15,7 @@ The content comes from `marketing/tutorials/*.md` and `marketing/screenshots/`, 
 | `npm run demo:zip` | Build `dist/aneris-docsway-demo.zip` for a live site |
 | `npm run demo:stop` | Stop the local demo site |
 
-## Putting it live at anerisdesigns.co/waypost-plugin
+## Putting it live at anerisdesigns.co/docsway-demo
 
 You need two zips: `dist/aneris-docsway.zip` (`npm run zip`) and `dist/aneris-docsway-demo.zip` (`npm run demo:zip`).
 
@@ -26,11 +26,11 @@ The demo is its own WordPress, separate from your main site.
 **With a one-click installer** (most hosts: cPanel's Softaculous, WordPress Toolkit in Plesk, or your host's own):
 
 1. Choose **Install WordPress**.
-2. Domain: `anerisdesigns.co`. Directory (or path): `waypost-plugin`.
-3. Site name: `Docsway`. Choose an admin username, a strong password and your email.
-4. Install. The site will be at https://anerisdesigns.co/waypost-plugin and its dashboard at https://anerisdesigns.co/waypost-plugin/wp-admin.
+2. Domain: `anerisdesigns.co`. Directory (or path): `docsway-demo`.
+3. Site name: `Aneris Docsway`. Choose an admin username, a strong password and your email.
+4. Install. The site will be at https://anerisdesigns.co/docsway-demo and its dashboard at https://anerisdesigns.co/docsway-demo/wp-admin.
 
-**Without an installer:** download WordPress from wordpress.org, upload its contents into a new `waypost-plugin` folder in your site's web root (often `public_html`), create a database and user in your hosting panel, then open https://anerisdesigns.co/waypost-plugin and follow the installer.
+**Without an installer:** download WordPress from wordpress.org, upload its contents into a new `docsway-demo` folder in your site's web root (often `public_html`), create a database and user in your hosting panel, then open https://anerisdesigns.co/docsway-demo and follow the installer.
 
 ### 2. Install Docsway
 

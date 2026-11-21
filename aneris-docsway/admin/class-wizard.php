@@ -260,7 +260,7 @@ class Docsway_Wizard {
 							<td><label for="dsw-a-<?php echo (int) $p->ID; ?>"><?php echo esc_html( $p->post_title ? $p->post_title : __( '(no title)', 'aneris-docsway' ) ); ?></label>
 								<?php if ( ! is_wp_error( $current ) && count( $current ) > 1 ) : ?><span class="dsw-muted"><?php echo esc_html( sprintf( /* translators: %d: count */ __( '+%d more', 'aneris-docsway' ), count( $current ) - 1 ) ); ?></span><?php endif; ?>
 							</td>
-							<td><select id="dsw-a-<?php echo (int) $p->ID; ?>" name="assign[<?php echo (int) $p->ID; ?>]"><?php echo Docsway_Admin::section_options( $first, __( 'Not in docs', 'aneris-docsway' ) ); // phpcs:ignore ?></select></td>
+							<td><select id="dsw-a-<?php echo (int) $p->ID; ?>" name="assign[<?php echo (int) $p->ID; ?>]"><?php echo wp_kses( Docsway_Admin::section_options( $first, __( 'Not in docs', 'aneris-docsway' ) ), Docsway_Render::allowed_html() ); ?></select></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -417,8 +417,8 @@ class Docsway_Wizard {
 			</div>
 			<div role="tabpanel" id="dsw-p-sc" aria-labelledby="dsw-t-sc" hidden>
 				<p><?php esc_html_e( 'Paste these shortcodes into a widget, page builder text element or template:', 'aneris-docsway' ); ?></p>
-				<p><?php echo Docsway_Admin::copy_field( '[docsway_search]' ); // phpcs:ignore ?></p>
-				<p><?php echo Docsway_Admin::copy_field( '[docsway_menu]' ); // phpcs:ignore ?></p>
+				<p><?php echo wp_kses( Docsway_Admin::copy_field( '[docsway_search]' ), Docsway_Render::allowed_html() ); ?></p>
+				<p><?php echo wp_kses( Docsway_Admin::copy_field( '[docsway_menu]' ), Docsway_Render::allowed_html() ); ?></p>
 			</div>
 		</div>
 

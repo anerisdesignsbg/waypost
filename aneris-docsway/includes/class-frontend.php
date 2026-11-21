@@ -30,9 +30,15 @@ class Docsway_Frontend {
 	}
 
 	/** Accent colour and the text colour that sits on it. */
+	/** CSS variables from Settings. Every value is checked here, as it is printed. */
 	public static function inline_css() {
-		$accent = Docsway_Settings::get( 'accent' );
-		return ':root{--docsway-accent:' . $accent . ';--docsway-accent-base:' . $accent . ';--docsway-on-accent:' . Docsway_Settings::on_accent() . ';}';
+		$accent = sanitize_hex_color( Docsway_Settings::get( 'accent' ) );
+		$accent = $accent ? $accent : '#2563eb';
+		$on     = sanitize_hex_color( Docsway_Settings::on_accent() );
+		$on     = $on ? $on : '#ffffff';
+		$width  = absint( Docsway_Settings::get( 'max_width' ) );
+		return ':root{--docsway-accent:' . $accent . ';--docsway-accent-base:' . $accent . ';--docsway-on-accent:' . $on . ';}'
+			. '.docsway-layout,.docsway-topbar,.docsway-docs-footer{--docsway-max-width:' . ( $width ? $width : 1280 ) . 'px;}';
 	}
 
 	public static function sc_menu( $atts ) {

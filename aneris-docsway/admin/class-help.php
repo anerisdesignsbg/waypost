@@ -171,12 +171,12 @@ Troubleshooting</pre>
 
 					<h3><?php esc_html_e( 'Shortcodes (any theme or builder)', 'aneris-docsway' ); ?></h3>
 					<table class="dsw-codes">
-						<tr><td><?php echo Docsway_Admin::copy_field( '[docsway_menu]' ); // phpcs:ignore ?></td><td><?php esc_html_e( 'Sidebar menu. Optional: title="Docs".', 'aneris-docsway' ); ?></td></tr>
-						<tr><td><?php echo Docsway_Admin::copy_field( '[docsway_search]' ); // phpcs:ignore ?></td><td><?php esc_html_e( 'Search box with instant results. Optional: placeholder="…" button="no".', 'aneris-docsway' ); ?></td></tr>
-						<tr><td><?php echo Docsway_Admin::copy_field( '[docsway_toc]' ); // phpcs:ignore ?></td><td><?php esc_html_e( 'On this page contents. Optional: title="…" min="2".', 'aneris-docsway' ); ?></td></tr>
-						<tr><td><?php echo Docsway_Admin::copy_field( '[docsway_prev_next]' ); // phpcs:ignore ?></td><td><?php esc_html_e( 'Previous and next links.', 'aneris-docsway' ); ?></td></tr>
-						<tr><td><?php echo Docsway_Admin::copy_field( '[docsway_breadcrumbs]' ); // phpcs:ignore ?></td><td><?php esc_html_e( 'Breadcrumbs with search engine markup.', 'aneris-docsway' ); ?></td></tr>
-						<tr><td><?php echo Docsway_Admin::copy_field( '[docsway_search_results]' ); // phpcs:ignore ?></td><td><?php esc_html_e( 'Full results list. Put it on your search results page only.', 'aneris-docsway' ); ?></td></tr>
+						<tr><td><?php echo wp_kses( Docsway_Admin::copy_field( '[docsway_menu]' ), Docsway_Render::allowed_html() ); ?></td><td><?php esc_html_e( 'Sidebar menu. Optional: title="Docs".', 'aneris-docsway' ); ?></td></tr>
+						<tr><td><?php echo wp_kses( Docsway_Admin::copy_field( '[docsway_search]' ), Docsway_Render::allowed_html() ); ?></td><td><?php esc_html_e( 'Search box with instant results. Optional: placeholder="…" button="no".', 'aneris-docsway' ); ?></td></tr>
+						<tr><td><?php echo wp_kses( Docsway_Admin::copy_field( '[docsway_toc]' ), Docsway_Render::allowed_html() ); ?></td><td><?php esc_html_e( 'On this page contents. Optional: title="…" min="2".', 'aneris-docsway' ); ?></td></tr>
+						<tr><td><?php echo wp_kses( Docsway_Admin::copy_field( '[docsway_prev_next]' ), Docsway_Render::allowed_html() ); ?></td><td><?php esc_html_e( 'Previous and next links.', 'aneris-docsway' ); ?></td></tr>
+						<tr><td><?php echo wp_kses( Docsway_Admin::copy_field( '[docsway_breadcrumbs]' ), Docsway_Render::allowed_html() ); ?></td><td><?php esc_html_e( 'Breadcrumbs with search engine markup.', 'aneris-docsway' ); ?></td></tr>
+						<tr><td><?php echo wp_kses( Docsway_Admin::copy_field( '[docsway_search_results]' ), Docsway_Render::allowed_html() ); ?></td><td><?php esc_html_e( 'Full results list. Put it on your search results page only.', 'aneris-docsway' ); ?></td></tr>
 					</table>
 					<p><?php esc_html_e( 'In a PHP template:', 'aneris-docsway' ); ?> <code>&lt;?php echo do_shortcode( '[docsway_menu]' ); ?&gt;</code></p>
 				</article>

@@ -159,25 +159,25 @@ class Docsway_Admin {
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Header and footer', 'aneris-docsway' ); ?></th>
 						<td>
-							<fieldset class="dsw-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Header and footer', 'aneris-docsway' ); ?></legend><?php echo $radio( 'chrome', 'theme', __( 'Your theme’s', 'aneris-docsway' ) ) . $radio( 'chrome', 'docsway', __( 'Docsway docs bar', 'aneris-docsway' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset>
+							<fieldset class="dsw-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Header and footer', 'aneris-docsway' ); ?></legend><?php echo wp_kses( $radio( 'chrome', 'theme', __( 'Your theme’s', 'aneris-docsway' ) ) . $radio( 'chrome', 'docsway', __( 'Docsway docs bar', 'aneris-docsway' ) ), Docsway_Render::allowed_html() );?></fieldset>
 							<p class="description"><?php esc_html_e( 'The docs bar gives docs pages a header of their own, with your logo, search, a light / dark switch (with Auto light and dark) and a link back to your site, like a separate docs site.', 'aneris-docsway' ); ?></p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Sidebar', 'aneris-docsway' ); ?></th>
-						<td><fieldset class="dsw-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Sidebar', 'aneris-docsway' ); ?></legend><?php echo $radio( 'sidebar', 'left', __( 'Left', 'aneris-docsway' ) ) . $radio( 'sidebar', 'right', __( 'Right', 'aneris-docsway' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset></td>
+						<td><fieldset class="dsw-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Sidebar', 'aneris-docsway' ); ?></legend><?php echo wp_kses( $radio( 'sidebar', 'left', __( 'Left', 'aneris-docsway' ) ) . $radio( 'sidebar', 'right', __( 'Right', 'aneris-docsway' ) ), Docsway_Render::allowed_html() );?></fieldset></td>
 					</tr>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Width', 'aneris-docsway' ); ?></th>
 						<td>
-							<fieldset class="dsw-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Width', 'aneris-docsway' ); ?></legend><?php echo $radio( 'width', 'contained', __( 'Within a page width', 'aneris-docsway' ) ) . $radio( 'width', 'full', __( 'Full width', 'aneris-docsway' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset>
+							<fieldset class="dsw-segs"><legend class="screen-reader-text"><?php esc_html_e( 'Width', 'aneris-docsway' ); ?></legend><?php echo wp_kses( $radio( 'width', 'contained', __( 'Within a page width', 'aneris-docsway' ) ) . $radio( 'width', 'full', __( 'Full width', 'aneris-docsway' ) ), Docsway_Render::allowed_html() );?></fieldset>
 							<p class="dsw-layout__max"><label><?php esc_html_e( 'Page width', 'aneris-docsway' ); ?> <input type="number" name="max_width" min="760" max="2400" step="10" value="<?php echo (int) $o['max_width']; ?>" class="small-text"> px</label></p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'On this page contents', 'aneris-docsway' ); ?></th>
 						<td>
-							<fieldset class="dsw-segs"><legend class="screen-reader-text"><?php esc_html_e( 'On this page contents', 'aneris-docsway' ); ?></legend><?php echo $radio( 'toc_position', 'side', __( 'Own column', 'aneris-docsway' ) ) . $radio( 'toc_position', 'content', __( 'Top of the page', 'aneris-docsway' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in $radio. ?></fieldset>
+							<fieldset class="dsw-segs"><legend class="screen-reader-text"><?php esc_html_e( 'On this page contents', 'aneris-docsway' ); ?></legend><?php echo wp_kses( $radio( 'toc_position', 'side', __( 'Own column', 'aneris-docsway' ) ) . $radio( 'toc_position', 'content', __( 'Top of the page', 'aneris-docsway' ) ), Docsway_Render::allowed_html() );?></fieldset>
 							<p class="description"><?php esc_html_e( 'The column sits opposite the menu on wide screens and moves to the top of the page on smaller ones.', 'aneris-docsway' ); ?></p>
 						</td>
 					</tr>
@@ -216,7 +216,7 @@ class Docsway_Admin {
 		</p>
 		<p class="dsw-look-label"><strong><?php esc_html_e( 'Preview', 'aneris-docsway' ); ?></strong> <span class="dsw-muted"><?php esc_html_e( 'Sample pages. With “Follow my theme”, your site uses your theme’s fonts and colours instead of these.', 'aneris-docsway' ); ?></span></p>
 		<?php
-		echo Docsway_Render::style_preview( $o['style'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+		echo wp_kses( Docsway_Render::style_preview( $o['style'] ), Docsway_Render::allowed_html() );
 	}
 
 	public static function copy_field( $text ) {
@@ -371,7 +371,7 @@ class Docsway_Admin {
 							</div>
 							<div class="dsw-step__actions">
 								<a class="button<?php echo $st['done'] ? '' : ' button-primary'; ?>" href="<?php echo esc_url( $st['url'] ); ?>"><?php echo esc_html( $st['cta'] ); ?></a>
-								<?php echo self::help_link( $st['help'], __( 'Tutorial', 'aneris-docsway' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+								<?php echo wp_kses( self::help_link( $st['help'], __( 'Tutorial', 'aneris-docsway' ) ), Docsway_Render::allowed_html() ); ?>
 							</div>
 						</li>
 					<?php endforeach; ?>
@@ -397,12 +397,12 @@ class Docsway_Admin {
 					<h2><?php esc_html_e( 'Shortcodes', 'aneris-docsway' ); ?></h2>
 					<p class="dsw-muted"><?php esc_html_e( 'Paste these into a Divi Text module, a Shortcode block or a widget. Blocks with the same names are in the block inserter under “Docs”.', 'aneris-docsway' ); ?></p>
 					<table class="dsw-codes">
-						<tr><th><?php esc_html_e( 'Sidebar menu', 'aneris-docsway' ); ?></th><td><?php echo self::copy_field( '[docsway_menu]' ); // phpcs:ignore ?></td></tr>
-						<tr><th><?php esc_html_e( 'Search box', 'aneris-docsway' ); ?></th><td><?php echo self::copy_field( '[docsway_search]' ); // phpcs:ignore ?></td></tr>
-						<tr><th><?php esc_html_e( 'On this page', 'aneris-docsway' ); ?></th><td><?php echo self::copy_field( '[docsway_toc]' ); // phpcs:ignore ?></td></tr>
-						<tr><th><?php esc_html_e( 'Previous / next', 'aneris-docsway' ); ?></th><td><?php echo self::copy_field( '[docsway_prev_next]' ); // phpcs:ignore ?></td></tr>
-						<tr><th><?php esc_html_e( 'Breadcrumbs', 'aneris-docsway' ); ?></th><td><?php echo self::copy_field( '[docsway_breadcrumbs]' ); // phpcs:ignore ?></td></tr>
-						<tr><th><?php esc_html_e( 'Results list', 'aneris-docsway' ); ?></th><td><?php echo self::copy_field( '[docsway_search_results]' ); // phpcs:ignore ?></td></tr>
+						<tr><th><?php esc_html_e( 'Sidebar menu', 'aneris-docsway' ); ?></th><td><?php echo wp_kses( self::copy_field( '[docsway_menu]' ), Docsway_Render::allowed_html() ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Search box', 'aneris-docsway' ); ?></th><td><?php echo wp_kses( self::copy_field( '[docsway_search]' ), Docsway_Render::allowed_html() ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'On this page', 'aneris-docsway' ); ?></th><td><?php echo wp_kses( self::copy_field( '[docsway_toc]' ), Docsway_Render::allowed_html() ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Previous / next', 'aneris-docsway' ); ?></th><td><?php echo wp_kses( self::copy_field( '[docsway_prev_next]' ), Docsway_Render::allowed_html() ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Breadcrumbs', 'aneris-docsway' ); ?></th><td><?php echo wp_kses( self::copy_field( '[docsway_breadcrumbs]' ), Docsway_Render::allowed_html() ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Results list', 'aneris-docsway' ); ?></th><td><?php echo wp_kses( self::copy_field( '[docsway_search_results]' ), Docsway_Render::allowed_html() ); ?></td></tr>
 					</table>
 				</section>
 			</div>
@@ -454,7 +454,7 @@ class Docsway_Admin {
 			<section class="dsw-card">
 				<div class="dsw-card__head">
 					<h2><?php esc_html_e( 'Drag to reorder', 'aneris-docsway' ); ?></h2>
-					<?php echo self::help_link( 'ordering' ); // phpcs:ignore ?>
+					<?php echo wp_kses( self::help_link( 'ordering' ), Docsway_Render::allowed_html() ); ?>
 				</div>
 				<?php if ( ! $tree ) : ?>
 					<div class="dsw-empty">
@@ -538,7 +538,7 @@ class Docsway_Admin {
 			<section class="dsw-card">
 				<div class="dsw-card__head">
 					<h2><?php esc_html_e( 'Assign pages to a section', 'aneris-docsway' ); ?></h2>
-					<?php echo self::help_link( 'assigning' ); // phpcs:ignore ?>
+					<?php echo wp_kses( self::help_link( 'assigning' ), Docsway_Render::allowed_html() ); ?>
 				</div>
 				<p class="dsw-muted"><?php esc_html_e( 'Tick pages, choose a section, then press Add. A page can sit in more than one section.', 'aneris-docsway' ); ?></p>
 
@@ -581,7 +581,7 @@ class Docsway_Admin {
 
 				<div class="dsw-bar">
 					<label for="docsway-assign-term" class="screen-reader-text"><?php esc_html_e( 'Section', 'aneris-docsway' ); ?></label>
-					<select id="docsway-assign-term"><?php echo self::section_options( 0, __( 'Choose a section…', 'aneris-docsway' ) ); // phpcs:ignore ?></select>
+					<select id="docsway-assign-term"><?php echo wp_kses( self::section_options( 0, __( 'Choose a section…', 'aneris-docsway' ) ), Docsway_Render::allowed_html() ); ?></select>
 					<button type="button" class="button button-primary" data-assign="add"><?php esc_html_e( 'Add to section', 'aneris-docsway' ); ?></button>
 					<button type="button" class="button" data-assign="move"><?php esc_html_e( 'Move to section', 'aneris-docsway' ); ?></button>
 					<button type="button" class="button-link dsw-danger" data-assign="remove"><?php esc_html_e( 'Remove from docs', 'aneris-docsway' ); ?></button>
@@ -595,7 +595,7 @@ class Docsway_Admin {
 					<p><?php esc_html_e( 'You have no sections yet. Create the first one here.', 'aneris-docsway' ); ?></p>
 				<?php endif; ?>
 				<p><label for="docsway-new-name"><?php esc_html_e( 'Name', 'aneris-docsway' ); ?></label><br><input type="text" id="docsway-new-name" class="regular-text" placeholder="<?php esc_attr_e( 'e.g. Getting started', 'aneris-docsway' ); ?>"></p>
-				<p><label for="docsway-new-parent"><?php esc_html_e( 'Inside', 'aneris-docsway' ); ?></label><br><select id="docsway-new-parent"><?php echo self::section_options( 0, __( 'Top level', 'aneris-docsway' ) ); // phpcs:ignore ?></select></p>
+				<p><label for="docsway-new-parent"><?php esc_html_e( 'Inside', 'aneris-docsway' ); ?></label><br><select id="docsway-new-parent"><?php echo wp_kses( self::section_options( 0, __( 'Top level', 'aneris-docsway' ) ), Docsway_Render::allowed_html() ); ?></select></p>
 				<p><button type="button" class="button" id="docsway-add-section"><?php esc_html_e( 'Create section', 'aneris-docsway' ); ?></button> <span class="dsw-status" id="docsway-section-status" aria-live="polite"></span></p>
 				<hr>
 				<p class="dsw-muted"><?php esc_html_e( 'Move replaces a page’s current sections with the one you choose. Remove takes the page out of the docs menu and search but does not delete it.', 'aneris-docsway' ); ?></p>
@@ -610,7 +610,7 @@ class Docsway_Admin {
 		<section class="dsw-card">
 			<div class="dsw-card__head">
 				<h2><?php esc_html_e( 'Make a section heading clickable', 'aneris-docsway' ); ?></h2>
-				<?php echo self::help_link( 'section-links' ); // phpcs:ignore ?>
+				<?php echo wp_kses( self::help_link( 'section-links' ), Docsway_Render::allowed_html() ); ?>
 			</div>
 			<p class="dsw-muted"><?php esc_html_e( 'By default a section heading only opens and closes its list. Link it to an overview page and the heading becomes a link too. That page is then shown as the heading instead of as an item inside the list.', 'aneris-docsway' ); ?></p>
 			<?php if ( ! $terms ) : ?>
@@ -706,7 +706,7 @@ class Docsway_Admin {
 
 			<div class="dsw-help__body">
 			<section class="dsw-card" id="content">
-				<div class="dsw-card__head"><h2><?php esc_html_e( 'Content', 'aneris-docsway' ); ?></h2><?php echo self::help_link( 'getting-started' ); // phpcs:ignore ?></div>
+				<div class="dsw-card__head"><h2><?php esc_html_e( 'Content', 'aneris-docsway' ); ?></h2><?php echo wp_kses( self::help_link( 'getting-started' ), Docsway_Render::allowed_html() ); ?></div>
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Docs live in', 'aneris-docsway' ); ?></th>
@@ -741,7 +741,7 @@ class Docsway_Admin {
 			</section>
 
 			<section class="dsw-card" id="navigation">
-				<div class="dsw-card__head"><h2><?php esc_html_e( 'Navigation', 'aneris-docsway' ); ?></h2><?php echo self::help_link( 'page-features' ); // phpcs:ignore ?></div>
+				<div class="dsw-card__head"><h2><?php esc_html_e( 'Navigation', 'aneris-docsway' ); ?></h2><?php echo wp_kses( self::help_link( 'page-features' ), Docsway_Render::allowed_html() ); ?></div>
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Menu behaviour', 'aneris-docsway' ); ?></th>
@@ -783,7 +783,7 @@ class Docsway_Admin {
 			</section>
 
 			<section class="dsw-card" id="search">
-				<div class="dsw-card__head"><h2><?php esc_html_e( 'Search', 'aneris-docsway' ); ?></h2><?php echo self::help_link( 'search' ); // phpcs:ignore ?></div>
+				<div class="dsw-card__head"><h2><?php esc_html_e( 'Search', 'aneris-docsway' ); ?></h2><?php echo wp_kses( self::help_link( 'search' ), Docsway_Render::allowed_html() ); ?></div>
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Full results show', 'aneris-docsway' ); ?></th>
@@ -837,9 +837,9 @@ class Docsway_Admin {
 			</section>
 
 			<section class="dsw-card" id="search-home">
-				<div class="dsw-card__head"><h2><?php esc_html_e( 'Search home', 'aneris-docsway' ); ?></h2><?php echo self::help_link( 'search' ); // phpcs:ignore ?></div>
+				<div class="dsw-card__head"><h2><?php esc_html_e( 'Search home', 'aneris-docsway' ); ?></h2><?php echo wp_kses( self::help_link( 'search' ), Docsway_Render::allowed_html() ); ?></div>
 				<p><?php echo wp_kses( __( 'A welcoming start page for your docs: a heading, a large search box, quick search buttons and topic cards. Add it with the <strong>Docs Search Home</strong> block, the <strong>Docsway Search Home</strong> Divi module or this shortcode:', 'aneris-docsway' ), array( 'strong' => array() ) ); ?></p>
-				<?php echo self::copy_field( '[docsway_search_home]' ); // phpcs:ignore ?>
+				<?php echo wp_kses( self::copy_field( '[docsway_search_home]' ), Docsway_Render::allowed_html() ); ?>
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><label for="dsw-home-title"><?php esc_html_e( 'Heading', 'aneris-docsway' ); ?></label></th>
@@ -920,7 +920,7 @@ class Docsway_Admin {
 			<?php do_action( 'docsway_settings_panels', $o ); ?>
 
 			<section class="dsw-card" id="appearance">
-				<div class="dsw-card__head"><h2><?php esc_html_e( 'Appearance', 'aneris-docsway' ); ?></h2><?php echo self::help_link( 'layout' ); // phpcs:ignore ?></div>
+				<div class="dsw-card__head"><h2><?php esc_html_e( 'Appearance', 'aneris-docsway' ); ?></h2><?php echo wp_kses( self::help_link( 'layout' ), Docsway_Render::allowed_html() ); ?></div>
 				<h3 class="dsw-subhead"><?php esc_html_e( 'Layout', 'aneris-docsway' ); ?></h3>
 				<?php self::layout_picker( $o ); ?>
 				<table class="form-table" role="presentation">
@@ -934,7 +934,7 @@ class Docsway_Admin {
 						</td>
 					</tr>
 				</table>
-				<h3 class="dsw-subhead"><?php esc_html_e( 'Style', 'aneris-docsway' ); ?> <?php echo self::help_link( 'styling' ); // phpcs:ignore ?></h3>
+				<h3 class="dsw-subhead"><?php esc_html_e( 'Style', 'aneris-docsway' ); ?> <?php echo wp_kses( self::help_link( 'styling' ), Docsway_Render::allowed_html() ); ?></h3>
 				<table class="form-table" role="presentation">
 					<tr>
 						<td colspan="2" class="dsw-flush"><?php self::style_picker( $o ); ?></td>
@@ -1013,7 +1013,7 @@ class Docsway_Admin {
 		?>
 		<div class="dsw-grid dsw-grid--two">
 			<section class="dsw-card">
-				<div class="dsw-card__head"><h2><?php esc_html_e( 'Searches with no results', 'aneris-docsway' ); ?></h2><?php echo self::help_link( 'insights' ); // phpcs:ignore ?></div>
+				<div class="dsw-card__head"><h2><?php esc_html_e( 'Searches with no results', 'aneris-docsway' ); ?></h2><?php echo wp_kses( self::help_link( 'insights' ), Docsway_Render::allowed_html() ); ?></div>
 				<p class="dsw-muted"><?php esc_html_e( 'Each of these is a question your docs did not answer. Write a page for it, or add the word people used to an existing page.', 'aneris-docsway' ); ?><?php do_action( 'docsway_insights_no_results_tip' ); ?></p>
 				<?php self::log_table( $failed, true ); ?>
 			</section>
@@ -1025,7 +1025,7 @@ class Docsway_Admin {
 		</div>
 		<?php $votes = Docsway_Feedback::rows(); ?>
 		<section class="dsw-card dsw-feedback-card" id="page-feedback">
-			<div class="dsw-card__head"><h2><?php esc_html_e( 'Page feedback', 'aneris-docsway' ); ?></h2><?php echo self::help_link( 'insights' ); // phpcs:ignore ?></div>
+			<div class="dsw-card__head"><h2><?php esc_html_e( 'Page feedback', 'aneris-docsway' ); ?></h2><?php echo wp_kses( self::help_link( 'insights' ), Docsway_Render::allowed_html() ); ?></div>
 			<p class="dsw-muted"><?php esc_html_e( 'Answers to “Was this page helpful?”, least helpful first. Pages near the top are the ones to improve.', 'aneris-docsway' ); ?></p>
 			<?php if ( ! Docsway_Settings::get( 'feedback' ) ) : ?>
 				<div class="notice notice-warning inline"><p><?php esc_html_e( '“Was this page helpful?” is switched off in Settings, Navigation.', 'aneris-docsway' ); ?></p></div>
@@ -1077,7 +1077,7 @@ class Docsway_Admin {
 		$results = Docsway_Search::results_url();
 		foreach ( $rows as $q => $r ) {
 			$label = $results ? '<a href="' . esc_url( add_query_arg( 'dq', rawurlencode( $q ), $results ) ) . '" target="_blank" rel="noopener">' . esc_html( $q ) . '</a>' : esc_html( $q );
-			echo '<tr><td>' . $label . '</td><td class="num">' . esc_html( number_format_i18n( $r['count'] ) ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput
+			echo wp_kses( '<tr><td>' . $label . '</td><td class="num">' . esc_html( number_format_i18n( $r['count'] ) ) . '</td>', Docsway_Render::allowed_html() );
 			if ( ! $failed ) {
 				echo '<td class="num">' . ( 0 === (int) $r['hits'] ? '<span class="dsw-pill dsw-pill--warn">0</span>' : esc_html( number_format_i18n( $r['hits'] ) ) ) . '</td>';
 			}

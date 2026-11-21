@@ -21,9 +21,11 @@ list( $docsway_header, $docsway_footer ) = Docsway_Layout::block_chrome();
 
 <div class="wp-site-blocks">
 <?php
-echo $docsway_header; // phpcs:ignore WordPress.Security.EscapeOutput -- rendered blocks.
-echo $docsway_main; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-echo $docsway_footer; // phpcs:ignore WordPress.Security.EscapeOutput -- rendered blocks.
+// The theme's header and footer parts and the layout (which holds the page content)
+// are escaped with the post content list plus Docsway's own markup.
+echo wp_kses( $docsway_header, Docsway_Render::content_allowed_html() );
+echo wp_kses( $docsway_main, Docsway_Render::content_allowed_html() );
+echo wp_kses( $docsway_footer, Docsway_Render::content_allowed_html() );
 ?>
 </div>
 

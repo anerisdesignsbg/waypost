@@ -10,6 +10,9 @@ class Docsway_Render {
 
 	private static $uid = 0;
 
+	/** Breadcrumb structured data, printed once in the footer. */
+	private static $schema = null;
+
 	public static function current_post_id( $post_id = 0 ) {
 		if ( $post_id ) {
 			return (int) $post_id;
@@ -22,6 +25,88 @@ class Docsway_Render {
 			return (int) get_the_ID();
 		}
 		return 0;
+	}
+
+	/**
+	 * The tags and attributes Docsway's own markup uses, for wp_kses() when it is
+	 * printed. Everything is escaped as it is built and again here, as it is echoed.
+	 */
+	public static function allowed_html() {
+		static $allowed = null;
+		if ( null !== $allowed ) {
+			return $allowed;
+		}
+		$global = array( 'class' => true, 'id' => true, 'style' => true, 'title' => true, 'role' => true, 'hidden' => true, 'tabindex' => true, 'lang' => true, 'dir' => true, 'inert' => true, 'data-*' => true );
+		foreach ( array( 'activedescendant', 'atomic', 'autocomplete', 'busy', 'checked', 'controls', 'current', 'describedby', 'disabled', 'expanded', 'haspopup', 'hidden', 'invalid', 'keyshortcuts', 'label', 'labelledby', 'level', 'live', 'modal', 'multiselectable', 'orientation', 'owns', 'posinset', 'pressed', 'readonly', 'relevant', 'required', 'roledescription', 'selected', 'setsize', 'sort', 'valuemax', 'valuemin', 'valuenow', 'valuetext' ) as $a ) {
+			$global[ 'aria-' . $a ] = true;
+		}
+		$paint = array( 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'stroke-linejoin' => true, 'fill-rule' => true, 'clip-rule' => true, 'opacity' => true, 'transform' => true );
+		$tags  = array(
+			'a'        => array( 'href' => true, 'target' => true, 'rel' => true, 'download' => true, 'hreflang' => true ),
+			'button'   => array( 'type' => true, 'name' => true, 'value' => true, 'disabled' => true, 'form' => true ),
+			'form'     => array( 'action' => true, 'method' => true, 'autocomplete' => true, 'novalidate' => true, 'target' => true ),
+			'input'    => array( 'type' => true, 'name' => true, 'value' => true, 'placeholder' => true, 'autocomplete' => true, 'autocapitalize' => true, 'autocorrect' => true, 'spellcheck' => true, 'enterkeyhint' => true, 'inputmode' => true, 'required' => true, 'readonly' => true, 'disabled' => true, 'checked' => true, 'min' => true, 'max' => true, 'step' => true, 'size' => true, 'maxlength' => true, 'list' => true, 'form' => true, 'pattern' => true ),
+			'label'    => array( 'for' => true ),
+			'select'   => array( 'name' => true, 'multiple' => true, 'disabled' => true, 'required' => true, 'size' => true ),
+			'option'   => array( 'value' => true, 'selected' => true, 'disabled' => true, 'label' => true ),
+			'optgroup' => array( 'label' => true, 'disabled' => true ),
+			'textarea' => array( 'name' => true, 'rows' => true, 'cols' => true, 'placeholder' => true, 'readonly' => true, 'disabled' => true, 'required' => true, 'spellcheck' => true ),
+			'img'      => array( 'src' => true, 'srcset' => true, 'sizes' => true, 'alt' => true, 'width' => true, 'height' => true, 'loading' => true, 'decoding' => true ),
+			'time'     => array( 'datetime' => true ),
+			'ol'       => array( 'start' => true, 'reversed' => true ),
+			'td'       => array( 'colspan' => true, 'rowspan' => true, 'headers' => true ),
+			'th'       => array( 'colspan' => true, 'rowspan' => true, 'headers' => true, 'scope' => true ),
+			'details'  => array( 'open' => true ),
+			'dialog'   => array( 'open' => true ),
+			'progress' => array( 'value' => true, 'max' => true ),
+			'meter'    => array( 'value' => true, 'min' => true, 'max' => true, 'low' => true, 'high' => true, 'optimum' => true ),
+			'svg'      => array_merge( $paint, array( 'xmlns' => true, 'viewbox' => true, 'width' => true, 'height' => true, 'focusable' => true, 'preserveaspectratio' => true ) ),
+			'g'        => $paint,
+			'path'     => array_merge( $paint, array( 'd' => true ) ),
+			'circle'   => array_merge( $paint, array( 'cx' => true, 'cy' => true, 'r' => true ) ),
+			'rect'     => array_merge( $paint, array( 'x' => true, 'y' => true, 'width' => true, 'height' => true, 'rx' => true, 'ry' => true ) ),
+			'line'     => array_merge( $paint, array( 'x1' => true, 'y1' => true, 'x2' => true, 'y2' => true ) ),
+			'polyline' => array_merge( $paint, array( 'points' => true ) ),
+			'polygon'  => array_merge( $paint, array( 'points' => true ) ),
+		);
+		foreach ( array( 'abbr', 'article', 'aside', 'b', 'br', 'code', 'dd', 'div', 'dl', 'dt', 'em', 'fieldset', 'figcaption', 'figure', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'i', 'kbd', 'legend', 'li', 'main', 'mark', 'nav', 'output', 'p', 'pre', 'section', 'small', 'span', 'strong', 'sub', 'summary', 'sup', 'table', 'tbody', 'tfoot', 'thead', 'tr', 'u', 'ul' ) as $t ) {
+			$tags[ $t ] = array();
+		}
+		foreach ( $tags as $t => $attrs ) {
+			$tags[ $t ] = array_merge( $global, $attrs );
+		}
+		$allowed = $tags;
+		return $allowed;
+	}
+
+	/**
+	 * Page content and theme template parts rendered by WordPress for the docs
+	 * layout: everything a post may contain, plus embeds, forms and Docsway's markup.
+	 */
+	public static function content_allowed_html() {
+		static $allowed = null;
+		if ( null !== $allowed ) {
+			return $allowed;
+		}
+		$media   = array( 'src' => true, 'width' => true, 'height' => true, 'controls' => true, 'autoplay' => true, 'loop' => true, 'muted' => true, 'playsinline' => true, 'poster' => true, 'preload' => true, 'crossorigin' => true );
+		$allowed = array_merge(
+			self::allowed_html(),
+			array(
+				'iframe'  => array( 'src' => true, 'width' => true, 'height' => true, 'title' => true, 'name' => true, 'allow' => true, 'allowfullscreen' => true, 'frameborder' => true, 'loading' => true, 'referrerpolicy' => true, 'sandbox' => true, 'class' => true, 'id' => true, 'style' => true, 'data-*' => true ),
+				'video'   => $media,
+				'audio'   => $media,
+				'source'  => array( 'src' => true, 'srcset' => true, 'type' => true, 'media' => true, 'sizes' => true, 'width' => true, 'height' => true ),
+				'track'   => array( 'src' => true, 'kind' => true, 'srclang' => true, 'label' => true, 'default' => true ),
+				'picture' => array( 'class' => true, 'id' => true ),
+			)
+		);
+		// Keep WordPress's own list for anything both define, so post content loses nothing.
+		foreach ( wp_kses_allowed_html( 'post' ) as $tag => $attrs ) {
+			$allowed[ $tag ] = isset( $allowed[ $tag ] ) && is_array( $attrs ) ? array_merge( $allowed[ $tag ], $attrs ) : $attrs;
+		}
+		/** Lets a site allow more tags in doc page content shown in the docs layout. */
+		$allowed = apply_filters( 'docsway_content_allowed_html', $allowed );
+		return $allowed;
 	}
 
 	private static function uid( $prefix ) {
@@ -123,7 +208,7 @@ class Docsway_Render {
 				'<a class="docsway-menu__link" href="%s">%s %s</a>',
 				esc_url( $n['url'] ),
 				esc_html( $n['title'] ),
-				self::file_badge( $n['file'] ) // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+				wp_kses( self::file_badge( $n['file'] ), self::allowed_html() )
 			);
 		} elseif ( $n['url'] ) {
 			printf(
@@ -336,7 +421,7 @@ class Docsway_Render {
 				echo '<span' . ( $last ? ' aria-current="page"' : '' ) . '>' . esc_html( $it['title'] ) . '</span>';
 			}
 			echo '</li>';
-			$el = array( '@type' => 'ListItem', 'position' => $k + 1, 'name' => $it['title'] );
+			$el = array( '@type' => 'ListItem', 'position' => $k + 1, 'name' => html_entity_decode( wp_strip_all_tags( $it['title'] ), ENT_QUOTES, 'UTF-8' ) );
 			if ( $it['url'] ) {
 				$el['item'] = $it['url'];
 			} elseif ( $last ) {
@@ -345,8 +430,26 @@ class Docsway_Render {
 			$schema['itemListElement'][] = $el;
 		}
 		echo '</ol></nav>';
-		wp_print_inline_script_tag( wp_json_encode( $schema ), array( 'type' => 'application/ld+json' ) );
+		if ( null === self::$schema ) {
+			self::$schema = $schema;
+			add_action( 'wp_footer', array( __CLASS__, 'print_schema' ) );
+		}
 		return ob_get_clean();
+	}
+
+	/**
+	 * Prints the breadcrumb structured data. The JSON flags turn < > & ' and " into
+	 * \u escapes, so a page title can never close the script element.
+	 */
+	public static function print_schema() {
+		if ( empty( self::$schema ) ) {
+			return;
+		}
+		$json = wp_json_encode( self::$schema, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		self::$schema = array();
+		if ( $json ) {
+			wp_print_inline_script_tag( $json, array( 'type' => 'application/ld+json' ) );
+		}
 	}
 
 	/**
@@ -525,7 +628,7 @@ class Docsway_Render {
 		$name = get_bloginfo( 'name' );
 		ob_start();
 		?>
-		<header class="docsway-topbar docsway-topbar--<?php echo esc_attr( $o['width'] ); ?>" style="--docsway-max-width: <?php echo (int) $o['max_width']; ?>px">
+		<header class="docsway-topbar docsway-topbar--<?php echo esc_attr( $o['width'] ); ?>">
 			<div class="docsway-topbar__inner">
 				<a class="docsway-topbar__brand" href="<?php echo esc_url( self::docs_home_url() ); ?>">
 					<?php if ( $logo ) : ?>
@@ -539,12 +642,12 @@ class Docsway_Render {
 					<?php
 					// The docs home and the results page have their own large search box.
 					if ( 'doc' === $kind ) {
-						echo self::search_box( array( 'button' => 'no' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+						echo wp_kses( self::search_box( array( 'button' => 'no' ) ), self::allowed_html() );
 					}
 					?>
 				</div>
 				<div class="docsway-topbar__links">
-					<?php echo self::scheme_toggle(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+					<?php echo wp_kses( self::scheme_toggle(), self::allowed_html() );?>
 					<a class="docsway-topbar__back" href="<?php echo esc_url( self::back_url() ); ?>"><?php echo esc_html( '' !== $o['back_label'] ? $o['back_label'] : sprintf( /* translators: %s: site name */ __( 'Back to %s', 'aneris-docsway' ), $name ) ); ?></a>
 				</div>
 			</div>
@@ -562,7 +665,7 @@ class Docsway_Render {
 	/** Footer for the standalone docs bar. */
 	public static function docs_footer() {
 		$o = Docsway_Settings::all();
-		return '<footer class="docsway-docs-footer docsway-topbar--' . esc_attr( $o['width'] ) . '" style="--docsway-max-width: ' . (int) $o['max_width'] . 'px"><div class="docsway-topbar__inner">'
+		return '<footer class="docsway-docs-footer docsway-topbar--' . esc_attr( $o['width'] ) . '"><div class="docsway-topbar__inner">'
 			. '<span>&copy; ' . esc_html( wp_date( 'Y' ) . ' ' . get_bloginfo( 'name' ) ) . '</span>'
 			. '<a href="' . esc_url( self::back_url() ) . '">' . esc_html( '' !== $o['back_label'] ? $o['back_label'] : __( 'Back to the main site', 'aneris-docsway' ) ) . '</a>'
 			. '</div></footer>';
@@ -634,69 +737,50 @@ class Docsway_Render {
 			$classes[] = 'docsway-layout--with-toc';
 		}
 
-		ob_start();
-		?>
-		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" style="--docsway-max-width: <?php echo (int) $o['max_width']; ?>px">
-			<div class="docsway-layout__inner">
-				<aside class="docsway-layout__sidebar" aria-label="<?php esc_attr_e( 'Documentation', 'aneris-docsway' ); ?>">
-					<div class="docsway-layout__sticky">
-						<?php
-						// The docs home and the results page have a search box of their own, and the
-						// standalone docs bar holds both search and the light / dark switch.
-						if ( 'theme' === $o['chrome'] ) {
-							$tools = ( 'doc' === $kind ? self::search_box( array( 'button' => 'no' ) ) : '' ) . self::scheme_toggle();
-							if ( $tools ) {
-								echo '<div class="docsway-layout__tools">' . $tools . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-							}
-						}
-						echo self::menu(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-						?>
-					</div>
-				</aside>
-				<main class="docsway-layout__main" id="wp--skip-link--target">
-					<?php
-					if ( 'doc' === $kind && $o['crumbs_auto'] ) {
-						echo self::breadcrumbs( array( 'post_id' => $post_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-					}
-					?>
-					<article id="post-<?php echo (int) $post_id; ?>" <?php post_class( 'docsway-layout__article', $post_id ); ?>>
-						<?php if ( 'home' !== $kind ) : ?>
-							<h1 class="docsway-layout__title"><?php echo esc_html( get_the_title( $post_id ) ); ?></h1>
-						<?php endif; ?>
-						<?php
-						if ( 'doc' === $kind ) {
-							echo self::page_meta( $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-						}
-						?>
-						<?php if ( $toc ) : ?>
-							<div class="docsway-layout__toc-inline"><?php echo $toc; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?></div>
-						<?php endif; ?>
-						<div class="entry-content docsway-layout__content">
-							<?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput -- the post content, filtered by WordPress. ?>
-						</div>
-					</article>
-					<?php
-					if ( 'doc' === $kind ) {
-						echo self::feedback( $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-					}
-					if ( 'doc' === $kind && $o['prevnext_auto'] ) {
-						echo self::prev_next( array( 'post_id' => $post_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-					}
-					$edit = get_edit_post_link( $post_id );
-					if ( $edit ) {
-						echo '<p class="docsway-layout__edit"><a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit this page', 'aneris-docsway' ) . '</a></p>';
-					}
-					?>
-				</main>
-				<?php if ( $toc ) : ?>
-					<aside class="docsway-layout__toc" aria-label="<?php esc_attr_e( 'On this page', 'aneris-docsway' ); ?>">
-						<div class="docsway-layout__sticky"><?php echo $toc; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?></div>
-					</aside>
-				<?php endif; ?>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+		// Built as one string: the template escapes the whole layout with wp_kses() as it prints it.
+		$tools = '';
+		if ( 'theme' === $o['chrome'] ) {
+			// The docs home and the results page have a search box of their own, and the
+			// standalone docs bar holds both search and the light / dark switch.
+			$tools = ( 'doc' === $kind ? self::search_box( array( 'button' => 'no' ) ) : '' ) . self::scheme_toggle();
+		}
+		$edit = get_edit_post_link( $post_id );
+
+		$html  = '<div class="' . esc_attr( implode( ' ', $classes ) ) . '"><div class="docsway-layout__inner">';
+		$html .= '<aside class="docsway-layout__sidebar" aria-label="' . esc_attr__( 'Documentation', 'aneris-docsway' ) . '"><div class="docsway-layout__sticky">';
+		$html .= ( $tools ? '<div class="docsway-layout__tools">' . $tools . '</div>' : '' ) . self::menu();
+		$html .= '</div></aside>';
+		$html .= '<main class="docsway-layout__main" id="wp--skip-link--target">';
+		if ( 'doc' === $kind && $o['crumbs_auto'] ) {
+			$html .= self::breadcrumbs( array( 'post_id' => $post_id ) );
+		}
+		$html .= '<article id="post-' . (int) $post_id . '" class="' . esc_attr( implode( ' ', get_post_class( 'docsway-layout__article', $post_id ) ) ) . '">';
+		if ( 'home' !== $kind ) {
+			$html .= '<h1 class="docsway-layout__title">' . esc_html( get_the_title( $post_id ) ) . '</h1>';
+		}
+		if ( 'doc' === $kind ) {
+			$html .= self::page_meta( $post_id );
+		}
+		if ( $toc ) {
+			$html .= '<div class="docsway-layout__toc-inline">' . $toc . '</div>';
+		}
+		$html .= '<div class="entry-content docsway-layout__content">' . $content . '</div>';
+		$html .= '</article>';
+		if ( 'doc' === $kind ) {
+			$html .= self::feedback( $post_id );
+		}
+		if ( 'doc' === $kind && $o['prevnext_auto'] ) {
+			$html .= self::prev_next( array( 'post_id' => $post_id ) );
+		}
+		if ( $edit ) {
+			$html .= '<p class="docsway-layout__edit"><a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit this page', 'aneris-docsway' ) . '</a></p>';
+		}
+		$html .= '</main>';
+		if ( $toc ) {
+			$html .= '<aside class="docsway-layout__toc" aria-label="' . esc_attr__( 'On this page', 'aneris-docsway' ) . '"><div class="docsway-layout__sticky">' . $toc . '</div></aside>';
+		}
+		$html .= '</div></div>';
+		return $html;
 	}
 
 	/** Icons for topic cards: key => array( label, SVG path data on a 24 x 24 grid ). */
@@ -770,11 +854,11 @@ class Docsway_Render {
 			<?php if ( '' !== $intro ) : ?>
 				<p class="docsway-home__intro"><?php echo esc_html( $intro ); ?></p>
 			<?php endif; ?>
-			<?php echo self::search_box( array( 'context' => 'home' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
-			<?php echo self::quick_searches( '', $here ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+			<?php echo wp_kses( self::search_box( array( 'context' => 'home' ) ), self::allowed_html() );?>
+			<?php echo wp_kses( self::quick_searches( '', $here ), self::allowed_html() );?>
 			<div class="docsway-home__results docsway-results" aria-live="polite"<?php echo '' === $q ? ' hidden' : ''; ?>>
 				<p class="docsway-home__back"><a href="<?php echo esc_url( $here ); ?>">&larr; <?php echo esc_html( $cards ? __( 'Back to topics', 'aneris-docsway' ) : __( 'Clear search', 'aneris-docsway' ) ); ?></a></p>
-				<div class="docsway-home__list"><?php echo '' !== $q ? self::results( $q, $page, $here ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?></div>
+				<div class="docsway-home__list"><?php echo wp_kses( '' !== $q ? self::results( $q, $page, $here ) : '', self::allowed_html() );?></div>
 			</div>
 			<?php if ( $cards ) : ?>
 				<div class="docsway-home__topics">
@@ -782,7 +866,7 @@ class Docsway_Render {
 				<div class="docsway-cards">
 					<?php foreach ( $cards as $c ) : ?>
 						<a class="docsway-card" href="<?php echo esc_url( $c['url'] ); ?>">
-							<span class="docsway-card__icon"><?php echo self::icon_svg( $c['icon'], 28 ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from a fixed list. ?></span>
+							<span class="docsway-card__icon"><?php echo wp_kses( self::icon_svg( $c['icon'], 28 ), self::allowed_html() );?></span>
 							<span class="docsway-card__title"><?php echo esc_html( $c['title'] ); ?></span>
 							<?php if ( '' !== $c['text'] ) : ?>
 								<span class="docsway-card__text"><?php echo esc_html( $c['text'] ); ?></span>
@@ -851,15 +935,15 @@ class Docsway_Render {
 				<nav class="docsway-menu">
 					<p class="docsway-menu__title"><?php esc_html_e( 'Documentation', 'aneris-docsway' ); ?></p>
 					<ul class="docsway-menu__list docsway-menu__list--root">
-						<li class="docsway-menu__item docsway-menu__item--top"><div class="docsway-menu__row"><span class="docsway-menu__label"><?php esc_html_e( 'Getting started', 'aneris-docsway' ); ?></span><span class="docsway-menu__toggle"><?php echo $chev; // phpcs:ignore ?></span></div></li>
-						<li class="docsway-menu__item docsway-menu__item--top is-ancestor"><div class="docsway-menu__row"><span class="docsway-menu__label"><?php esc_html_e( 'Installation', 'aneris-docsway' ); ?></span><span class="docsway-menu__toggle" aria-expanded="true"><?php echo $chev; // phpcs:ignore ?></span></div>
+						<li class="docsway-menu__item docsway-menu__item--top"><div class="docsway-menu__row"><span class="docsway-menu__label"><?php esc_html_e( 'Getting started', 'aneris-docsway' ); ?></span><span class="docsway-menu__toggle"><?php echo wp_kses( $chev, self::allowed_html() ); ?></span></div></li>
+						<li class="docsway-menu__item docsway-menu__item--top is-ancestor"><div class="docsway-menu__row"><span class="docsway-menu__label"><?php esc_html_e( 'Installation', 'aneris-docsway' ); ?></span><span class="docsway-menu__toggle" aria-expanded="true"><?php echo wp_kses( $chev, self::allowed_html() ); ?></span></div>
 							<ul class="docsway-menu__list">
 								<li class="docsway-menu__item"><div class="docsway-menu__row"><a class="docsway-menu__link" href="#"><?php esc_html_e( 'Requirements', 'aneris-docsway' ); ?></a></div></li>
 								<li class="docsway-menu__item is-current"><div class="docsway-menu__row"><a class="docsway-menu__link" href="#"><?php esc_html_e( 'Quick install', 'aneris-docsway' ); ?></a></div></li>
 								<li class="docsway-menu__item"><div class="docsway-menu__row"><a class="docsway-menu__link" href="#"><?php esc_html_e( 'Upgrading', 'aneris-docsway' ); ?></a></div></li>
 							</ul>
 						</li>
-						<li class="docsway-menu__item docsway-menu__item--top"><div class="docsway-menu__row"><span class="docsway-menu__label"><?php esc_html_e( 'Troubleshooting', 'aneris-docsway' ); ?></span><span class="docsway-menu__toggle"><?php echo $chev; // phpcs:ignore ?></span></div></li>
+						<li class="docsway-menu__item docsway-menu__item--top"><div class="docsway-menu__row"><span class="docsway-menu__label"><?php esc_html_e( 'Troubleshooting', 'aneris-docsway' ); ?></span><span class="docsway-menu__toggle"><?php echo wp_kses( $chev, self::allowed_html() ); ?></span></div></li>
 					</ul>
 				</nav>
 			</div>

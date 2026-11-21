@@ -23,9 +23,9 @@ $docsway_footer = Docsway_Render::docs_footer();
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <?php
-echo $docsway_top; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-echo $docsway_main; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
-echo $docsway_footer; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+echo wp_kses( $docsway_top, Docsway_Render::allowed_html() );
+echo wp_kses( $docsway_main, Docsway_Render::content_allowed_html() ); // Holds the page content.
+echo wp_kses( $docsway_footer, Docsway_Render::allowed_html() );
 wp_footer();
 ?>
 </body>

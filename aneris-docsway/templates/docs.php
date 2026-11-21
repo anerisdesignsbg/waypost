@@ -7,5 +7,6 @@
 defined( 'ABSPATH' ) || exit;
 
 get_header();
-echo Docsway_Layout::render(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside.
+// The layout holds the page content, so it is escaped with the post content list plus Docsway's own markup.
+echo wp_kses( Docsway_Layout::render(), Docsway_Render::content_allowed_html() );
 get_footer();

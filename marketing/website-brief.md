@@ -1,19 +1,29 @@
-# Brief: add Docsway to anerisdesigns.co
+# Brief: add Aneris Docsway to anerisdesigns.co
 
-This brief is for an AI assistant (or designer) adding **Docsway** to the Aneris Designs website, **anerisdesigns.co**. It contains everything needed: what the product is, the facts, ready-to-use copy, the page structure, the assets and what is still undecided. Ask the owner before inventing anything not written here.
+This brief is for an AI assistant (or designer) adding **Aneris Docsway** to the Aneris Designs website, **anerisdesigns.co**. It contains everything needed: what the product is, the facts, ready-to-use copy, the page structure, the assets and what is still undecided. Ask the owner before inventing anything not written here.
 
-**Name:** the full product name is **Aneris Docsway** (Docsway for short in running text). It was called Waypost until November 2026, when WordPress.org asked for a name starting with our own identifier because another plugin already sells under "Waypost". If the site already mentions Waypost anywhere, replace it. The WordPress.org address will be `https://wordpress.org/plugins/aneris-docsway/` once approved; the live demo stays at `https://anerisdesigns.co/waypost-plugin/` for now.
+## Update, 20 November 2026: the product has a new name
 
+The plugin was called **Waypost** in earlier versions of this brief. It is now **Aneris Docsway**. WordPress.org would not accept "Waypost" because another plugin already sells under that name, and asked for a name starting with our own identifier.
+
+If anything has already been built from the earlier brief:
+
+- Replace every "Waypost" with "Aneris Docsway" (first mention, titles, headings) or "Docsway" (running text). The paid add-on is now **Aneris Docsway Pro**.
+- Replace any image built from the old files with the new ones from section 9. The banner, social image, icon and screenshots have all been rebuilt with the new name.
+- If the page address uses `waypost`, change it (see question 2 in section 10) and set up a redirect from the old address.
+- The free plugin's WordPress.org address will be `https://wordpress.org/plugins/aneris-docsway/` once approved (not `/waypost/`).
+- The live demo has moved from `https://anerisdesigns.co/waypost-plugin/` to **`https://anerisdesigns.co/docsway-demo/`**. Update every demo link and the search form in section 8. The old address redirects, but links should use the new one.
+- Keep `/aneris-docsway/` free for the product page: the demo lives in a real folder, and a folder of the same name would hide a WordPress page at that address.
 
 ## 1. The task
 
-Add Docsway to anerisdesigns.co as a product:
+Add Aneris Docsway to anerisdesigns.co as a product:
 
-1. A **product page**, for example at `https://anerisdesigns.co/docsway/`, using the site's normal header and footer. It explains Docsway, shows screenshots, compares Free and Pro, shows prices and links to the live demo.
+1. A **product page**, for example at `https://anerisdesigns.co/aneris-docsway/` (address to confirm, question 2), using the site's normal header and footer. It explains Docsway, shows screenshots, compares Free and Pro, shows prices and links to the live demo.
 2. A small **live search demo** on that page: a search box that sends the visitor to real results on the demo docs site (code in section 8).
-3. A link to the product page from the main site, for example a "Docsway" or "Products" item in the menu, and optionally a short card on the home page.
+3. A link to the product page from the main site, for example an "Aneris Docsway" or "Products" item in the menu, and optionally a short card on the home page.
 
-The **full demo and documentation** already exist as a separate WordPress install at **https://anerisdesigns.co/waypost-plugin/**. Do not rebuild them; link to them.
+The **full demo and documentation** already exist as a separate WordPress install at **https://anerisdesigns.co/docsway-demo/**. Do not rebuild them; link to them.
 
 Before starting, check with the owner which builder the site uses (WordPress with Divi, the block editor, or something else) and build the page in that.
 
@@ -22,12 +32,14 @@ Before starting, check with the owner which builder the site uses (WordPress wit
 - **UK English** (colour, organise, licence as a noun, favourite).
 - **No em dashes** anywhere: not in headings, body copy, buttons or alt text. Use commas, colons, full stops or "and" instead.
 - Plain, friendly wording. Short sentences. No hype words such as "revolutionary" or "game-changing".
-- The product name is written **Docsway** (capital W, one word), and the paid add-on **Docsway Pro**.
+- The full product name is **Aneris Docsway**. Use it in the page title, the hero, the first mention in body text and anywhere the name stands alone (buttons, cards, menu items). After that, **Docsway** on its own is fine in running text. Write it as one word with a capital D only.
+- The paid add-on is **Aneris Docsway Pro**, shortened to **Docsway Pro** after the first mention.
+- Never write "Waypost". That was the old name.
 - The company is **Aneris Designs**.
 
-## 3. What Docsway is
+## 3. What Aneris Docsway is
 
-Docsway is a **WordPress plugin** that turns the pages a site already has into a proper documentation site, with **smart search that answers questions**. There is no content migration: pages stay where they are, page addresses do not change, and pages built with Divi, the block editor or any page builder keep their layouts.
+Aneris Docsway is a **WordPress plugin** that turns the pages a site already has into a proper documentation site, with **smart search that answers questions**. There is no content migration: pages stay where they are, page addresses do not change, and pages built with Divi, the block editor or any page builder keep their layouts.
 
 **Who it is for:** businesses and agencies with a WordPress site that need product docs, a help centre, a knowledge base, user guides or internal manuals, without moving content into a separate docs system.
 
@@ -66,7 +78,7 @@ Docsway is a **WordPress plugin** that turns the pages a site already has into a
 - Pages, posts or any custom post type; its own sections or an existing taxonomy.
 - Setup wizard and built-in tutorials.
 
-### Docsway Pro (paid add-on)
+### Aneris Docsway Pro (paid add-on)
 
 Everything in the free version, plus:
 - **Search inside documents:** PDF, Word, PowerPoint, Excel, OpenDocument and text files from the Media Library join the doc sections. Search finds words inside them, and the menu lists them with a file type label.
@@ -81,8 +93,8 @@ Everything in the free version, plus:
 | Item | Status |
 |---|---|
 | Free plugin on WordPress.org | **Under review**, first submitted 12 November 2026 and resubmitted as Aneris Docsway on 19 November 2026. Its page will be `https://wordpress.org/plugins/aneris-docsway/` once approved. Until then, the "Download free" button should say "Coming soon to WordPress.org" or link to the demo instead. |
-| Docsway Pro | **Not on sale yet.** Sold through Freemius once the free plugin is approved. Until then show "Coming soon" or a "Notify me" link, not live buy buttons. |
-| Live demo and docs | Live at `https://anerisdesigns.co/waypost-plugin/` |
+| Aneris Docsway Pro | **Not on sale yet.** Sold through Freemius once the free plugin is approved. Until then show "Coming soon" or a "Notify me" link, not live buy buttons. |
+| Live demo and docs | Live at `https://anerisdesigns.co/docsway-demo/` (moved from `/waypost-plugin/`, which redirects) |
 | Freemius checkout links | Not created yet. The owner will supply them. |
 
 **Planned Pro prices (USD; confirm with the owner before publishing):**
@@ -114,7 +126,7 @@ Everything in the free version, plus:
 
 ## 7. Ready-to-use copy
 
-**Page title (SEO):** Docsway: documentation site and smart search for WordPress
+**Page title (SEO):** Aneris Docsway: documentation site and smart search for WordPress
 
 **Meta description (under 160 characters):** Turn the pages you already have into a docs site with a sidebar menu and smart search that answers questions. No migration, no URL changes.
 
@@ -123,7 +135,9 @@ Everything in the free version, plus:
 - Your pages, now a proper documentation site
 - Docs your readers can actually search
 
-**Hero subheading:** Docsway builds a sidebar menu, smart search, contents and page navigation around the pages you already have. Nothing moves, nothing breaks, and setup takes about five minutes.
+**Hero eyebrow or label above the headline:** Aneris Docsway for WordPress
+
+**Hero subheading:** Aneris Docsway builds a sidebar menu, smart search, contents and page navigation around the pages you already have. Nothing moves, nothing breaks, and setup takes about five minutes.
 
 **Problem and promise:** Most documentation tools make you move your content somewhere new. Docsway works the other way round: put your existing pages into sections and it builds a complete docs site around them, with search that points readers to the exact answer.
 
@@ -144,7 +158,7 @@ Everything in the free version, plus:
 - Text: Classic themes, block themes and Divi, with blocks, Divi modules and shortcodes. Use pages, posts or any custom post type.
 
 **Pro section:**
-- Heading: Docsway Pro: for docs that go beyond web pages
+- Heading: Aneris Docsway Pro: for docs that go beyond web pages
 - Text: Search inside PDF, Word, PowerPoint and Excel files, teach search your readers' own words with synonyms, and let readers filter results by topic.
 
 **FAQ (short answers):**
@@ -157,12 +171,14 @@ Everything in the free version, plus:
 
 **Buttons:** "See the live demo", "Try the search", "Get Docsway Pro", "Download free".
 
+**Menu item or home page card:** "Aneris Docsway", with the line "Turn your WordPress pages into a docs site with smart search." and the icon from section 9.
+
 ## 8. Live search demo code
 
 A plain HTML search box that sends the visitor to real results on the demo docs site. It needs no plugin on the main site and works in a Divi Code module or a block editor Custom HTML block. Style it to match the site.
 
 ```html
-<form class="docsway-try" action="https://anerisdesigns.co/waypost-plugin/" method="get">
+<form class="docsway-try" action="https://anerisdesigns.co/docsway-demo/" method="get">
   <label for="docsway-try-q">Try it: ask a question about Docsway</label>
   <input id="docsway-try-q" type="search" name="dq" placeholder="How do I change the style?" required>
   <button type="submit">Search the docs</button>
@@ -175,7 +191,7 @@ Example questions to show near it (the demo site holds the Docsway tutorials, so
 
 ### Website-ready mockups (use these first)
 
-In `marketing/website/`, as JPGs sized for the web. They show real Docsway screens inside browser and phone frames on brand backgrounds. Rebuild them with `npm run website-assets`.
+In `/Users/milan/ANERIS/Waypost/marketing/website/`, as JPGs sized for the web. They show real Docsway screens inside browser and phone frames on brand backgrounds. Rebuild them with `npm run website-assets`.
 
 | File | Size | Shows | Best for |
 |---|---|---|---|
@@ -189,13 +205,13 @@ In `marketing/website/`, as JPGs sized for the web. They show real Docsway scree
 | `setup-wizard.jpg` | 1600 × 1100 | The setup wizard | "Five-minute setup" |
 | `search-insights.jpg` | 1600 × 1100 | Search insights | Insights point |
 | `documents-pro.jpg` | 1600 × 1100 | A PDF found by search, with a "Docsway Pro" badge | Pro section |
-| `social-share.jpg` | 1200 × 630 | Logo, headline and a screenshot | Social media and link previews (the page's Open Graph / featured image) |
+| `social-share.jpg` | 1200 × 630 | "Aneris Docsway" logo, headline and a screenshot | Social media and link previews (the page's Open Graph / featured image) |
 
 `marketing/website/screenshots/` holds all 14 plain screenshots at 1600 pixels wide as JPGs, for galleries or lightboxes.
 
 ### Original screenshots
 
-These files are in the Docsway project folder. The owner can upload them to the website's Media Library.
+These files are in the Docsway project folder, `/Users/milan/ANERIS/Waypost/` (paths below are relative to it). The owner can upload them to the website's Media Library.
 
 **Screenshots** (`marketing/screenshots/`, 2880 × 1800 pixels; resize to about 1600 wide for the web):
 
@@ -228,8 +244,8 @@ Captions for each are in `marketing/screenshots/captions.txt`. The screenshots s
 ## 10. Open questions to ask the owner
 
 1. Which builder does anerisdesigns.co use, and should the product page match an existing page's design?
-2. Page address: `/docsway/` or something else?
+2. Page address: `/aneris-docsway/` (suggested), `/docsway/` or something else? Not `/docsway-demo/`, which is the demo's folder.
 3. Are the planned prices and the 30-day refund final?
 4. Before launch, should buttons say "Coming soon", collect emails ("Notify me"), or be hidden?
 5. Should the demo docs site's "Back to" link point to the new product page? (Set in the demo site under Docsway, Settings, Appearance, Back link.)
-6. Should Docsway appear in the main menu, on the home page, or both?
+6. Should Aneris Docsway appear in the main menu, on the home page, or both?

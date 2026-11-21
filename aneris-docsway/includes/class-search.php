@@ -316,6 +316,7 @@ class Docsway_Search {
 			array(
 				'post_type'           => $args['post_type'],
 				'post_status'         => $args['post_status'],
+				'has_password'        => false, // Password-protected pages never show in search: their text stays private.
 				'posts_per_page'      => self::CANDIDATES,
 				'ignore_sticky_posts' => true,
 				'no_found_rows'       => true,

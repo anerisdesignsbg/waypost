@@ -175,6 +175,9 @@ foreach ( array( 'Email notifications', 'Slack notifications', 'Telegram notific
 	$ids[ $t ] = $page( $t, $body( $t ), $s_notify );
 }
 $ids['Internal: support playbook'] = $page( 'Internal: support playbook', $body( 'x' ), $s_config, 'private' ); // Must not appear.
+// Password protected: listed in the menu, but its text must never show in search (WordPress.org review).
+$ids['Staff setup notes'] = $page( 'Staff setup notes', '<p>Only staff can read this page. The staff unlock word is zephyrquill.</p><h2>Server room access</h2><p>Ask the office manager for the zephyrquill key card.</p>', $s_config );
+wp_update_post( array( 'ID' => $ids['Staff setup notes'], 'post_password' => 'magpie' ) );
 
 $s_import = $section( 'Importing photos' );
 foreach ( array( 'Import from a phone', 'Import from Google Photos', 'Import from iCloud', 'Import from a folder', 'Import from Dropbox', 'Import from an SD card', 'Watch folders' ) as $t ) {

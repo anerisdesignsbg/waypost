@@ -149,6 +149,17 @@ test.describe( 'Search', () => {
 		await expect( page.locator( '.docsway-search__panel a[href$="#custom-anchor"]' ).first() ).toBeVisible();
 	} );
 
+	test( 'password-protected pages never show their text in search', async ( { page, request } ) => {
+		await page.goto( '/documentation/?dq=zephyrquill' );
+		await expect( page.locator( '.docsway-results__count' ) ).toContainText( '0 results' );
+		const res = await request.get( '/wp-json/docsway/v1/search?q=zephyrquill' );
+		expect( await res.text() ).not.toContain( 'unlock word' );
+		// The page itself still asks for its password.
+		await page.goto( '/staff-setup-notes/' );
+		await expect( page.locator( 'form.post-password-form' ) ).toBeVisible();
+		await expect( page.locator( 'body' ) ).not.toContainText( 'unlock word' );
+	} );
+
 	test( 'Vietnamese text is searchable', async ( { page } ) => {
 		await page.goto( '/search-results/?dq=' + encodeURIComponent( 'cài đặt' ) );
 		await expect( page.locator( '.docsway-result__title' ).first() ).toContainText( 'Cài đặt' );
