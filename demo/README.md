@@ -52,6 +52,7 @@ Once Docsway is approved on WordPress.org, you can install it from **Plugins, Ad
 - **Back link:** the docs bar links back to https://anerisdesigns.co. To change it, go to **Docsway, Settings, Appearance, Back link**.
 - **Comments:** under **Settings, Discussion**, untick "Allow people to submit comments on new posts" if you do not want comments.
 - **Look:** the demo uses the Docsway docs bar, so the theme hardly shows. Any theme works; WordPress's default is fine.
+- **Try a style:** a button in the bottom left corner of every docs page lets visitors switch the demo between Docsway's seven styles. Their choice is kept in a cookie for 30 days and only changes the demo for them; the site's own style stays as set in Docsway, Settings. If the host has a page cache, the switch still works because a small script applies the visitor's style as the page loads.
 - Keep **Aneris Docsway Demo Content** active. Besides rebuilding, it sends any address that is not a doc page (old links, mistyped addresses, the theme's "Page not found", blog, category, author and attachment pages, feeds and WordPress search) to the docs home. To send them to the product page instead, enter its address under **Tools, Docsway demo, Other addresses** and press Save. Leave it empty for the docs home. The docs pages, search, the dashboard and the login page are never redirected.
 
 ## Updating the tutorials later

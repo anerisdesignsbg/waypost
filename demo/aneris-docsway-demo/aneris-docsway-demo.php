@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       Aneris Docsway Demo Content
- * Description:       Builds the Docsway tutorials as a docs site: sections, pages, screenshots and settings, and sends any other address on the site to the docs home or a page you choose. Run it from Tools, Docsway demo, and keep it active for the redirect.
- * Version:           1.1.1
+ * Description:       Builds the Docsway tutorials as a docs site: sections, pages, screenshots and settings, sends any other address on the site to the docs home or a page you choose, and lets visitors try each Docsway style. Run it from Tools, Docsway demo, and keep it active for the redirect.
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Requires Plugins:  aneris-docsway
@@ -20,8 +20,10 @@ define( 'DOCSWAY_DEMO_DIR', plugin_dir_path( __FILE__ ) );
 require_once DOCSWAY_DEMO_DIR . 'includes/class-markdown.php';
 require_once DOCSWAY_DEMO_DIR . 'includes/class-builder.php';
 require_once DOCSWAY_DEMO_DIR . 'includes/class-redirect.php';
+require_once DOCSWAY_DEMO_DIR . 'includes/class-styles.php';
 
 Docsway_Demo_Redirect::init();
+Docsway_Demo_Styles::init();
 
 add_action( 'admin_menu', 'docsway_demo_menu' );
 add_action( 'admin_post_docsway_demo_build', 'docsway_demo_handle' );
