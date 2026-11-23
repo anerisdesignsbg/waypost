@@ -25,3 +25,6 @@ Thumbs.db
 
 # Demo content copied in by npm run demo:content
 demo/aneris-docsway-demo/content/
+
+# Private notes, never commit
+Logins.txt

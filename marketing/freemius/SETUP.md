@@ -1,6 +1,6 @@
-# Selling Docsway Pro with Freemius
+# Selling Aneris Docsway Pro with Freemius
 
-Docsway Pro is sold through Freemius as a **paid-only (premium-only) plugin**. Freemius handles checkout, VAT and sales tax (it is the merchant of record), licence keys and automatic updates. The free Docsway plugin on WordPress.org has no Freemius code at all.
+Aneris Docsway Pro is sold through Freemius as a **paid-only (premium-only) plugin**. Freemius handles checkout, VAT and sales tax (it is the merchant of record), licence keys and automatic updates. The free plugin on WordPress.org (https://wordpress.org/plugins/aneris-docsway/, live since 23 November 2026) has no Freemius code at all.
 
 Checked against the Freemius documentation on 12 November 2026.
 
@@ -21,16 +21,20 @@ Checked against the Freemius documentation on 12 November 2026.
 ## 2. Create the product
 
 1. **Add Product, WordPress Plugin.**
-2. Name: `Docsway Pro`. Slug: `docsway-pro` (it must match the code).
+2. Name: `Aneris Docsway Pro`. Slug: `aneris-docsway-pro` (it must match `'slug'` in `includes/freemius.php`). The product was first created as Waypost Pro; renamed and its slug changed under **Settings** on 23 November 2026. Website URL: https://anerisdesigns.co/our-projects/aneris-docsway/
 3. Choose to sell it as a **paid-only** plugin, not freemium, and not as an add-on. Freemius advises against the add-on model for most cases, and it would need the SDK in the free plugin.
 
 ## 3. Plans and prices
 
 1. Under **Plans**, delete the default **free** plan. With no free plan and at least one paid plan, Freemius treats the product as paid-only.
-2. Add your paid plans. A common shape for docs plugins:
-   - **Personal:** 1 site
-   - **Business:** 5 sites
-   - **Agency:** unlimited sites
+2. Add your paid plans. The plans set up for launch:
+   - **1 site:** $49 a year, or $149 lifetime
+   - **5 sites:** $99 a year, or $299 lifetime
+   - **25 sites:** $199 a year, or $599 lifetime
+
+   Refunds: 30 days, flexible policy (no questions asked), set 23 November 2026.
+
+   Coupon `LAUNCH30`: 30% off the first year for the first 60 customers. Check its start and end dates match the real launch.
 3. For each plan choose annual and, if you like, lifetime prices. Freemius can also offer a free trial (with or without a card); the code treats a trial like an active licence.
 
 The prices are yours to set; check competitors such as BetterDocs and Heroic KB first.
@@ -72,7 +76,7 @@ Freemius stores the zip and sends it to customers after purchase and as automati
 ## 7. Start selling
 
 - Use Freemius **Checkout** links or buttons on your website's pricing page (the dashboard generates them).
-- Replace "Docsway Pro is coming soon." in `aneris-docsway/readme.txt` with a link to that page, and do the same on your website.
+- Replace "Docsway Pro is coming soon." in `aneris-docsway/readme.txt` with a link to the product page, and do the same on your website. A readme-only change needs no new version: edit `readme.txt` in both `trunk/` and `tags/1.0.0/` of the SVN copy and commit (see `marketing/wordpress-org/SETUP.md`).
 
 ## Releasing an update
 

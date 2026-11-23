@@ -2,6 +2,10 @@
 
 This brief is for an AI assistant (or designer) adding **Aneris Docsway** to the Aneris Designs website, **anerisdesigns.co**. It contains everything needed: what the product is, the facts, ready-to-use copy, the page structure, the assets and what is still undecided. Ask the owner before inventing anything not written here.
 
+## Update, 23 November 2026: everything is live
+
+The free plugin is on WordPress.org, Aneris Docsway Pro is on sale through Freemius, and the product page address is `https://anerisdesigns.co/our-projects/aneris-docsway/`. Section 5 has the prices, the launch coupon and the Buy button links. Replace any "Coming soon" text with them.
+
 ## Update, 20 November 2026: the product has a new name
 
 The plugin was called **Waypost** in earlier versions of this brief. It is now **Aneris Docsway**. WordPress.org would not accept "Waypost" because another plugin already sells under that name, and asked for a name starting with our own identifier.
@@ -11,15 +15,15 @@ If anything has already been built from the earlier brief:
 - Replace every "Waypost" with "Aneris Docsway" (first mention, titles, headings) or "Docsway" (running text). The paid add-on is now **Aneris Docsway Pro**.
 - Replace any image built from the old files with the new ones from section 9. The banner, social image, icon and screenshots have all been rebuilt with the new name.
 - If the page address uses `waypost`, change it (see question 2 in section 10) and set up a redirect from the old address.
-- The free plugin's WordPress.org address will be `https://wordpress.org/plugins/aneris-docsway/` once approved (not `/waypost/`).
+- The free plugin is **live on WordPress.org** at `https://wordpress.org/plugins/aneris-docsway/` (not `/waypost/`).
+- The product page address is decided: **`https://anerisdesigns.co/our-projects/aneris-docsway/`**.
 - The live demo has moved from `https://anerisdesigns.co/waypost-plugin/` to **`https://anerisdesigns.co/docsway-demo/`**. Update every demo link and the search form in section 8. The old address redirects, but links should use the new one.
-- Keep `/aneris-docsway/` free for the product page: the demo lives in a real folder, and a folder of the same name would hide a WordPress page at that address.
 
 ## 1. The task
 
 Add Aneris Docsway to anerisdesigns.co as a product:
 
-1. A **product page**, for example at `https://anerisdesigns.co/aneris-docsway/` (address to confirm, question 2), using the site's normal header and footer. It explains Docsway, shows screenshots, compares Free and Pro, shows prices and links to the live demo.
+1. A **product page** at `https://anerisdesigns.co/our-projects/aneris-docsway/`, using the site's normal header and footer. It explains Docsway, shows screenshots, compares Free and Pro, shows prices and links to the live demo.
 2. A small **live search demo** on that page: a search box that sends the visitor to real results on the demo docs site (code in section 8).
 3. A link to the product page from the main site, for example an "Aneris Docsway" or "Products" item in the menu, and optionally a short card on the home page.
 
@@ -92,23 +96,36 @@ Everything in the free version, plus:
 
 | Item | Status |
 |---|---|
-| Free plugin on WordPress.org | **Under review**, first submitted 12 November 2026 and resubmitted as Aneris Docsway on 19 November 2026. Its page will be `https://wordpress.org/plugins/aneris-docsway/` once approved. Until then, the "Download free" button should say "Coming soon to WordPress.org" or link to the demo instead. |
-| Aneris Docsway Pro | **Not on sale yet.** Sold through Freemius once the free plugin is approved. Until then show "Coming soon" or a "Notify me" link, not live buy buttons. |
+| Free plugin on WordPress.org | **Live** since 23 November 2026 at `https://wordpress.org/plugins/aneris-docsway/`. The "Download free" button links there. |
+| Aneris Docsway Pro | **On sale** since 23 November 2026 through Freemius. Use live Buy buttons with the checkout links below. |
 | Live demo and docs | Live at `https://anerisdesigns.co/docsway-demo/` (moved from `/waypost-plugin/`, which redirects) |
-| Freemius checkout links | Not created yet. The owner will supply them. |
+| Freemius checkout links | Ready, see "Buy buttons" below. |
 
-**Planned Pro prices (USD; confirm with the owner before publishing):**
+**Pro prices (USD, live in Freemius):**
 
-| Sites | Annual | Lifetime (early bird) |
+| Sites | Annual | Lifetime |
 |---|---|---|
 | 1 site | $49 / year | $149 |
 | 5 sites | $99 / year | $299 |
 | 25 sites | $199 / year | $599 |
 
-- **Launch coupon:** `LAUNCH30` gives 30% off the first year, for the first 60 customers, currently set to run from 12 November 2026 to 14 January 2027. The dates may move to match the real launch.
+- **Launch coupon:** `LAUNCH30` gives 30% off the first payment (the first year, or a lifetime licence), once per customer, for the first 60 customers, until **23 January 2027**. Show it as a launch offer near the prices, for example "Launch offer: 30% off with code LAUNCH30, until 23 January 2027". Remove it after that date.
 - **Licences:** if a licence expires, Pro keeps working; only updates and support stop.
-- **Refunds:** a 30-day money-back guarantee is intended. Confirm with the owner.
+- **Refunds:** 30-day money-back guarantee, no questions asked (set in Freemius as the flexible policy). Say it near the prices and the Buy buttons.
 - **Payments:** handled by Freemius, which deals with VAT and sales tax.
+
+**Buy buttons.** Each button opens the Freemius checkout with the number of sites and billing already chosen. Plain links work in any builder (Divi button module, block editor button):
+
+| Button | Link |
+|---|---|
+| 1 site, annual | `https://checkout.freemius.com/plugin/44694/plan/78781/?billing_cycle=annual&licenses=1` |
+| 5 sites, annual | `https://checkout.freemius.com/plugin/44694/plan/78781/?billing_cycle=annual&licenses=5` |
+| 25 sites, annual | `https://checkout.freemius.com/plugin/44694/plan/78781/?billing_cycle=annual&licenses=25` |
+| 1 site, lifetime | `https://checkout.freemius.com/plugin/44694/plan/78781/?billing_cycle=lifetime&licenses=1` |
+| 5 sites, lifetime | `https://checkout.freemius.com/plugin/44694/plan/78781/?billing_cycle=lifetime&licenses=5` |
+| 25 sites, lifetime | `https://checkout.freemius.com/plugin/44694/plan/78781/?billing_cycle=lifetime&licenses=25` |
+
+Open each link once in a private window before publishing to check the right sites and price are selected. An annual / lifetime switch above the price table, changing which links the three buttons use, works well. "Download free" links to `https://wordpress.org/plugins/aneris-docsway/`.
 
 ## 6. Suggested page structure
 
@@ -167,6 +184,7 @@ Everything in the free version, plus:
 - *Does search need a separate service?* No. Everything runs on your own site, with nothing to set up.
 - *Can it search inside PDFs?* Yes, with Docsway Pro. Scanned PDFs have no text to read, so add a short description to them.
 - *What happens when a Pro licence expires?* Pro keeps working; only updates and support stop.
+- *Can I get a refund?* Yes. If Docsway Pro is not right for you, ask within 30 days for a full refund, no questions asked.
 - *Is any personal data stored?* Search insights store only the words searched and how many results they found. Nothing is sent to Aneris Designs.
 
 **Buttons:** "See the live demo", "Try the search", "Get Docsway Pro", "Download free".
@@ -244,8 +262,8 @@ Captions for each are in `marketing/screenshots/captions.txt`. The screenshots s
 ## 10. Open questions to ask the owner
 
 1. Which builder does anerisdesigns.co use, and should the product page match an existing page's design?
-2. Page address: `/aneris-docsway/` (suggested), `/docsway/` or something else? Not `/docsway-demo/`, which is the demo's folder.
-3. Are the planned prices and the 30-day refund final?
-4. Before launch, should buttons say "Coming soon", collect emails ("Notify me"), or be hidden?
+2. (Decided: the product page is `https://anerisdesigns.co/our-projects/aneris-docsway/`.)
+3. Are the planned prices final? (The refund is decided: 30 days, no questions asked.)
+4. (Decided: both versions are live, so buttons link straight to WordPress.org and the Freemius checkout.)
 5. Should the demo docs site's "Back to" link point to the new product page? (Set in the demo site under Docsway, Settings, Appearance, Back link.)
 6. Should Aneris Docsway appear in the main menu, on the home page, or both?

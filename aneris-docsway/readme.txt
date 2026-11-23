@@ -58,7 +58,9 @@ Docsway Pro is a separate add-on for teams whose docs go beyond web pages. It ke
 * **Synonyms:** teach search your readers' own words, for example "pic" for "photo".
 * **Topic filters:** readers narrow results to one section, with a count for each.
 
-More is on the way: multiple docs sets, private docs for chosen roles, a fuller Search insights with exports, and native Divi 5 modules. Docsway Pro is coming soon.
+More is on the way: multiple docs sets, private docs for chosen roles, a fuller Search insights with exports, and native Divi 5 modules.
+
+[Get Docsway Pro](https://anerisdesigns.co/our-projects/aneris-docsway/), with a 30-day money-back guarantee. You can also [try the live demo](https://anerisdesigns.co/docsway-demo/).
 
 == Installation ==
 
