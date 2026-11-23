@@ -21,7 +21,7 @@ Checked against the Freemius documentation on 12 November 2026.
 ## 2. Create the product
 
 1. **Add Product, WordPress Plugin.**
-2. Name: `Aneris Docsway Pro`. Slug: `aneris-docsway-pro` (it must match `'slug'` in `includes/freemius.php`). The product was first created as Waypost Pro; renamed and its slug changed under **Settings** on 23 November 2026. Website URL: https://anerisdesigns.co/our-projects/aneris-docsway/
+2. Name: `Aneris Docsway Pro`. Slug: `aneris-docsway-pro` (it must match `'slug'` in `includes/freemius.php`). The product was first created as Waypost Pro; renamed and its slug changed under **Settings** on 23 November 2026. Website URL: https://anerisdesigns.co/aneris-docsway/ (the product site in `site/`)
 3. Choose to sell it as a **paid-only** plugin, not freemium, and not as an add-on. Freemius advises against the add-on model for most cases, and it would need the SDK in the free plugin.
 
 ## 3. Plans and prices

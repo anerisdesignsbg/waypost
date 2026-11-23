@@ -25,7 +25,10 @@
 		"demo:stop": "cd demo && wp-env stop",
 		"demo:build": "npm run demo:content && cd demo && wp-env run cli wp docsway-demo build",
 		"demo:zip": "npm run demo:content && bash bin/zip.sh aneris-docsway-demo demo",
-		"zip:pro": "bash bin/zip.sh aneris-docsway-pro"
+		"zip:pro": "bash bin/zip.sh aneris-docsway-pro",
+		"site:start": "cd site && wp-env start",
+		"site:stop": "cd site && wp-env stop",
+		"site:zip": "bash bin/zip.sh aneris-docsway-site site"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.63.0",

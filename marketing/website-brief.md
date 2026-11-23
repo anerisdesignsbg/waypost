@@ -2,6 +2,12 @@
 
 This brief is for an AI assistant (or designer) adding **Aneris Docsway** to the Aneris Designs website, **anerisdesigns.co**. It contains everything needed: what the product is, the facts, ready-to-use copy, the page structure, the assets and what is still undecided. Ask the owner before inventing anything not written here.
 
+## Update, 23 November 2026: Docsway has its own site
+
+Aneris Docsway now has its own product site at **`https://anerisdesigns.co/aneris-docsway/`** (a separate WordPress with a full landing page: features, live search, pricing and Buy buttons). That is now the main page for the product: the WordPress.org listing and the demo link to it.
+
+So the page on anerisdesigns.co does not need to be a full product page any more. At `https://anerisdesigns.co/our-projects/aneris-docsway/` (and as a card in Our projects), a short project page is enough: the icon or a screenshot, two or three sentences from section 3, and buttons "Visit the Docsway site" (to `https://anerisdesigns.co/aneris-docsway/`) and "Download free" (to WordPress.org). If a full page was already built, it can stay, but its Buy buttons and main call to action should point to the Docsway site.
+
 ## Update, 23 November 2026: everything is live
 
 The free plugin is on WordPress.org, Aneris Docsway Pro is on sale through Freemius, and the product page address is `https://anerisdesigns.co/our-projects/aneris-docsway/`. Section 5 has the prices, the launch coupon and the Buy button links. Replace any "Coming soon" text with them.
@@ -137,7 +143,7 @@ Open each link once in a private window before publishing to check the right sit
 6. **Styles:** the Dark style or style picker screenshot, "Seven styles, any colour".
 7. **Works with your site:** Divi, block themes, classic themes, page builders.
 8. **Free and Pro comparison table** (section 4).
-9. **Pricing** (section 5), with the launch offer if it is still running.
+9. **Pricing** (section 5), with the launch offer if it is still running. Give this section the anchor `pricing` (for example a CSS ID of `pricing` on the Divi section), so `/our-projects/aneris-docsway/#pricing` jumps straight to the prices.
 10. **FAQ** (section 7).
 11. **Final call to action:** "See the live demo" and "Get Docsway".
 

@@ -13,8 +13,8 @@ class Docsway_Demo_Builder {
 	const MARK = '_docsway_demo';
 
 	/** Where the docs bar and footer link back to. */
-	const BACK_URL   = 'https://anerisdesigns.co';
-	const BACK_LABEL = 'Back to Aneris Designs';
+	const BACK_URL   = 'https://anerisdesigns.co/aneris-docsway/';
+	const BACK_LABEL = 'About Aneris Docsway';
 
 	/** Menu sections and the tutorials in each, in reading order. */
 	private static function sections() {

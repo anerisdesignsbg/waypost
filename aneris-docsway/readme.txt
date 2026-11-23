@@ -60,7 +60,7 @@ Docsway Pro is a separate add-on for teams whose docs go beyond web pages. It ke
 
 More is on the way: multiple docs sets, private docs for chosen roles, a fuller Search insights with exports, and native Divi 5 modules.
 
-[Get Docsway Pro](https://anerisdesigns.co/our-projects/aneris-docsway/), with a 30-day money-back guarantee. You can also [try the live demo](https://anerisdesigns.co/docsway-demo/).
+[Get Docsway Pro](https://anerisdesigns.co/aneris-docsway/#pricing), with a 30-day money-back guarantee. You can also [try the live demo](https://anerisdesigns.co/docsway-demo/).
 
 == Installation ==
 

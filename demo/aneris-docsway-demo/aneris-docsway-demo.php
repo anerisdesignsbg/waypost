@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Aneris Docsway Demo Content
  * Description:       Builds the Docsway tutorials as a docs site: sections, pages, screenshots and settings, and sends any other address on the site to the docs home or a page you choose. Run it from Tools, Docsway demo, and keep it active for the redirect.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Requires Plugins:  aneris-docsway
