@@ -4,7 +4,7 @@ Tags: documentation, knowledge base, docs, search, table of contents
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -147,6 +147,9 @@ Your pages are never deleted. Docsway's sections, menu order and settings are re
 14. Docsway Pro: add a PDF or Word file to the docs by ticking its sections in the Media Library.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fix: on phones, a wide table no longer squeezes the docs layout into a narrow column. Wide tables now scroll sideways.
 
 = 1.0.0 =
 * First release.

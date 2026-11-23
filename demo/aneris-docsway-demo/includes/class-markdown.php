@@ -43,7 +43,7 @@ class Docsway_Demo_Markdown {
 					$code[] = $lines[ $i ];
 				}
 				$i++;
-				$html .= '<pre><code>' . esc_html( implode( "\n", $code ) ) . "</code></pre>\n";
+				$html .= '<pre><code>' . self::code( implode( "\n", $code ) ) . "</code></pre>\n";
 				continue;
 			}
 			if ( preg_match( '/^(#{1,4})\s+(.*)$/', $line, $m ) ) {
@@ -154,6 +154,14 @@ class Docsway_Demo_Markdown {
 		return $html . "</tbody>\n</table>\n";
 	}
 
+	/**
+	 * Escapes code and turns its square brackets into entities, so WordPress shows
+	 * a shortcode example as text instead of running it.
+	 */
+	private static function code( $text ) {
+		return str_replace( array( '[', ']' ), array( '&#91;', '&#93;' ), esc_html( $text ) );
+	}
+
 	/** Bold, inline code and links; everything else is escaped. */
 	private function inline( $text ) {
 		$tokens = array();
@@ -163,7 +171,7 @@ class Docsway_Demo_Markdown {
 			return $key;
 		};
 		$text = preg_replace_callback( '/`([^`]+)`/', function ( $m ) use ( $keep ) {
-			return $keep( '<code>' . esc_html( $m[1] ) . '</code>' );
+			return $keep( '<code>' . self::code( $m[1] ) . '</code>' );
 		}, (string) $text );
 		$text = preg_replace_callback( '/!\[([^\]]*)\]\(([^)]+)\)/', function ( $m ) use ( $keep ) {
 			return $keep( call_user_func( $this->image, $m[2], $m[1] ) );

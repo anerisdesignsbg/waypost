@@ -543,6 +543,8 @@ body:not(.docsway-style-theme) .docsway-layout__content img:not(:where(.docsway-
 	.docsway-layout .docsway-layout__inner { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; gap: 24px; padding: 0 16px; }
 	.docsway-layout__sticky { position: static; }
 	.docsway-layout .docsway-layout__title { font-size: 1.8em; }
+	/* Wide tables scroll sideways instead of making the page wider than the screen. */
+	.docsway-layout .docsway-layout__content table { display: block; max-width: 100%; overflow-x: auto; }
 }
 
 /* ── Standalone docs bar and footer ────────────────── */

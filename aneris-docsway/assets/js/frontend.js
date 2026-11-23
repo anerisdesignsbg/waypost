@@ -787,7 +787,10 @@
 		var queued = false;
 		function measure() {
 			queued = false;
-			root.style.setProperty('--docsway-sbw', (window.innerWidth - root.clientWidth) + 'px');
+			// A real scrollbar is at most a few dozen pixels. On phones the window can be wider than
+			// the page when something overflows, which must not count as a scrollbar.
+			var sbw = window.innerWidth - root.clientWidth;
+			root.style.setProperty('--docsway-sbw', ( sbw > 0 && sbw < 40 ? sbw : 0 ) + 'px');
 			// Fixed bars stack: the admin bar, then a theme header right below it, and so on.
 			var bars = [];
 			document.querySelectorAll(headers).forEach(function (h) {

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Aneris Docsway
  * Description:       Turn the pages you already have into a documentation site: sidebar menu, instant search, table of contents, previous and next links and breadcrumbs. No content migration, no URL changes.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aneris Designs
@@ -14,7 +14,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'DOCSWAY_VERSION', '1.0.0' );
+define( 'DOCSWAY_VERSION', '1.0.1' );
 define( 'DOCSWAY_FILE', __FILE__ );
 define( 'DOCSWAY_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DOCSWAY_URL', plugin_dir_url( __FILE__ ) );
